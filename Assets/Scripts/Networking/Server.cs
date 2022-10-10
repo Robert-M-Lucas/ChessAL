@@ -2,9 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEngine.UIElements.VisualElement;
 
 public class Server
 {
@@ -18,13 +19,16 @@ public class Server
     private ConcurrentQueue<Tuple<int, byte[]>> recieveQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
     private ConcurrentQueue<Tuple<int, byte[]>> sendQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
 
+    private const int SEND_COOLDOWN = 2;
+    private const int RECEIVE_COOLDOWN = 2;
+
     public bool AcceptingClients = false;
     public int ClientsConnected { get; private set; } = 0;
 
     public Server(ServerGameData gameData, string serverPassword)
     {
         acceptClientThread = new Thread(AcceptClients);
-        recieveThread = new Thread(RecieveLoop);
+        recieveThread = new Thread(ReceiveLoop);
         sendThread = new Thread(SendLoop);
 
         this.gameData = gameData;
@@ -43,6 +47,9 @@ public class Server
         sendThread.Start();
     }
 
+    /// <summary>
+    /// Loop to accept new clients
+    /// </summary>
     private void AcceptClients()
     {
         IPAddress ipAddress = IPAddress.Any;
@@ -172,6 +179,10 @@ public class Server
         }
     }
 
+    /// <summary>
+    /// Called when a message is recieved from a client
+    /// </summary>
+    /// <param name="ar"></param>
     private void ReadCallback(IAsyncResult ar)
     {
         string content = string.Empty;
@@ -248,16 +259,97 @@ public class Server
             );
     }
 
-    private void RecieveLoop()
+    /// <summary>
+    /// Processes recieved messages
+    /// </summary>
+    private void ReceiveLoop()
     {
+        try
+        {
+            while (true)
+            {
+                if (recieveQueue.IsEmpty)
+                {
+                    Thread.Sleep(RECEIVE_COOLDOWN);
+                    continue;
+                } // Nothing recieved
+
+                Tuple<int, byte[]> content;
+                if (!recieveQueue.TryDequeue(out content))
+                {
+                    // Dequeue failed
+                    continue;
+                }
+                if (!Players.ContainsKey(content.Item1))
+                {
+                    // Player no longer exists
+                    continue;
+                }
+
+                try
+                {
+                    bool handled = hierachy.HandlePacket(content.Item2, content.Item1);
+
+                    if (!handled)
+                    {
+                        
+                    }
+                }
+                catch (PacketDecodeError e)
+                {
+                    RemovePlayer(content.Item1, "Fatal packet handling error");
+                }
+            }
+        }
+        catch (ThreadAbortException) { }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 
-    public void SendMessage(int ID, byte[] message)
+    /// <summary>
+    /// Sends a message
+    /// </summary>
+    /// <param name="playerID">Player to send to</param>
+    /// <param name="payload">Data to send</param>
+    public void SendMessage(int playerID, byte[] payload)
     {
-        sendQueue.Enqueue(new Tuple<int, byte[]>(ID, message));
+        sendQueue.Enqueue(new Tuple<int, byte[]>(playerID, payload));
     }
 
+    /// <summary>
+    /// Sends queued messages
+    /// </summary>
     private void SendLoop()
     {
+        try
+        {
+            while (true)
+            {
+                if (!sendQueue.IsEmpty)
+                {
+                    Tuple<int, byte[]> to_send;
+                    if (sendQueue.TryDequeue(out to_send))
+                    {
+                        try
+                        {
+                            Players[to_send.Item1].Handler.Send(to_send.Item2);
+                        }
+                        catch (SocketException se)
+                        {
+                            Players.Remove(to_send.Item1);
+                        }
+                    }
+                }
+
+                Thread.Sleep(SEND_COOLDOWN);
+            }
+        }
+        catch (ThreadAbortException) { }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 }
