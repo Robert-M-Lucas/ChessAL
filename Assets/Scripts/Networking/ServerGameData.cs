@@ -4,15 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.ComponentModel;
 
+public struct TeamSize
+{
+    int Min;
+    int Max;
+
+    public TeamSize(int min, int max)
+    {
+        Min = min;
+        Max = max;
+    }
+}
+
 #nullable enable
+/// <summary>
+/// Holds data about a server
+/// </summary>
 public class ServerGameData
 {
     public int GameModeID;
 
-    public int MaxPlayers;
-    public int MinPlayers;
-
-    public int[] TeamSizes;
+    public TeamSize[] TeamSizes;
 
     public byte[] SaveData;
 
@@ -22,8 +34,6 @@ public class ServerGameData
         else SaveData = new byte[0];
 
         GameModeID = gameManager.GetUID();
-        MinPlayers = gameManager.GetMinPlayers();
-        MaxPlayers = gameManager.GetMaxPlayers();
 
         TeamSizes = gameManager.TeamSizes();
     }
