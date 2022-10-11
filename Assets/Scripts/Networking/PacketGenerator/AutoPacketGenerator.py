@@ -70,7 +70,7 @@ public class {packet_name}Packet {{
         else:
             print(f"Unsupported type: {i[1]}")
             sys.exit()
-        data += f"(packet.contents[{j}]);\n"
+        data += f"(packet.Contents[{j}]);\n"
 
 
     data += """    }
@@ -86,7 +86,8 @@ public class {packet_name}Packet {{
             data += "=" + splitted[1]
         data += ", "
 
-    data = data[:-2]
+    if len(attributes) > 1:
+        data = data[:-2]
 
     data += """) {
             List<byte[]> contents = new List<byte[]>();
@@ -107,4 +108,4 @@ public class {packet_name}Packet {{
     with open(f"{path}\\{filename}", "w+") as f:
         f.write(data)
 
-print(f"Time taken: {round((time.time()-start_time)*1000, 5)}ms")
+print(f"Time taken: {round((time.time()-start_time)*1000, 2)}ms")

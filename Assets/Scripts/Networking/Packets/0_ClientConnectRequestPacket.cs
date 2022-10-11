@@ -9,8 +9,8 @@ public class ClientConnectRequestPacket {
     public string Version;
     public string Password;
     public ClientConnectRequestPacket(Packet packet){
-        Version = ASCIIEncoding.ASCII.GetString(packet.contents[0]);
-        Password = ASCIIEncoding.ASCII.GetString(packet.contents[1]);
+        Version = ASCIIEncoding.ASCII.GetString(packet.Contents[0]);
+        Password = ASCIIEncoding.ASCII.GetString(packet.Contents[1]);
     }
 
     public static byte[] Build(string _Name, string _Version, string _Password="") {

@@ -8,7 +8,7 @@ public class ServerOtherClientInfoPacket {
     public int ClientUID;
     public string ClientName;
     public ServerOtherClientInfoPacket(Packet packet){
-        ClientName = ASCIIEncoding.ASCII.GetString(packet.contents[0]);
+        ClientName = ASCIIEncoding.ASCII.GetString(packet.Contents[0]);
     }
 
     public static byte[] Build(int _ClientUID, string _ClientName="") {
