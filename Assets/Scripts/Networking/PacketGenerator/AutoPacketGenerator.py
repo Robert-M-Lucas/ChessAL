@@ -58,7 +58,7 @@ public class {packet_name}Packet {{
     data += f"""    public {packet_name}Packet(Packet packet){{
 """
 
-    for j, i in enumerate(attributes[2:]):
+    for j, i in enumerate(attributes[1:]):
         splitted = i[0].split("=")
         data += "        " + splitted[0] + " = "
         if i[1] == "string":
@@ -93,7 +93,7 @@ public class {packet_name}Packet {{
             List<byte[]> contents = new List<byte[]>();
 """
 
-    for i in attributes[2:]:
+    for i in attributes[1:]:
         splitted = i[0].split("=")
         if i[1] == "string":
             data += f"            contents.Add(ASCIIEncoding.ASCII.GetBytes(_{splitted[0]}));\n"
