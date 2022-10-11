@@ -41,6 +41,8 @@ public class Server
     public ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
     private int PlayerIDCounter = 0;
 
+    InternalServerPacketHandler internalPackerHandler;
+
     public Server(ServerGameData gameData, string serverPassword)
     {
         acceptClientThread = new Thread(AcceptClients);
@@ -49,6 +51,8 @@ public class Server
 
         this.gameData = gameData;
         this.serverPassword = serverPassword;
+
+        internalPackerHandler = new InternalServerPacketHandler(this);
     }
 
     /// <summary>
@@ -348,11 +352,12 @@ public class Server
 
                 try
                 {
-                    bool handled = hierachy.HandlePacket(content.Item2, content.Item1);
+                    Packet packet = PacketBuilder.Decode(content.Item2, content.Item1);
+                    bool handled = internalPackerHandler.TryHandlePacket(packet);
 
                     if (!handled)
                     {
-                        
+                        // Pass to game manager
                     }
                 }
                 catch (PacketDecodeError e)
