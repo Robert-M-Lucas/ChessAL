@@ -3,6 +3,10 @@ using UnityEditor;
 using System.Collections.Generic;
 using System;
 
+#if UNITY_EDITOR
+/// <summary>
+/// Class for automatically testing project every time the solution is recompiled
+/// </summary>
 [InitializeOnLoad]
 public class Tests
 {
@@ -13,6 +17,9 @@ public class Tests
         AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
     }
 
+    /// <summary>
+    /// Called when code is recompiled
+    /// </summary>
     private static void OnAfterAssemblyReload()
     {
         Debug.Log("Starting tests");
@@ -59,3 +66,4 @@ public class Tests
         return true;
     }
 }
+#endif
