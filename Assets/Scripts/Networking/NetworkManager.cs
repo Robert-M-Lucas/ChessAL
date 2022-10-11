@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 #nullable enable
+/// <summary>
+/// Provides an interface for MonoBehaviour classes with the Client and Server
+/// </summary>
 public class NetworkManager : MonoBehaviour
 {
     Server? server = null;
