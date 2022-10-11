@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections;
 
 /// <summary>
 /// Provides additional functions for handling byte[]

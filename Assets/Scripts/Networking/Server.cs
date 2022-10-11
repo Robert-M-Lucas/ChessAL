@@ -6,34 +6,46 @@ using System.Threading;
 using UnityEngine;
 
 #nullable enable
+
 public class Server
 {
     private ServerGameData gameData;
     private string serverPassword;
 
+    #region Threads
+
     private Thread acceptClientThread;
     private Thread recieveThread;
     private Thread sendThread;
 
+    #endregion Threads
+
     private ConcurrentQueue<Tuple<int, byte[]>> recieveQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
     private ConcurrentQueue<Tuple<int, byte[]>> sendQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
+
+    #region Cooldowns
 
     /// <summary>
     /// Time between sending messages
     /// </summary>
     private const int SEND_COOLDOWN = 2;
+
     /// <summary>
     /// How long to wait before rechecking an empty queue
     /// </summary>
     private const int RECEIVE_COOLDOWN = 2;
+
     /// <summary>
     /// Time between trying to add a client again
     /// </summary>
     private const int CLIENT_ADD_COOLDOWN = 5;
+
     /// <summary>
     /// Time between trying to remove a client again
     /// </summary>
     private const int CLIENT_REMOVE_COOLDOWN = 5;
+
+    #endregion Cooldowns
 
     public bool AcceptingClients = false;
     public int ClientsConnected { get; private set; } = 0;
@@ -41,7 +53,13 @@ public class Server
     public ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
     private int PlayerIDCounter = 0;
 
-    InternalServerPacketHandler internalPackerHandler;
+    private InternalServerPacketHandler internalPackerHandler;
+
+    #region Actions
+
+    public Action OnPlayersChange = () => { };
+
+    #endregion Actions
 
     public Server(ServerGameData gameData, string serverPassword)
     {
@@ -75,7 +93,7 @@ public class Server
     /// <param name="team"></param>
     /// <param name="playerInTeam"></param>
     /// <returns></returns>
-    public Tuple<bool, int> AddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
+    public Tuple<bool, int> TryAddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
     {
         ServerPlayerData playerData = new ServerPlayerData(handler, PlayerIDCounter, name, team, playerInTeam);
         bool player_added = PlayerData.TryAdd(PlayerIDCounter, playerData);
@@ -91,6 +109,8 @@ public class Server
                    new AsyncCallback(ReadCallback),
                    playerData
                );
+
+        OnPlayersChange.Invoke();
 
         return new Tuple<bool, int>(player_added, PlayerIDCounter - 1);
     }
@@ -109,6 +129,8 @@ public class Server
             if (!removed) return false;
 
             playerData.ShutdownSocket();
+
+            OnPlayersChange.Invoke();
 
             return true;
         }
@@ -224,7 +246,7 @@ public class Server
                 int playerID;
                 while (true)
                 {
-                    Tuple<bool, int> add_result = AddPlayer(handler, initPacket.Name);
+                    Tuple<bool, int> add_result = TryAddPlayer(handler, initPacket.Name);
                     if (add_result.Item1) { playerID = add_result.Item2; break; }
                     Thread.Sleep(CLIENT_ADD_COOLDOWN);
                 }
@@ -232,7 +254,7 @@ public class Server
                 SendMessage(playerID, ServerConnectAcceptPacket.Build(playerID));
             }
         }
-        catch (ThreadAbortException) 
+        catch (ThreadAbortException)
         {
             try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
             try { listener?.Close(); } catch (Exception e) { Debug.LogError(e); }

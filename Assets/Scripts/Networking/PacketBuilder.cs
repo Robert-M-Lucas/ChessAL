@@ -1,16 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Text;
 
 public class PacketDecodeError : Exception
 {
-    public PacketDecodeError() { }
+    public PacketDecodeError()
+    { }
 
-    public PacketDecodeError(string message) : base(message) { }
+    public PacketDecodeError(string message) : base(message)
+    {
+    }
 
-    public PacketDecodeError(string message, Exception inner) : base(message, inner) { }
+    public PacketDecodeError(string message, Exception inner) : base(message, inner)
+    {
+    }
 }
 
 public struct Packet
@@ -29,9 +32,12 @@ public struct Packet
 
 public class PacketMissingAttributeException : Exception
 {
-    public PacketMissingAttributeException() { }
+    public PacketMissingAttributeException()
+    { }
 
-    public PacketMissingAttributeException(string message) : base(message) { }
+    public PacketMissingAttributeException(string message) : base(message)
+    {
+    }
 
     public PacketMissingAttributeException(string message, Exception inner) : base(message, inner)
     { }

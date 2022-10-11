@@ -1,13 +1,9 @@
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.ComponentModel;
 
 public struct TeamSize
 {
-    int Min;
-    int Max;
+    private int Min;
+    private int Max;
 
     public TeamSize(int min, int max)
     {
@@ -17,6 +13,7 @@ public struct TeamSize
 }
 
 #nullable enable
+
 /// <summary>
 /// Holds data about a server
 /// </summary>

@@ -1,26 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 #nullable enable
+
 /// <summary>
 /// Provides an interface for MonoBehaviour classes with the Client and Server
 /// </summary>
 public class NetworkManager : MonoBehaviour
 {
-    Server? server = null;
-    Client? client = null;
+    private Server? server = null;
+    private Client? client = null;
 
-    bool IsHost { get { return server is not null; } }
+    private bool IsHost
+    { get { return server is not null; } }
 
-    void Start()
+    private void Start()
     {
-        
     }
 
-    void Update()
+    private void Update()
     {
-        
     }
 
     /// <summary>
@@ -35,7 +33,7 @@ public class NetworkManager : MonoBehaviour
         server = new Server(gameData, password);
         server.Start();
 
-        client = new Client("127.0.0.1");
-        client.Connect();
+        // client = new Client("127.0.0.1");
+        // client.Connect();
     }
 }

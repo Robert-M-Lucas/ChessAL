@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class InternalServerPacketHandler
 {
@@ -12,7 +10,7 @@ public class InternalServerPacketHandler
     public InternalServerPacketHandler(Server server)
     {
         this.server = server;
-        
+
         UIDtoAction = new Dictionary<int, Action<Packet>> {
             { 4, PingRespond },
             { 7, RemoveClient }
