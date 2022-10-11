@@ -465,6 +465,9 @@ public class Server
         while (!sendQueue.IsEmpty) SendMessageFromSendQueue();
     }
 
+    /// <summary>
+    /// Shuts down the server
+    /// </summary>
     public void Shutdown()
     {
         acceptClientThread.Abort();
