@@ -15,10 +15,28 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
+        Host(new SampleGameManager(), "player_name", "Ham", null);
     }
 
     private void Update()
     {
+    }
+
+    private void OnApplicationQuit()
+    {
+        client?.Shutdown();
+        server?.Shutdown();
+    }
+
+    private void OnConnect(string? status)
+    {
+        Debug.Log($"Connection statu: {status ?? "null"}");
+        client.GetPing(OnPing);
+    }
+
+    private void OnPing(int ping)
+    {
+        Debug.Log($"Ping {ping}ms");
     }
 
     /// <summary>
@@ -33,7 +51,7 @@ public class NetworkManager : MonoBehaviour
         server = new Server(gameData, password);
         server.Start();
 
-        client = new Client("127.0.0.1", password, playerName, (_) => { });
+        client = new Client("127.0.0.1", password, playerName, OnConnect);
         client.Connect();
     }
 }
