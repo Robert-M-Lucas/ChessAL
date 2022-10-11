@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class Server
 {
+    private bool running = true;
+
     private ServerGameData gameData;
     private string serverPassword;
 
@@ -78,7 +80,6 @@ public class Server
     /// </summary>
     public void Start()
     {
-        Debug.Log("Server starting");
         AcceptingClients = true;
         acceptClientThread.Start();
         recieveThread.Start();
@@ -271,6 +272,7 @@ public class Server
     /// <param name="ar"></param>
     private void ReadCallback(IAsyncResult ar)
     {
+        if (!running) { return; }
         string content = string.Empty;
 
         ServerPlayerData CurrentPlayer = (ServerPlayerData)ar.AsyncState;
@@ -470,6 +472,7 @@ public class Server
     /// </summary>
     public void Shutdown()
     {
+        running = false;
         acceptClientThread.Abort();
         recieveThread.Abort();
         sendThread.Abort();
