@@ -26,14 +26,14 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     /// <param name="gameManager"></param>
     /// <param name="savePath">Path to the save file</param>
-    public void Host(GameManagerParent gameManager, string password, string? savePath = null)
+    public void Host(GameManagerParent gameManager, string playerName, string password, string? savePath = null)
     {
         ServerGameData gameData = new ServerGameData(gameManager, savePath);
 
         server = new Server(gameData, password);
         server.Start();
 
-        // client = new Client("127.0.0.1");
-        // client.Connect();
+        client = new Client("127.0.0.1", password, playerName, (_) => { });
+        client.Connect();
     }
 }
