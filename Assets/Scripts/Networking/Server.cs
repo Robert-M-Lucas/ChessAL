@@ -50,7 +50,7 @@ public class Server
     public bool AcceptingClients = false;
     public int ClientsConnected { get; private set; } = 0;
 
-    public ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
+    private ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
     private int PlayerIDCounter = 0;
 
     private InternalServerPacketHandler internalPackerHandler;
@@ -93,21 +93,21 @@ public class Server
     /// <param name="team"></param>
     /// <param name="playerInTeam"></param>
     /// <returns></returns>
-    public Tuple<bool, int> TryAddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
+    private Tuple<bool, int> TryAddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
     {
-        ServerPlayerData playerData = new ServerPlayerData(handler, PlayerIDCounter, name, team, playerInTeam);
-        bool player_added = PlayerData.TryAdd(PlayerIDCounter, playerData);
+        ServerPlayerData player_data = new ServerPlayerData(handler, PlayerIDCounter, name, team, playerInTeam);
+        bool player_added = PlayerData.TryAdd(PlayerIDCounter, player_data);
         PlayerIDCounter++;
 
         if (!player_added) return new Tuple<bool, int>(false, -1);
 
         handler.BeginReceive(
-                   playerData.Buffer,
+                   player_data.Buffer,
                    0,
                    1024,
                    0,
                    new AsyncCallback(ReadCallback),
-                   playerData
+                   player_data
                );
 
         OnPlayersChange.Invoke();
