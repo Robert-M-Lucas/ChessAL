@@ -62,6 +62,8 @@ public class Client
 
     public ConcurrentDictionary<int, ClientPlayerData> PlayerData = new ConcurrentDictionary<int, ClientPlayerData>();
 
+    private InternalClientPacketHandler internalPacketHandler;
+
     #region Actions 
 
     public Action OnPlayersChange = () => { };
@@ -92,6 +94,8 @@ public class Client
         connectionThread = new Thread(StartConnecting);
         receiveThread = new Thread(ReceiveLoop);
         sendThread = new Thread(SendLoop);
+
+        internalPacketHandler = new InternalClientPacketHandler(this);
     }
 
     /// <summary>
@@ -138,7 +142,7 @@ public class Client
     /// <param name="pingCallback">Called when ping is calculated</param>
     public void GetPing(Action<int> pingCallback)
     {
-        if (pingResponseAction is null) return; // Already fetching ping
+        if (pingResponseAction is not null) return; // Already fetching ping
         pingResponseAction = pingCallback;
         SendMessage(ClientPingPacket.Build());
     }
@@ -263,8 +267,10 @@ public class Client
                 }
 
                 try
-                {
-                    bool handled = false;
+                { 
+                    Packet packet = PacketBuilder.Decode(content);
+                    bool handled = internalPacketHandler.TryHandlePacket(packet);
+
                     if (!handled)
                     {
 
