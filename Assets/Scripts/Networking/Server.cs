@@ -4,9 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEngine.UIElements.VisualElement;
 
+#nullable enable
 public class Server
 {
     private ServerGameData gameData;
@@ -19,11 +18,28 @@ public class Server
     private ConcurrentQueue<Tuple<int, byte[]>> recieveQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
     private ConcurrentQueue<Tuple<int, byte[]>> sendQueue = new ConcurrentQueue<Tuple<int, byte[]>>();
 
+    /// <summary>
+    /// Time between sending messages
+    /// </summary>
     private const int SEND_COOLDOWN = 2;
+    /// <summary>
+    /// How long to wait before rechecking an empty queue
+    /// </summary>
     private const int RECEIVE_COOLDOWN = 2;
+    /// <summary>
+    /// Time between trying to add a client again
+    /// </summary>
+    private const int CLIENT_ADD_COOLDOWN = 5;
+    /// <summary>
+    /// Time between trying to remove a client again
+    /// </summary>
+    private const int CLIENT_REMOVE_COOLDOWN = 5;
 
     public bool AcceptingClients = false;
     public int ClientsConnected { get; private set; } = 0;
+
+    public ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
+    private int PlayerIDCounter = 0;
 
     public Server(ServerGameData gameData, string serverPassword)
     {
@@ -48,6 +64,54 @@ public class Server
     }
 
     /// <summary>
+    /// Adds a player to the server and begins listening for messages
+    /// </summary>
+    /// <param name="handler">Socket used to communicate with client</param>
+    /// <param name="name"></param>
+    /// <param name="team"></param>
+    /// <param name="playerInTeam"></param>
+    /// <returns></returns>
+    public Tuple<bool, int> AddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
+    {
+        ServerPlayerData playerData = new ServerPlayerData(handler, PlayerIDCounter, name, team, playerInTeam);
+        bool player_added = PlayerData.TryAdd(PlayerIDCounter, playerData);
+        PlayerIDCounter++;
+
+        if (!player_added) return new Tuple<bool, int>(false, -1);
+
+        handler.BeginReceive(
+                   playerData.Buffer,
+                   0,
+                   1024,
+                   0,
+                   new AsyncCallback(ReadCallback),
+                   playerData
+               );
+
+        return new Tuple<bool, int>(player_added, PlayerIDCounter - 1);
+    }
+
+    /// <summary>
+    /// Disconnects a player from the server
+    /// </summary>
+    /// <param name="player">Player ID</param>
+    public bool TryRemovePlayer(int player, string? reason = null)
+    {
+        if (PlayerData.ContainsKey(player))
+        {
+            ServerPlayerData playerData;
+            bool removed = PlayerData.TryRemove(player, out playerData);
+
+            if (!removed) return false;
+
+            playerData.ShutdownSocket();
+
+            return true;
+        }
+        else return false;
+    }
+
+    /// <summary>
     /// Loop to accept new clients
     /// </summary>
     private void AcceptClients()
@@ -56,7 +120,7 @@ public class Server
 
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, NetworkSettings.PORT);
 
-        Socket listener;
+        Socket? listener = null;
 
         try
         {
@@ -125,7 +189,7 @@ public class Server
                 if (!AcceptingClients)
                 {
                     handler.Send(
-                        ServerKickPacket.Build(0, "Server is not accepting clients at this time")
+                        ServerKickPacket.Build("Server is not accepting clients at this time")
                     );
                     continue;
                 }
@@ -134,7 +198,7 @@ public class Server
                 if (serverPassword != "" && initPacket.Password != serverPassword)
                 {
                     handler.Send(
-                        ServerKickPacket.Build(0, "Wrong Password: '" + initPacket.Password + "'")
+                        ServerKickPacket.Build("Wrong Password: '" + initPacket.Password + "'")
                     );
                     continue;
                 }
@@ -144,7 +208,6 @@ public class Server
                 {
                     handler.Send(
                         ServerKickPacket.Build(
-                            0,
                             "Wrong Version:\nServer: "
                                 + NetworkSettings.VERSION.ToString()
                                 + "| Client (You): "
@@ -154,25 +217,22 @@ public class Server
                     continue;
                 }
 
-                ServerPlayer player = new ServerPlayer();
-                player.Name = initPacket.Name;
+                int playerID;
+                while (true)
+                {
+                    Tuple<bool, int> add_result = AddPlayer(handler, initPacket.Name);
+                    if (add_result.Item1) { playerID = add_result.Item2; break; }
+                    Thread.Sleep(CLIENT_ADD_COOLDOWN);
+                }
 
-                AddPlayer(player);
-
-                SendMessage(player.ID, ServerConnectAcceptPacket.Build(0, player.ID));
-
-                // Begin recieving communications from client
-                handler.BeginReceive(
-                    player.Buffer,
-                    0,
-                    1024,
-                    0,
-                    new AsyncCallback(ReadCallback),
-                    player
-                );
+                SendMessage(playerID, ServerConnectAcceptPacket.Build(playerID));
             }
         }
-        catch (ThreadAbortException) { }
+        catch (ThreadAbortException) 
+        {
+            try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
+            try { listener?.Close(); } catch (Exception e) { Debug.LogError(e); }
+        }
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
@@ -187,7 +247,7 @@ public class Server
     {
         string content = string.Empty;
 
-        ServerPlayer CurrentPlayer = (ServerPlayer)ar.AsyncState;
+        ServerPlayerData CurrentPlayer = (ServerPlayerData)ar.AsyncState;
         Socket handler = CurrentPlayer.Handler;
 
         int bytesRead = handler.EndReceive(ar);
@@ -220,7 +280,7 @@ public class Server
             {
                 recieveQueue.Enqueue(
                     new Tuple<int, byte[]>(
-                        CurrentPlayer.ID,
+                        CurrentPlayer.PlayerID,
                         ArrayExtensions.Slice(
                             CurrentPlayer.LongBuffer,
                             0,
@@ -280,7 +340,7 @@ public class Server
                     // Dequeue failed
                     continue;
                 }
-                if (!Players.ContainsKey(content.Item1))
+                if (!PlayerData.ContainsKey(content.Item1))
                 {
                     // Player no longer exists
                     continue;
@@ -297,7 +357,8 @@ public class Server
                 }
                 catch (PacketDecodeError e)
                 {
-                    RemovePlayer(content.Item1, "Fatal packet handling error");
+                    Debug.LogError(e);
+                    while (!TryRemovePlayer(content.Item1, "Fatal packet handling error")) Thread.Sleep(CLIENT_REMOVE_COOLDOWN);
                 }
             }
         }
@@ -329,18 +390,7 @@ public class Server
             {
                 if (!sendQueue.IsEmpty)
                 {
-                    Tuple<int, byte[]> to_send;
-                    if (sendQueue.TryDequeue(out to_send))
-                    {
-                        try
-                        {
-                            Players[to_send.Item1].Handler.Send(to_send.Item2);
-                        }
-                        catch (SocketException se)
-                        {
-                            Players.Remove(to_send.Item1);
-                        }
-                    }
+                    SendMessageFromSendQueue();
                 }
 
                 Thread.Sleep(SEND_COOLDOWN);
@@ -351,5 +401,48 @@ public class Server
         {
             Debug.LogError(e);
         }
+    }
+
+    /// <summary>
+    /// Sends the first message from the send queue
+    /// </summary>
+    private void SendMessageFromSendQueue()
+    {
+        Tuple<int, byte[]> to_send;
+        if (sendQueue.TryDequeue(out to_send))
+        {
+            if (!PlayerData.ContainsKey(to_send.Item1))
+            {
+                return;
+            }
+            try
+            {
+                PlayerData[to_send.Item1].Handler.Send(to_send.Item2);
+            }
+            catch (SocketException se)
+            {
+                Debug.LogError(se);
+                TryRemovePlayer(to_send.Item1);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Sends all remaining messages from the send queue.
+    /// </summary>
+    /// <exception cref="ThreadStateException">Throws ThreadStateException if send loop is running</exception>
+    private void FlushSendQueue()
+    {
+        if (sendThread.ThreadState == ThreadState.Running) throw new ThreadStateException("Send queue cannot be flushed while send loop is running!");
+
+        while (!sendQueue.IsEmpty) SendMessageFromSendQueue();
+    }
+
+    public void Shutdown()
+    {
+        acceptClientThread.Abort();
+        recieveThread.Abort();
+        sendThread.Abort();
+        FlushSendQueue();
     }
 }
