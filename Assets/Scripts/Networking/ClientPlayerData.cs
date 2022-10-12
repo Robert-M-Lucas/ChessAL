@@ -20,5 +20,4 @@ public class ClientPlayerData
         Team = team;
         PlayerInTeam = playerInTeam;
     }
-
 }

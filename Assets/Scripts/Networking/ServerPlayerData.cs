@@ -44,6 +44,9 @@ public class ServerPlayerData
     public int LongBufferSize = 0;
     public StringBuilder SB = new StringBuilder();
 
+    /// <summary>
+    /// Resets buffers
+    /// </summary>
     public void Reset()
     {
         Buffer = new byte[1024];

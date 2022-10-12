@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Controls actions when a packet is recieved by the client
+/// </summary>
 public class InternalClientPacketHandler
 {
     private Client client;
@@ -21,6 +24,11 @@ public class InternalClientPacketHandler
         };
     }
 
+    /// <summary>
+    /// Attempts to process a packet
+    /// </summary>
+    /// <param name="packet"></param>
+    /// <returns>Whether the packet was successfully processed</returns>
     public bool TryHandlePacket(Packet packet)
     {
         if (!UIDtoAction.ContainsKey(packet.UID)) return false;
@@ -29,17 +37,20 @@ public class InternalClientPacketHandler
         return true;
     }
 
+    // Server accepted connection
     public void ServerAccept(Packet packet)
     {
         // ServerConnectAcceptPacket acceptPacket = new ServerConnectAcceptPacket(packet);
     }
 
+    // Server kicked player
     public void ServerKick(Packet packet)
     {
         ServerKickPacket kickPacket = new ServerKickPacket(packet);
         client.Disconnect(kickPacket.Reason);
     }
 
+    // Server has new information about players
     public void PlayerInformationUpdate(Packet packet)
     {
         ServerOtherClientInfoPacket infoPacket = new ServerOtherClientInfoPacket(packet);
@@ -47,6 +58,7 @@ public class InternalClientPacketHandler
         client.OnPlayersChange();
     }
 
+    // A player disconnected
     public void PlayerDisconnect(Packet packet)
     {
         ServerInformOfClientDisconnectPacket disconnectPacket =
@@ -54,6 +66,7 @@ public class InternalClientPacketHandler
         client.TryRemovePlayer(disconnectPacket.ClientUID);
     }
 
+    // The server has responded to a ping
     public void PingResponse(Packet p)
     {
         int ping = client.PingTimer.Elapsed.Milliseconds;

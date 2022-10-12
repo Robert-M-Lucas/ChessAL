@@ -6,7 +6,9 @@ using System.Threading;
 using UnityEngine;
 
 #nullable enable
-
+/// <summary>
+/// The game server that primarily acts as a relay between clients
+/// </summary>
 public class Server
 {
     private bool running = true;
