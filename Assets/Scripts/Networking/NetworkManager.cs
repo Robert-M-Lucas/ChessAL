@@ -7,15 +7,23 @@ using UnityEngine;
 /// </summary>
 public class NetworkManager : MonoBehaviour
 {
+    private ChessManager chessManager;
+
     private Server? server = null;
     private Client? client = null;
 
     private bool IsHost
     { get { return server is not null; } }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+        chessManager = GetComponent<ChessManager>();
+    }
+
     private void Start()
     {
-        Host(new SampleGameManager(), "player_name", "Ham", null);
+        Host(new HostSettings(new SampleGameManagerData(), "Ham", "PlayerName", null));
     }
 
     private void Update()
@@ -28,10 +36,14 @@ public class NetworkManager : MonoBehaviour
         server?.Shutdown();
     }
 
-    private void OnConnect(string? status)
+    private void OnHostSuccess(string? status)
     {
-        Debug.Log($"Connection statu: {status ?? "null"}");
-        client.GetPing(OnPing);
+        Debug.Log($"Connection status: {status ?? "Success"}");
+        if (status is null) return;
+
+        client?.GetPing(OnPing);
+
+        chessManager.HostSucceed();
     }
 
     private void OnPing(int ping)
@@ -44,14 +56,14 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     /// <param name="gameManager"></param>
     /// <param name="savePath">Path to the save file</param>
-    public void Host(GameManagerParent gameManager, string playerName, string password, string? savePath = null)
+    public void Host(HostSettings settings)
     {
-        ServerGameData gameData = new ServerGameData(gameManager, savePath);
+        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SavePath);
 
-        server = new Server(gameData, password);
+        server = new Server(gameData, settings.Password);
         server.Start();
 
-        client = new Client("127.0.0.1", password, playerName, OnConnect);
+        client = new Client("127.0.0.1", settings.Password, settings.PlayerName, OnHostSuccess);
         client.Connect();
     }
 }
