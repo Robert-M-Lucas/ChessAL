@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 using ThreadState = System.Threading.ThreadState;
 
 #nullable enable
+/// <summary>
+/// The game client. Handles communication with a local or foreign server
+/// </summary>
 public class Client
 {
     # region Server Connection
@@ -17,7 +19,7 @@ public class Client
     public string IP;
     public string Password;
     public string PlayerName;
-    Action<string?> connectionStatusCallback;
+    private Action<string?> connectionStatusCallback;
 
     private byte[] serverLongBuffer = new byte[1024];
     private byte[] serverBuffer = new byte[1024];
@@ -64,7 +66,7 @@ public class Client
 
     private InternalClientPacketHandler internalPacketHandler;
 
-    #region Actions 
+    #region Actions
 
     public Action OnPlayersChange = () => { };
     private Action onConnect = () => { };
@@ -77,7 +79,7 @@ public class Client
     #endregion
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="IP">IP String</param>
     /// <param name="password">Server password (can be left empty)</param>
@@ -101,7 +103,8 @@ public class Client
     /// <summary>
     /// Start connecting to the server
     /// </summary>
-    public void Connect() { connectionThread.Start(); }
+    public void Connect()
+    { connectionThread.Start(); }
 
     /// <summary>
     /// Starts connecting (threaded)
@@ -248,7 +251,10 @@ public class Client
         handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null); // Listen again
     }
 
-    void ReceiveLoop()
+    /// <summary>
+    /// Processes recieved messages
+    /// </summary>
+    private void ReceiveLoop()
     {
         try
         {
@@ -267,18 +273,16 @@ public class Client
                 }
 
                 try
-                { 
+                {
                     Packet packet = PacketBuilder.Decode(content);
                     bool handled = internalPacketHandler.TryHandlePacket(packet);
 
                     if (!handled)
                     {
-
                     }
                 }
                 catch (PacketDecodeError)
                 {
-
                 }
             }
         }
