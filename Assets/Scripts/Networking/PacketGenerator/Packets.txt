@@ -6,6 +6,7 @@ Initial client connection request
 Server accepting client's connection
 1\ServerConnectAccept\PlayerID\int
 
+Server kicking client
 2\ServerKick\Reason\string
 
 Server telling a client about other connected clients
@@ -23,11 +24,7 @@ Ping packet
 100 - 199: Theses are test packets
 
 100\SampleTest\ArgOne\int\ArgTwo\double\ArgThree\string\ArgFour="defaultVal"\string
-101\SampleTestTwo\ArgOne\int\ArgTwo\double\ArgThree\string\ArgFour="defaultVal"\string
 
 *****************************************
 
-200-299: Project packets
-200\SetClientSide\side\int
-201\ClientSendMove\fromX\int\fromY\int\toX\int\toY\int
-202\ServerSendMove\fromX\int\fromY\int\toX\int\toY\int
+200+: Project packets
