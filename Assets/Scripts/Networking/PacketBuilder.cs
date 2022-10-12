@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+/// <summary>
+/// Exception during packet decoding
+/// </summary>
 public class PacketDecodeError : Exception
 {
     public PacketDecodeError()
@@ -16,6 +19,9 @@ public class PacketDecodeError : Exception
     }
 }
 
+/// <summary>
+/// A generic packet - no specific types
+/// </summary>
 public struct Packet
 {
     public int UID;
@@ -30,6 +36,7 @@ public struct Packet
     }
 }
 
+/*
 public class PacketMissingAttributeException : Exception
 {
     public PacketMissingAttributeException()
@@ -42,9 +49,13 @@ public class PacketMissingAttributeException : Exception
     public PacketMissingAttributeException(string message, Exception inner) : base(message, inner)
     { }
 }
+*/
 
-//UIDLEN 16 bit & RIDLEN 24 bit
-//UID, RID, Data
+//UIDLEN 32 bit
+//UID, Data
+/// <summary>
+/// Creates and decodes packets
+/// </summary>
 public static class PacketBuilder
 {
     private static Encoding _encoder = new UTF8Encoding();
@@ -53,17 +64,23 @@ public static class PacketBuilder
     public const int UIDLen = 4;
     public const int DataLenLen = 4;
 
-    /*
-    public static string RemoveEOF(string data){
-        return data.Substring(0, data.Length - 5);
-    }
-    */
-
-    public static int GetPacketLength(byte[] bytes)
+    /// <summary>
+    /// Decodes packet length from packet
+    /// </summary>
+    /// <param name="content"></param>
+    /// <returns>Packet length</returns>
+    public static int GetPacketLength(byte[] content)
     {
-        return BitConverter.ToInt32(ArrayExtensions.Slice(bytes, 0, PacketLenLen)) + PacketLenLen;
+        return BitConverter.ToInt32(ArrayExtensions.Slice(content, 0, PacketLenLen)) + PacketLenLen;
     }
 
+    /// <summary>
+    /// Builds the packet - Adds the UID and calculates lengths for each section of the packet
+    /// </summary>
+    /// <param name="UID"></param>
+    /// <param name="contents"></param>
+    /// <returns></returns>
+    /// <exception cref="PacketDecodeError"></exception>
     public static byte[] Build(int UID, List<byte[]> contents)
     {
         try
@@ -92,11 +109,22 @@ public static class PacketBuilder
         }
     }
 
+    /// <summary>
+    /// Converts a string to bytes with the current encoding system
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns>Encoded bytes</returns>
     public static byte[] ByteEncode(string input)
     {
         return _encoder.GetBytes(input);
     }
 
+    /// <summary>
+    /// Separates raw packet data into its separate components
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="from"></param>
+    /// <returns></returns>
     public static Packet Decode(byte[] data, int from = -1)
     {
         int cursor = 4;
