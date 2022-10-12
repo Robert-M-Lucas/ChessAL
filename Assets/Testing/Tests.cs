@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
+using System.Reflection;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 #if UNITY_EDITOR
 /// <summary>
@@ -10,7 +13,7 @@ using System;
 [InitializeOnLoad]
 public class Tests
 {
-    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding };
+    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers };
 
     static Tests()
     {
@@ -63,6 +66,28 @@ public class Tests
             Debug.LogError($"Packet encoding test failed with exception {e}");
             return false;
         }
+        return true;
+    }
+
+    /// <summary>
+    /// Runs various tests on game managers
+    /// </summary>
+    /// <returns></returns>
+    private static bool TestGameManagers()
+    {
+        Debug.Log("Running Game Manager Tests");
+
+        // Get all AbstractGameManagerData
+        List<AbstractGameManagerData> abstract_game_managers_data = Util.GetAllGameManagers();
+
+        // Ensure no duplicate UIDs
+        HashSet<int> used_uids = new HashSet<int>();
+        foreach (AbstractGameManagerData data in abstract_game_managers_data)
+        {
+            if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Gamemode UID ({data.GetUID()}) used twice"); return false; }
+            used_uids.Add(data.GetUID());
+        }
+
         return true;
     }
 }
