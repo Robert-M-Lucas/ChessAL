@@ -9,6 +9,8 @@ public class SampleGameManagerData : AbstractGameManagerData
 
     public override int GetUID() => 1;
 
+    public override string GetName() => "Sample Gamemode";
+
     public override TeamSize[] GetTeamSizes() => new TeamSize[0];
 }
 
