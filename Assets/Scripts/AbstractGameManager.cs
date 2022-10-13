@@ -14,6 +14,12 @@ public abstract class AbstractGameManagerData
     /// <summary>
     ///
     /// </summary>
+    /// <returns>Non-unique name of this GameMode</returns>
+    public abstract string GetName();
+
+    /// <summary>
+    ///
+    /// </summary>
     /// <returns>{ Team1Size, Team2Size, Team3Size, ... }</returns>
     public abstract TeamSize[] GetTeamSizes();
 
