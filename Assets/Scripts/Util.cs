@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 /// <summary>
@@ -25,4 +26,14 @@ public static class Util
 
         return game_managers_data;
     }
+
+    /// <summary>
+    /// Strips a string of invisible characters
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string RemoveInvisibleChars(string input)
+    {
+        return Regex.Replace(input, @"\p{C}+", string.Empty);
+    } 
 }
