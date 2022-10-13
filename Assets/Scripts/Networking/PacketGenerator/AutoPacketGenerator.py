@@ -1,4 +1,3 @@
-from operator import le
 import os
 import shutil
 import sys
@@ -67,6 +66,8 @@ public class {packet_name}Packet {{
             data += "BitConverter.ToInt32"
         elif i[1] == "double":
             data += "BitConverter.ToDouble"
+        elif i[1] == "byte[]":
+            pass
         else:
             print(f"Unsupported type: {i[1]}")
             sys.exit()
@@ -97,6 +98,8 @@ public class {packet_name}Packet {{
         splitted = i[0].split("=")
         if i[1] == "string":
             data += f"            contents.Add(ASCIIEncoding.ASCII.GetBytes(_{splitted[0]}));\n"
+        elif i[1] == "byte[]":
+            data += f"            contents.Add(_{splitted[0]});\n"
         else:
             data += f"            contents.Add(BitConverter.GetBytes(_{splitted[0]}));\n"
 
@@ -109,3 +112,4 @@ public class {packet_name}Packet {{
         f.write(data)
 
 print(f"Time taken: {round((time.time()-start_time)*1000, 2)}ms")
+input()
