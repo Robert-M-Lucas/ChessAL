@@ -13,7 +13,7 @@ public class Server
 {
     private bool running = true;
 
-    private ServerGameData gameData;
+    public ServerGameData gameData;
     private string serverPassword;
 
     #region Threads
@@ -67,6 +67,8 @@ public class Server
 
     public Server(ServerGameData gameData, string serverPassword)
     {
+        serverPassword = Util.RemoveInvisibleChars(serverPassword);
+
         acceptClientThread = new Thread(AcceptClients);
         recieveThread = new Thread(ReceiveLoop);
         sendThread = new Thread(SendLoop);

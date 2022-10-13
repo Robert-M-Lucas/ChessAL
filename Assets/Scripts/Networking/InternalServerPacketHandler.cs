@@ -16,7 +16,8 @@ public class InternalServerPacketHandler
 
         UIDtoAction = new Dictionary<int, Action<Packet>> {
             { 4, PingRespond },
-            { 7, RemoveClient }
+            { 7, RemoveClient },
+            { 200, SendGamemodeData }
         };
     }
 
@@ -43,5 +44,10 @@ public class InternalServerPacketHandler
     public void RemoveClient(Packet packet)
     {
         server.TryRemovePlayer(packet.From, "Disconnected");
+    }
+
+    public void SendGamemodeData(Packet packet)
+    {
+        server.SendMessage(packet.From, GamemodeDataPacket.Build(server.gameData.GameModeID, new byte[0]));
     }
 }

@@ -16,11 +16,12 @@ public class InternalClientPacketHandler
 
         UIDtoAction = new Dictionary<int, Action<Packet>>
         {
-            { 1, (Packet p) => ServerAccept(p) },
-            { 2, (Packet p) => ServerKick(p) },
-            { 3, (Packet p) => PlayerInformationUpdate(p) },
-            { 6, (Packet p) => PlayerDisconnect(p) },
-            { 5, (Packet p) => PingResponse(p) },
+            { 1,  ServerAccept },
+            { 2, ServerKick },
+            { 3, PlayerInformationUpdate },
+            { 6, PlayerDisconnect },
+            { 5, PingResponse },
+            { 201, GamemodeDataRecieve}
         };
     }
 
@@ -73,5 +74,11 @@ public class InternalClientPacketHandler
         client.pingResponseAction(ping);
         client.PingTimer.Reset();
         client.pingResponseAction = null;
+    }
+
+    public void GamemodeDataRecieve(Packet p)
+    {
+        GamemodeDataPacket gamemodeDataPacket = new GamemodeDataPacket(p);
+        client.OnGamemodeRecieve(gamemodeDataPacket.Gamemode, gamemodeDataPacket.SaveData);
     }
 }

@@ -19,7 +19,7 @@ public class Client
     public string IP;
     public string Password;
     public string PlayerName;
-    private Action<string?> connectionStatusCallback;
+    private Action<string?, AbstractGameManagerData?> connectionStatusCallback;
 
     private byte[] serverLongBuffer = new byte[1024];
     private byte[] serverBuffer = new byte[1024];
@@ -78,6 +78,9 @@ public class Client
     public Stopwatch PingTimer = new Stopwatch();
     #endregion
 
+    private Action<string> OnClientKick;
+    public Action<int, byte[]> OnGamemodeRecieve;
+
     /// <summary>
     ///
     /// </summary>
@@ -86,8 +89,12 @@ public class Client
     /// <param name="playerName">Client name</param>
     /// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
     /// String will be null when successful or give a reason for failure.</param>
-    public Client(string IP, string password, string playerName, Action<string?> connectionStatusCallback)
+    public Client(string IP, string password, string playerName, Action<string?, AbstractGameManagerData?> connectionStatusCallback, Action<string> onClientKick, Action<int, byte[]> onGamemodeRecieve)
     {
+        // Remove invisible character
+        IP = Util.RemoveInvisibleChars(IP);
+        password = Util.RemoveInvisibleChars(password);
+        playerName = Util.RemoveInvisibleChars(playerName);
         this.IP = IP;
         Password = password;
         PlayerName = playerName;
@@ -96,6 +103,9 @@ public class Client
         connectionThread = new Thread(StartConnecting);
         receiveThread = new Thread(ReceiveLoop);
         sendThread = new Thread(SendLoop);
+
+        OnClientKick = onClientKick;
+        OnGamemodeRecieve = onGamemodeRecieve;
 
         internalPacketHandler = new InternalClientPacketHandler(this);
     }
@@ -114,28 +124,34 @@ public class Client
         try
         {
             IPAddress HostIpA;
-            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException) { connectionStatusCallback("IP incorrectly formatted"); return; }
+            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException e) { Debug.Log(e); connectionStatusCallback("IP formatted incorrectly", null); return; }
             IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
 
             handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            try { handler.Connect(RemoteEP); } catch (SocketException) { connectionStatusCallback("Server refused connection"); return; }
+            try { handler.Connect(RemoteEP); } catch (SocketException) { connectionStatusCallback("Server refused connection", null); return; }
 
             handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
 
             handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null);
 
             // Successful connection
-            connectionStatusCallback(null);
+            connectionStatusCallback(null, null);
 
             receiveThread = new Thread(ReceiveLoop);
             receiveThread.Start();
             sendThread = new Thread(SendLoop);
             sendThread.Start();
+
+            SendMessage(GamemodeDataRequestPacket.Build());
+        }
+        catch (ThreadAbortException e)
+        {
+
         }
         catch (Exception e)
         {
-            connectionStatusCallback(e.ToString());
+            connectionStatusCallback(e.ToString(), null);
         }
     }
 
@@ -338,6 +354,7 @@ public class Client
     /// <param name="reason"></param>
     public void Disconnect(string reason)
     {
+        OnClientKick(reason);
         Shutdown();
     }
 
