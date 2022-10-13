@@ -31,18 +31,12 @@ public abstract class AbstractGameManagerData
 /// </summary>
 public abstract class AbstractGameManager
 {
-    protected AbstractGameManagerData gameManagerData;
+    public AbstractGameManagerData gameManagerData;
 
     public AbstractGameManager(AbstractGameManagerData gameManagerData)
     {
         this.gameManagerData = gameManagerData;
     }
-
-    public int GetUID()
-    { return gameManagerData.GetUID(); }
-
-    public TeamSize[] GetTeamSizes()
-    { return gameManagerData.GetTeamSizes(); }
 
     public abstract List<Move> GetMoves();
 }
