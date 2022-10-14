@@ -16,10 +16,11 @@ public class Client
     # region Server Connection
     private Socket? handler = null;
 
+    public int PlayerID;
+
     public string IP;
     public string Password;
     public string PlayerName;
-    private Action<string?, AbstractGameManagerData?> connectionStatusCallback;
 
     private byte[] serverLongBuffer = new byte[1024];
     private byte[] serverBuffer = new byte[1024];
@@ -66,30 +67,22 @@ public class Client
 
     private InternalClientPacketHandler internalPacketHandler;
 
-    #region Actions
-
-    public Action OnPlayersChange = () => { };
-    private Action onConnect = () => { };
-
-    #endregion
-
     #region Ping
     public Action<int>? pingResponseAction = null;
     public Stopwatch PingTimer = new Stopwatch();
     #endregion
 
-    private Action<string> OnClientKick;
-    public Action<int, byte[]> OnGamemodeRecieve;
+    public NetworkManager networkManager { private set; get; }
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name="IP">IP String</param>
-    /// <param name="password">Server password (can be left empty)</param>
-    /// <param name="playerName">Client name</param>
-    /// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
-    /// String will be null when successful or give a reason for failure.</param>
-    public Client(string IP, string password, string playerName, Action<string?, AbstractGameManagerData?> connectionStatusCallback, Action<string> onClientKick, Action<int, byte[]> onGamemodeRecieve)
+/// <summary>
+///
+/// </summary>
+/// <param name="IP">IP String</param>
+/// <param name="password">Server password (can be left empty)</param>
+/// <param name="playerName">Client name</param>
+/// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
+/// String will be null when successful or give a reason for failure.</param>
+    public Client(string IP, string password, string playerName, NetworkManager networkManager)
     {
         // Remove invisible character
         IP = Util.RemoveInvisibleChars(IP);
@@ -98,14 +91,12 @@ public class Client
         this.IP = IP;
         Password = password;
         PlayerName = playerName;
-        this.connectionStatusCallback = connectionStatusCallback;
 
         connectionThread = new Thread(StartConnecting);
         receiveThread = new Thread(ReceiveLoop);
         sendThread = new Thread(SendLoop);
 
-        OnClientKick = onClientKick;
-        OnGamemodeRecieve = onGamemodeRecieve;
+        this.networkManager = networkManager;
 
         internalPacketHandler = new InternalClientPacketHandler(this);
     }
@@ -124,19 +115,19 @@ public class Client
         try
         {
             IPAddress HostIpA;
-            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException e) { Debug.Log(e); connectionStatusCallback("IP formatted incorrectly", null); return; }
+            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException e) { networkManager.OnJoinSuccessOrFail("IP formatted incorrectly", null); return; }
             IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
 
             handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            try { handler.Connect(RemoteEP); } catch (SocketException) { connectionStatusCallback("Server refused connection", null); return; }
+            try { handler.Connect(RemoteEP); } catch (SocketException) { networkManager.OnJoinSuccessOrFail("Server refused connection", null); return; }
 
             handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
 
             handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null);
 
             // Successful connection
-            connectionStatusCallback(null, null);
+            networkManager.OnJoinSuccessOrFail(null, null);
 
             receiveThread = new Thread(ReceiveLoop);
             receiveThread.Start();
@@ -151,7 +142,7 @@ public class Client
         }
         catch (Exception e)
         {
-            connectionStatusCallback(e.ToString(), null);
+            networkManager.OnJoinSuccessOrFail(e.ToString(), null);
         }
     }
 
@@ -164,6 +155,11 @@ public class Client
         if (pingResponseAction is not null) return; // Already fetching ping
         pingResponseAction = pingCallback;
         SendMessage(ClientPingPacket.Build());
+    }
+
+    public void OnLocalMove(MoveData moveData)
+    {
+        SendMessage(MoveUpdatePacket.Build(moveData.NextPlayerTurn, moveData.Serialise()));
     }
 
     /// <summary>
@@ -191,7 +187,7 @@ public class Client
 
         if (!player_added) return false;
 
-        OnPlayersChange.Invoke();
+        networkManager.OnPlayersChange();
 
         return true;
     }
@@ -207,6 +203,8 @@ public class Client
             bool removed = PlayerData.TryRemove(player, out _);
 
             if (!removed) return false;
+
+            networkManager.OnPlayersChange();
 
             return true;
         }
@@ -235,6 +233,7 @@ public class Client
             if (
                 serverCurrentPacketLength == -1
                 && serverLongBufferSize >= PacketBuilder.PacketLenLen
+
             )
             {
                 serverCurrentPacketLength = PacketBuilder.GetPacketLength(serverLongBuffer);
@@ -248,6 +247,7 @@ public class Client
                 ContentQueue.Enqueue(
                     ArrayExtensions.Slice(serverLongBuffer, 0, serverCurrentPacketLength)
                 );
+
                 byte[] new_buffer = new byte[1024];
                 ArrayExtensions.Merge(
                     new_buffer,
@@ -354,7 +354,7 @@ public class Client
     /// <param name="reason"></param>
     public void Disconnect(string reason)
     {
-        OnClientKick(reason);
+        networkManager.OnClientKick(reason);
         Shutdown();
     }
 
