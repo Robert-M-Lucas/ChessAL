@@ -18,6 +18,7 @@ public class ChessManager : MonoBehaviour
     public MenuUIManager menuUI;
 
     public InputManager inputManager;
+    public VisualManager visualManager;
 
     public AbstractGameManagerData currentGameManager;
     private byte[] saveData = new byte[0];
@@ -47,6 +48,7 @@ public class ChessManager : MonoBehaviour
         else // Main Scene
         {
             inputManager = FindObjectOfType<InputManager>();
+            visualManager = FindObjectOfType<VisualManager>();
         }
 
     }
@@ -54,21 +56,18 @@ public class ChessManager : MonoBehaviour
     public void Host(HostSettings hostSettings)
     {
         currentGameManager = hostSettings.GameMode;
-        networkManager.Host(hostSettings);
+        networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
     }
-    public void Join(JoinSettings joinSettings) => networkManager.Join(joinSettings, ClientKicked, GameDataRecived);
-    public void HostSucceed() => monobehaviourActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
-    public void HostFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostFailed(reason); });
-    public void JoinSucceed() => monobehaviourActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
-    public void JoinFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.JoinFailed(reason); });
-    public void ClientKicked(string reason) => monobehaviourActions.Enqueue(() => { menuUI.ClientKicked(reason); });
+    public void Join(JoinSettings joinSettings)
+    {
+        networkManager.Join(joinSettings);
+    }
     public void GameDataRecived(int gameMode, byte[] saveData)
     {
         foreach (AbstractGameManagerData g in GameManagersData)
         {
             if (g.GetUID() == gameMode)
             {
-                Debug.Log(g.GetName());
                 currentGameManager = g;
                 break;
             }
@@ -76,10 +75,27 @@ public class ChessManager : MonoBehaviour
         this.saveData = saveData;
         monobehaviourActions.Enqueue(menuUI.GamemodeDataRecieve);
     }
+    public void HostStartGame()
+    {
+        networkManager.HostStartGame();
+    }
 
-    public void StartGame()
+    #region UIUpdateOnInfo
+    public void HostSucceed() => monobehaviourActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
+    public void HostFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostFailed(reason); });
+    public void JoinSucceed() => monobehaviourActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
+    public void JoinFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.JoinFailed(reason); });
+    public void ClientKicked(string reason) => monobehaviourActions.Enqueue(() => { menuUI.ClientKicked(reason); });
+    public void PlayerListUpdate() => monobehaviourActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(networkManager.GetPlayerList()); });
+    #endregion
+    
+    public void OnGameStart() => monobehaviourActions.Enqueue(() => { LoadGame(); });
+
+    private void LoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
+        gameManager = currentGameManager.Instantiate();
+        if (saveData.Length > 0) gameManager.LoadData(saveData);
         InGame = true;
     }
 
@@ -91,7 +107,19 @@ public class ChessManager : MonoBehaviour
 
     public void OnTurn()
     {
-        inputManager.UpdatePossibleMoves(gameManager.GetMoves());
+        var possible_moves = gameManager.GetMoves();
+        inputManager.SetPossibleMoves(possible_moves);
+        visualManager.SetPossibleMoves(possible_moves);
+    }
+
+    public void OnForeignMove(MoveData moveData)
+    {
+        
+    }
+
+    public void OnLocalMove(MoveData moveData)
+    {
+        networkManager.OnLocalMove(moveData);
     }
     
     public void Update()
