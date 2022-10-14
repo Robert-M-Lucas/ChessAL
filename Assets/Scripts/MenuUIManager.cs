@@ -2,18 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections.Concurrent;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages the UI on the main menu
 /// </summary>
 public class MenuUIManager : MonoBehaviour
 {
+    #region GameObject References
     public GameObject HostConfig;
     private bool showingHostSettings;
     public TMP_Text HostNameInput;
     public TMP_Text HostPasswordInput;
     public TMP_Dropdown HostGamemodeDropdown;
     public TMP_Text HostStatusText;
+    public Button HostStartButton;
 
     public GameObject HostScreen;
     private bool showingHostScreen;
@@ -27,6 +31,9 @@ public class MenuUIManager : MonoBehaviour
     public GameObject JoinScreen;
     private bool showingJoinScreen;
     public TMP_Text JoinStatusText;
+
+    public TMP_Text LobbyDisplay;
+    #endregion
 
     private ChessManager chessManager;
 
@@ -64,11 +71,15 @@ public class MenuUIManager : MonoBehaviour
         showingHostSettings = false;
         HostScreen.SetActive(true);
         showingHostScreen = true;
+        LobbyDisplay.gameObject.SetActive(true);
+        HostStatusText.gameObject.SetActive(true);
     }
 
     public void HostConnectionSuccessful()
     {
         HostStatusText.text += " SUCCESS";
+        HostStatusText.gameObject.SetActive(false);
+        HostStartButton.gameObject.SetActive(true);
     }
 
     public void HostFailed(string reason)
@@ -82,7 +93,11 @@ public class MenuUIManager : MonoBehaviour
         showingHostSettings = false;
         HostScreen.SetActive(false);
         showingHostScreen = false;
+        LobbyDisplay.gameObject.SetActive(false);
+        HostStartButton.gameObject.SetActive(false);
     }
+
+    public void HostStartGame() => chessManager.HostStartGame();
 
     public void Join()
     {
@@ -103,6 +118,8 @@ public class MenuUIManager : MonoBehaviour
         showingJoinSettings = false;
         JoinScreen.SetActive(true);
         showingJoinScreen = true;
+        LobbyDisplay.gameObject.SetActive(true);
+        JoinStatusText.gameObject.SetActive(true);
     }
 
     public void JoinConnectionSuccessful()
@@ -113,8 +130,8 @@ public class MenuUIManager : MonoBehaviour
     public void GamemodeDataRecieve()
     {
         JoinStatusText.text += " SUCCESS";
+        JoinStatusText.gameObject.SetActive(false);
     }
-
 
     public void JoinFailed(string reason)
     {
@@ -132,6 +149,16 @@ public class MenuUIManager : MonoBehaviour
         showingJoinSettings = false;
         JoinScreen.SetActive(false);
         showingJoinScreen = false;
+        LobbyDisplay.gameObject.SetActive(false);
+    }
+
+    public void UpdateLobbyDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
+    {
+        LobbyDisplay.text = "";
+        foreach (ClientPlayerData player in playerData.Values)
+        {
+            LobbyDisplay.text += $"[{player.PlayerID}]{player.Name} - [{player.PlayerInTeam}:{player.Team}]\n";
+        }
     }
 
     // Update is called once per frame
