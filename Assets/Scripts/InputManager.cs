@@ -13,7 +13,7 @@ public class InputManager : MonoBehaviour
     /// Updates the list of moves the player can make
     /// </summary>
     /// <param name="possibleMoves"></param>
-    public void UpdatePossibleMoves(List<Move> possibleMoves)
+    public void SetPossibleMoves(List<Move> possibleMoves)
     {
         this.possibleMoves = possibleMoves;
     }
