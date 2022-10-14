@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+public struct MoveData
+{
+    public int NextPlayerTurn;
+    public List<TileUpdate> TileUpdates;
+    public MoveData(int nextPlayerTurn, List<TileUpdate> tileUpdates)
+    {
+        NextPlayerTurn = nextPlayerTurn;
+        TileUpdates = tileUpdates;
+    }
+
+    public byte[] Serialise()
+    {
+        int total_size = 0;
+        foreach (TileUpdate tile in TileUpdates)
+        {
+            total_size += 4 + 2 + 4; // V2 + UID + Size
+            total_size += tile.NewData.Length;
+        }
+
+        byte[] data = new byte[total_size];
+        int cursor = 0;
+        foreach (TileUpdate tile in TileUpdates)
+        {
+            ArrayExtensions.Merge(data, BitConverter.GetBytes(tile.Position.X), cursor);
+            cursor += 2;
+            ArrayExtensions.Merge(data, BitConverter.GetBytes(tile.Position.Y), cursor);
+            cursor += 2;
+            ArrayExtensions.Merge(data, BitConverter.GetBytes(tile.PieceUID), cursor);
+            cursor += 2;
+            ArrayExtensions.Merge(data, BitConverter.GetBytes(tile.NewData.Length), cursor);
+            cursor += 4;
+            ArrayExtensions.Merge(data, tile.NewData, cursor);
+            cursor += tile.NewData.Length;
+        }
+        return data;
+    }
+
+    public static MoveData FromSerialised(byte[] data)
+    {
+        List<TileUpdate> tile_updates = new List<TileUpdate>();
+
+        int cursor = 0;
+        while (cursor < data.Length)
+        {
+            V2 tile_positions = new V2(BitConverter.ToUInt16(ArrayExtensions.Slice(data, cursor, cursor + 2)), BitConverter.ToUInt16(ArrayExtensions.Slice(data, cursor + 2, cursor + 4)));
+            cursor += 4;
+            ushort piece_uid = BitConverter.ToUInt16(ArrayExtensions.Slice(data, cursor, cursor + 2));
+            cursor += 2;
+            int data_length = BitConverter.ToInt32(ArrayExtensions.Slice(data, cursor, cursor + 4));
+            cursor += 4;
+            byte[] new_data = ArrayExtensions.Slice(data, cursor, cursor + data_length);
+            cursor += data_length;
+
+            tile_updates.Add(new TileUpdate(tile_positions, piece_uid, new_data));
+        }
+
+        return new MoveData(-1, tile_updates);
+    }
+}
+
+public struct TileUpdate
+{
+    public V2 Position;
+    public ushort PieceUID;
+    public byte[] NewData;
+    public TileUpdate(V2 position, int PieceUID, byte[] newData)
+    {
+        this.Position = position;
+        this.PieceUID = (ushort)PieceUID;
+        this.NewData = newData;
+    }
+    public TileUpdate(V2 position, ushort PieceUID, byte[] newData)
+    {
+        this.Position = position;
+        this.PieceUID = PieceUID;
+        this.NewData = newData;
+    }
+}
