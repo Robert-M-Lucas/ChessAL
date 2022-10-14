@@ -59,12 +59,6 @@ public class Server
 
     private InternalServerPacketHandler internalPackerHandler;
 
-    #region Actions
-
-    public Action OnPlayersChange = () => { };
-
-    #endregion Actions
-
     public Server(ServerGameData gameData, string serverPassword)
     {
         serverPassword = Util.RemoveInvisibleChars(serverPassword);
@@ -98,7 +92,7 @@ public class Server
     /// <param name="team"></param>
     /// <param name="playerInTeam"></param>
     /// <returns></returns>
-    private Tuple<bool, int> TryAddPlayer(Socket handler, string name, int team = -1, int playerInTeam = -1)
+    private Tuple<bool, int> TryAddPlayer(Socket handler, string name, int team, int playerInTeam)
     {
         ServerPlayerData player_data = new ServerPlayerData(handler, PlayerIDCounter, name, team, playerInTeam);
         bool player_added = PlayerData.TryAdd(PlayerIDCounter, player_data);
@@ -115,7 +109,9 @@ public class Server
                    player_data
                );
 
-        OnPlayersChange.Invoke();
+        SendToAll(ServerOtherClientInfoPacket.Build(player_data.PlayerID, player_data.Name, player_data.Team, player_data.PlayerInTeam));
+
+        // OnPlayersChange.Invoke();
 
         return new Tuple<bool, int>(player_added, PlayerIDCounter - 1);
     }
@@ -135,11 +131,26 @@ public class Server
 
             playerData.ShutdownSocket();
 
-            OnPlayersChange.Invoke();
+            // OnPlayersChange.Invoke();
+
+            SendToAll(ServerInformOfClientDisconnectPacket.Build(playerData.PlayerID));
 
             return true;
         }
         else return false;
+    }
+
+    public bool ValidateTeams()
+    {
+        return true;
+    }
+
+    public bool StartGame()
+    {
+        if (!ValidateTeams()) return false;
+
+        SendToAll(StartGamePacket.Build());
+        return true;
     }
 
     /// <summary>
@@ -248,15 +259,21 @@ public class Server
                     continue;
                 }
 
+                
+
                 int playerID;
                 while (true)
                 {
-                    Tuple<bool, int> add_result = TryAddPlayer(handler, initPacket.Name);
+                    Tuple<bool, int> add_result = TryAddPlayer(handler, initPacket.Name, -1, -1);
                     if (add_result.Item1) { playerID = add_result.Item2; break; }
                     Thread.Sleep(CLIENT_ADD_COOLDOWN);
                 }
-
                 SendMessage(playerID, ServerConnectAcceptPacket.Build(playerID));
+
+                foreach (ServerPlayerData player_data in PlayerData.Values)
+                {
+                    SendMessage(playerID, ServerOtherClientInfoPacket.Build(player_data.PlayerID, player_data.Name, player_data.Team, player_data.PlayerInTeam));
+                }
             }
         }
         catch (ThreadAbortException)
@@ -410,6 +427,18 @@ public class Server
     public void SendMessage(int playerID, byte[] payload)
     {
         sendQueue.Enqueue(new Tuple<int, byte[]>(playerID, payload));
+    }
+
+    /// <summary>
+    /// Sends a message to all connected players
+    /// </summary>
+    /// <param name="payload"></param>
+    public void SendToAll(byte[] payload)
+    {
+        foreach (int player_id in PlayerData.Keys)
+        {
+            SendMessage(player_id, payload);
+        }
     }
 
     /// <summary>
