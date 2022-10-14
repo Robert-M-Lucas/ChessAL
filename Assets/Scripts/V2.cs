@@ -7,10 +7,16 @@ using UnityEngine;
 /// </summary>
 public struct V2
 {
-    public int X;
-    public int Y;
+    public ushort X;
+    public ushort Y;
 
     public V2(int x, int y)
+    {
+        X = (ushort)x;
+        Y = (ushort)y;
+    }
+
+    public V2(ushort x, ushort y)
     {
         X = x;
         Y = y;
