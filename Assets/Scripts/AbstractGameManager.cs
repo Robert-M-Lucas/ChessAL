@@ -38,5 +38,9 @@ public abstract class AbstractGameManager
         this.gameManagerData = gameManagerData;
     }
 
+    public abstract void LoadData(byte[] data);
+
+    public abstract void OnForeignMove(MoveData moveData);
+
     public abstract List<Move> GetMoves();
 }
