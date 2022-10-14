@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 /// <summary>
 /// Controls actions when a packet is recieved by the client
@@ -21,7 +24,8 @@ public class InternalClientPacketHandler
             { 3, PlayerInformationUpdate },
             { 6, PlayerDisconnect },
             { 5, PingResponse },
-            { 201, GamemodeDataRecieve}
+            { 201, GamemodeDataRecieve},
+            { 204, OnMoveUpdate }
         };
     }
 
@@ -41,7 +45,8 @@ public class InternalClientPacketHandler
     // Server accepted connection
     public void ServerAccept(Packet packet)
     {
-        // ServerConnectAcceptPacket acceptPacket = new ServerConnectAcceptPacket(packet);
+        ServerConnectAcceptPacket acceptPacket = new ServerConnectAcceptPacket(packet);
+        client.PlayerID = acceptPacket.PlayerID;
     }
 
     // Server kicked player
@@ -56,7 +61,7 @@ public class InternalClientPacketHandler
     {
         ServerOtherClientInfoPacket infoPacket = new ServerOtherClientInfoPacket(packet);
         client.AddOrUpdatePlayer(infoPacket.ClientUID, infoPacket.ClientName, infoPacket.ClientTeam, infoPacket.ClientPlayerInTeam);
-        client.OnPlayersChange();
+        client.networkManager.OnPlayersChange();
     }
 
     // A player disconnected
@@ -79,6 +84,24 @@ public class InternalClientPacketHandler
     public void GamemodeDataRecieve(Packet p)
     {
         GamemodeDataPacket gamemodeDataPacket = new GamemodeDataPacket(p);
-        client.OnGamemodeRecieve(gamemodeDataPacket.Gamemode, gamemodeDataPacket.SaveData);
+        client.networkManager.OnGamemodeRecieve(gamemodeDataPacket.Gamemode, gamemodeDataPacket.SaveData);
+    }
+
+    public void OnGameStart(Packet p)
+    {
+        client.networkManager.OnGameStart();
+    }
+
+    public void OnMoveUpdate(Packet p)
+    {
+        MoveUpdatePacket moveUpdatePacket = new MoveUpdatePacket(p);
+
+        MoveData moveData = MoveData.FromSerialised(moveUpdatePacket.TileUpdates);
+        moveData.NextPlayerTurn = moveUpdatePacket.NextPlayerTurn;
+
+        client.networkManager.OnForeignMove(moveData);
+
+
+        if (moveUpdatePacket.NextPlayerTurn == client.PlayerID) client.networkManager.OnTurn();
     }
 }
