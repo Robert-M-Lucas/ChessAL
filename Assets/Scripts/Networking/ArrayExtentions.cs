@@ -12,8 +12,10 @@ public static class ArrayExtensions
     /// <param name="smallArr"></param>
     /// <param name="index">Overwrite start</param>
     /// <returns></returns>
-    public static byte[] Merge(byte[] bigArr, byte[] smallArr, int index = 0)
+    public static byte[] Merge(byte[] bigArr, byte[] smallArr, int index, out int smallArrLength)
     {
+        smallArrLength = smallArr.Length;
+
         foreach (byte item in smallArr)
         {
             bigArr[index] = item;
@@ -21,6 +23,10 @@ public static class ArrayExtensions
         }
 
         return bigArr;
+    }
+    public static byte[] Merge(byte[] bigArr, byte[] smallArr, int index = 0)
+    {
+        return Merge(bigArr, smallArr, index, out int _);
     }
 
     /// <summary>
