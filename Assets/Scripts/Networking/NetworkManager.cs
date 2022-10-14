@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using UnityEngine;
 
 #nullable enable
@@ -13,8 +15,7 @@ public class NetworkManager : MonoBehaviour
     private Server? server = null;
     private Client? client = null;
 
-    private bool IsHost
-    { get { return server is not null; } }
+    public bool IsHost { get { return server is not null; } }
 
     private void Awake()
     {
@@ -37,10 +38,48 @@ public class NetworkManager : MonoBehaviour
         server?.Shutdown();
     }
 
-    private void OnHostSuccessOrFail(string? status, AbstractGameManagerData? gameMode)
+    private void ConnectionFailed()
     {
-        Debug.Log(status);
-        Debug.Log($"Connection status: {status ?? "Success"}");
+        server?.Shutdown();
+        server = null;
+        client?.Shutdown();
+        client = null;
+    }
+
+    public void OnLocalMove(MoveData moveData) => client?.OnLocalMove(moveData);
+
+    public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList() => client?.PlayerData ?? throw new NullReferenceException();
+
+    /// <summary>
+    /// Hosts a game
+    /// </summary>
+    public void Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
+    {
+        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SavePath);
+
+        server = new Server(gameData, settings.Password);
+        server.Start();
+
+        client = new Client("127.0.0.1", settings.Password, settings.PlayerName, this);
+        client.Connect();
+    }
+
+    public void HostStartGame()
+    {
+        server?.StartGame();
+    }
+
+    public void Join(JoinSettings settings)
+    {
+        client = new Client(settings.IP, settings.Password, settings.PlayerName, this);
+        client.Connect();
+    }
+
+    
+
+    #region Client Callbacks
+    public void OnHostSuccessOrFail(string? status, AbstractGameManagerData? gameMode)
+    {
         if (status is not null)
         {
             chessManager.HostFailed(status);
@@ -52,10 +91,8 @@ public class NetworkManager : MonoBehaviour
 
         chessManager.HostSucceed();
     }
-
-    private void OnJoinSuccessOrFail(string? status, AbstractGameManagerData? gameMode)
+    public void OnJoinSuccessOrFail(string? status, AbstractGameManagerData? gameMode)
     {
-        Debug.Log($"Connection status: {status ?? "Success"}");
         if (status is not null)
         {
             chessManager.JoinFailed(status);
@@ -67,37 +104,12 @@ public class NetworkManager : MonoBehaviour
 
         chessManager.JoinSucceed();
     }
-
-    private void ConnectionFailed()
-    {
-        server?.Shutdown();
-        server = null;
-        client?.Shutdown();
-        client = null;
-    }
-
-    private void OnPing(int ping)
-    {
-        Debug.Log($"Ping {ping}ms");
-    }
-
-    /// <summary>
-    /// Hosts a game
-    /// </summary>
-    public void Host(HostSettings settings)
-    {
-        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SavePath);
-
-        server = new Server(gameData, settings.Password);
-        server.Start();
-
-        client = new Client("127.0.0.1", settings.Password, settings.PlayerName, OnHostSuccessOrFail, (_) => { }, (_, _) => { });
-        client.Connect();
-    }
-
-    public void Join(JoinSettings settings, Action<string> onClientKick, Action<int, byte[]> onGamemodeRecieve)
-    {
-        client = new Client(settings.IP, settings.Password, settings.PlayerName, OnJoinSuccessOrFail, onClientKick, onGamemodeRecieve);
-        client.Connect();
-    }
+    public void OnClientKick(string reason) => chessManager.JoinFailed(reason);
+    public void OnPlayersChange() => chessManager.PlayerListUpdate();
+    public void OnGamemodeRecieve(int gameMode, byte[] saveData) => chessManager.GameDataRecived(gameMode, saveData);
+    public void OnGameStart() => chessManager.OnGameStart();
+    public void OnForeignMove(MoveData moveData) => chessManager.OnForeignMove(moveData);
+    public void OnTurn() => chessManager.OnTurn();
+    private void OnPing(int ping) => Debug.Log($"Ping {ping}ms");
+    #endregion
 }
