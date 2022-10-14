@@ -20,8 +20,18 @@ public class SampleGameManager : AbstractGameManager
     {
     }
 
+    public override void LoadData(byte[] data)
+    {
+
+    }
+
     public override List<Move> GetMoves()
     {
         return new List<Move>();
+    }
+
+    public override void OnForeignMove(MoveData moveData)
+    {
+        
     }
 }
