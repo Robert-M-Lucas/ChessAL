@@ -25,6 +25,7 @@ public class InternalClientPacketHandler
             { 6, PlayerDisconnect },
             { 5, PingResponse },
             { 201, GamemodeDataRecieve},
+            { 202, OnGameStart },
             { 204, OnMoveUpdate }
         };
     }
@@ -81,17 +82,20 @@ public class InternalClientPacketHandler
         client.pingResponseAction = null;
     }
 
+    // Processes gamemode data recieved from the server
     public void GamemodeDataRecieve(Packet p)
     {
         GamemodeDataPacket gamemodeDataPacket = new GamemodeDataPacket(p);
         client.networkManager.OnGamemodeRecieve(gamemodeDataPacket.Gamemode, gamemodeDataPacket.SaveData);
     }
 
+    // Starts game when game start packet is recieved
     public void OnGameStart(Packet p)
     {
         client.networkManager.OnGameStart();
     }
 
+    // Updates game when a move update is recieved
     public void OnMoveUpdate(Packet p)
     {
         MoveUpdatePacket moveUpdatePacket = new MoveUpdatePacket(p);
@@ -100,8 +104,5 @@ public class InternalClientPacketHandler
         moveData.NextPlayerTurn = moveUpdatePacket.NextPlayerTurn;
 
         client.networkManager.OnForeignMove(moveData);
-
-
-        if (moveUpdatePacket.NextPlayerTurn == client.PlayerID) client.networkManager.OnTurn();
     }
 }
