@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/// <summary>
+/// Provides data about a move that can be transmitted to other clients
+/// </summary>
 public struct MoveData
 {
     public int NextPlayerTurn;
@@ -63,10 +66,16 @@ public struct MoveData
     }
 }
 
+/// <summary>
+/// Represents a tile on the board that changed
+/// </summary>
 public struct TileUpdate
 {
     public V2 Position;
     public ushort PieceUID;
+    /// <summary>
+    /// The piece's new serialised data
+    /// </summary>
     public byte[] NewData;
     public TileUpdate(V2 position, int PieceUID, byte[] newData)
     {

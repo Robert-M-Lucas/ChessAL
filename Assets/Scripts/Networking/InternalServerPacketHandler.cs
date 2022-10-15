@@ -46,6 +46,7 @@ public class InternalServerPacketHandler
         server.TryRemovePlayer(packet.From, "Disconnected");
     }
 
+    // Send data about current gamemode
     public void SendGamemodeData(Packet packet)
     {
         server.SendMessage(packet.From, GamemodeDataPacket.Build(server.gameData.GameModeID, new byte[0]));

@@ -74,15 +74,17 @@ public class Client
 
     public NetworkManager networkManager { private set; get; }
 
-/// <summary>
-///
-/// </summary>
-/// <param name="IP">IP String</param>
-/// <param name="password">Server password (can be left empty)</param>
-/// <param name="playerName">Client name</param>
-/// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
-/// String will be null when successful or give a reason for failure.</param>
-    public Client(string IP, string password, string playerName, NetworkManager networkManager)
+    private Action<string?> onConnection;
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="IP">IP String</param>
+    /// <param name="password">Server password (can be left empty)</param>
+    /// <param name="playerName">Client name</param>
+    /// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
+    /// String will be null when successful or give a reason for failure.</param>
+    public Client(string IP, string password, string playerName, NetworkManager networkManager, Action<string?> onConnection)
     {
         // Remove invisible character
         IP = Util.RemoveInvisibleChars(IP);
@@ -99,13 +101,13 @@ public class Client
         this.networkManager = networkManager;
 
         internalPacketHandler = new InternalClientPacketHandler(this);
+        this.onConnection = onConnection;
     }
 
     /// <summary>
     /// Start connecting to the server
     /// </summary>
-    public void Connect()
-    { connectionThread.Start(); }
+    public void Connect() { connectionThread.Start(); }
 
     /// <summary>
     /// Starts connecting (threaded)
@@ -115,19 +117,19 @@ public class Client
         try
         {
             IPAddress HostIpA;
-            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException e) { networkManager.OnJoinSuccessOrFail("IP formatted incorrectly", null); return; }
+            try { HostIpA = IPAddress.Parse(IP); } catch (FormatException) { onConnection("IP formatted incorrectly"); return; }
             IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
 
             handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            try { handler.Connect(RemoteEP); } catch (SocketException) { networkManager.OnJoinSuccessOrFail("Server refused connection", null); return; }
+            try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection"); return; }
 
             handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
 
             handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null);
 
             // Successful connection
-            networkManager.OnJoinSuccessOrFail(null, null);
+            onConnection(null);
 
             receiveThread = new Thread(ReceiveLoop);
             receiveThread.Start();
@@ -136,13 +138,13 @@ public class Client
 
             SendMessage(GamemodeDataRequestPacket.Build());
         }
-        catch (ThreadAbortException e)
+        catch (ThreadAbortException)
         {
 
         }
         catch (Exception e)
         {
-            networkManager.OnJoinSuccessOrFail(e.ToString(), null);
+            onConnection(e.ToString());
         }
     }
 
@@ -157,6 +159,10 @@ public class Client
         SendMessage(ClientPingPacket.Build());
     }
 
+    /// <summary>
+    /// Updates the server of a local move that has been made
+    /// </summary>
+    /// <param name="moveData"></param>
     public void OnLocalMove(MoveData moveData)
     {
         SendMessage(MoveUpdatePacket.Build(moveData.NextPlayerTurn, moveData.Serialise()));
