@@ -31,11 +31,12 @@ public abstract class AbstractGameManagerData
 /// </summary>
 public abstract class AbstractGameManager
 {
-    public AbstractGameManagerData gameManagerData;
+    public AbstractGameManagerData GameManagerData;
+    public AbstractBoard Board;
 
     public AbstractGameManager(AbstractGameManagerData gameManagerData)
     {
-        this.gameManagerData = gameManagerData;
+        this.GameManagerData = gameManagerData;
     }
 
     public abstract void LoadData(byte[] data);
