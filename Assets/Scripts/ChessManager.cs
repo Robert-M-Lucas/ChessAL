@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,28 +16,29 @@ public class ChessManager : MonoBehaviour
 {
     public List<AbstractGameManagerData> GameManagersData = new List<AbstractGameManagerData>();
 
-    public MenuUIManager menuUI;
+    public MenuUIManager menuUI = default!;
 
-    public InputManager inputManager;
-    public VisualManager visualManager;
+    public InputManager inputManager = default!;
+    public VisualManager visualManager = default!;
 
-    public AbstractGameManagerData currentGameManager;
+    public AbstractGameManagerData currentGameManager = default!;
     private byte[] saveData = new byte[0];
-    public AbstractGameManager gameManager;
+    public AbstractGameManager gameManager = default!;
     public bool InGame = false;
 
-    private NetworkManager networkManager;
+    private NetworkManager networkManager = default!;
 
     private Queue<Action> monobehaviourActions = new Queue<Action>();
 
-    private void Awake()
+    public bool MyTurn = false;
+
+    private void OnEnable()
     {
         DontDestroyOnLoad(this);
         // Loads all game managers
         GameManagersData = Util.GetAllGameManagers();
         SceneManager.sceneLoaded += OnSceneLoaded;
         networkManager = FindObjectOfType<NetworkManager>();
-        OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -49,6 +51,13 @@ public class ChessManager : MonoBehaviour
         {
             inputManager = FindObjectOfType<InputManager>();
             visualManager = FindObjectOfType<VisualManager>();
+            InGame = true;
+
+            // Later load from save data
+            int team_start = 0;
+            int player_in_team_start = 0;
+            ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
+            if (local_player.Team == team_start && local_player.PlayerInTeam == player_in_team_start) { OnTurn(); }
         }
 
     }
@@ -58,10 +67,12 @@ public class ChessManager : MonoBehaviour
         currentGameManager = hostSettings.GameMode;
         networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
     }
+
     public void Join(JoinSettings joinSettings)
     {
         networkManager.Join(joinSettings);
     }
+
     public void GameDataRecived(int gameMode, byte[] saveData)
     {
         foreach (AbstractGameManagerData g in GameManagersData)
@@ -75,12 +86,18 @@ public class ChessManager : MonoBehaviour
         this.saveData = saveData;
         monobehaviourActions.Enqueue(menuUI.GamemodeDataRecieve);
     }
+
+    public void HostSetTeam(int playerID, int team, int playerInTeam) => networkManager.HostSetTeam(playerID, team, playerInTeam);
+
     public void HostStartGame()
     {
-        networkManager.HostStartGame();
+        string? result = networkManager.HostStartGame();
+        if (result is not null) HostStartGameFail(result);
     }
 
+
     #region UIUpdateOnInfo
+    private void HostStartGameFail(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostStartGameFailed(reason); });
     public void HostSucceed() => monobehaviourActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
     public void HostFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostFailed(reason); });
     public void JoinSucceed() => monobehaviourActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
@@ -96,7 +113,6 @@ public class ChessManager : MonoBehaviour
         SceneManager.LoadScene(1); // Load main scene
         gameManager = currentGameManager.Instantiate();
         if (saveData.Length > 0) gameManager.LoadData(saveData);
-        InGame = true;
     }
 
     public void ExitGame()
@@ -107,9 +123,10 @@ public class ChessManager : MonoBehaviour
 
     public void OnTurn()
     {
+        MyTurn = true;
         var possible_moves = gameManager.GetMoves();
-        inputManager.SetPossibleMoves(possible_moves);
         visualManager.SetPossibleMoves(possible_moves);
+        inputManager.SetPossibleMoves(possible_moves);
     }
 
     public void OnForeignMove(MoveData moveData)
@@ -119,6 +136,7 @@ public class ChessManager : MonoBehaviour
 
     public void OnLocalMove(MoveData moveData)
     {
+        MyTurn = false;
         networkManager.OnLocalMove(moveData);
     }
     
