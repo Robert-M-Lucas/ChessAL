@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -32,7 +34,7 @@ public class Server
     /// <summary>
     /// Time between sending messages
     /// </summary>
-    private const int SEND_COOLDOWN = 2;
+    private const int SEND_COOLDOWN = 5;
 
     /// <summary>
     /// How long to wait before rechecking an empty queue
@@ -40,14 +42,9 @@ public class Server
     private const int RECEIVE_COOLDOWN = 2;
 
     /// <summary>
-    /// Time between trying to add a client again
+    /// Time between trying to use dictionary
     /// </summary>
-    private const int CLIENT_ADD_COOLDOWN = 5;
-
-    /// <summary>
-    /// Time between trying to remove a client again
-    /// </summary>
-    private const int CLIENT_REMOVE_COOLDOWN = 5;
+    private const int CONCURRENT_DICT_COOLDOWN = 1;
 
     #endregion Cooldowns
 
@@ -124,14 +121,19 @@ public class Server
     {
         if (PlayerData.ContainsKey(player))
         {
-            ServerPlayerData playerData;
-            bool removed = PlayerData.TryRemove(player, out playerData);
+            ServerPlayerData? playerData = null;
+            bool removed = false;
 
-            if (!removed) return false;
+            while (!removed)
+            {
+                removed = PlayerData.TryRemove(player, out playerData);
+                Thread.Sleep(CONCURRENT_DICT_COOLDOWN);
+            }
+
+            if (playerData is null) throw new NullReferenceException();
 
             playerData.ShutdownSocket();
-
-            // OnPlayersChange.Invoke();
+            ClientsConnected--;
 
             SendToAll(ServerInformOfClientDisconnectPacket.Build(playerData.PlayerID));
 
@@ -140,17 +142,99 @@ public class Server
         else return false;
     }
 
-    public bool ValidateTeams()
+    /// <summary>
+    /// Changes the team and player in team of a player
+    /// </summary>
+    /// <param name="playerID"></param>
+    /// <param name="team"></param>
+    /// <param name="playerInTeam"></param>
+    public void SetTeam(int playerID, int team, int playerInTeam)
     {
-        return true;
+        if (!PlayerData.ContainsKey(playerID)) return;
+
+        bool got = false;
+        ServerPlayerData? player_data = null;
+
+        while (!got)
+        {
+            got = PlayerData.TryGetValue(playerID, out player_data);
+            Thread.Sleep(CONCURRENT_DICT_COOLDOWN);
+        }
+        
+        player_data!.Team = team;
+        player_data.PlayerInTeam = playerInTeam;
+
+        SendToAll(ServerOtherClientInfoPacket.Build(player_data.PlayerID, player_data.Name, player_data.Team, player_data.PlayerInTeam));
     }
 
-    public bool StartGame()
+    /// <summary>
+    /// Ensures that the team compositions are correct for the game to start
+    /// </summary>
+    /// <returns>Null if successful or a string error</returns>
+    public string? ValidateTeams()
     {
-        if (!ValidateTeams()) return false;
+        List<ServerPlayerData> player_data = PlayerData.Values.ToList();
 
+        int max_team = 0;
+        Dictionary<int, int> team_dict = new Dictionary<int, int>();
+        Dictionary<int, List<int>> players_in_teams = new Dictionary<int, List<int>>();
+        foreach (ServerPlayerData player in player_data)
+        {
+            if (player.Team > max_team) max_team = player.Team;
+
+            if (!team_dict.ContainsKey(player.Team))
+            {
+                players_in_teams.Add(player.Team, new List<int>() { player.PlayerInTeam });
+                team_dict.Add(player.Team, 1);
+            }
+            else
+            {
+                team_dict[player.Team]++;
+                if (players_in_teams[player.Team].Contains(player.PlayerInTeam)) return "Duplicate player in team"; // Duplicate player in team
+                players_in_teams[player.Team].Add(player.PlayerInTeam);
+            }
+        }
+
+        if (max_team != gameData.TeamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
+
+        for (int i = 0; i < max_team; i++)
+        {
+            if (!team_dict.ContainsKey(i) && gameData.TeamSizes[i].Min > 0) return "Team missing"; // Team missing
+
+            if (team_dict[i] < gameData.TeamSizes[i].Min) return "Team too small"; // Team too small
+            if (team_dict[i] > gameData.TeamSizes[i].Max) return "Team too big"; // Team too big
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets a player given a team and which player they are on that team
+    /// </summary>
+    /// <param name="team"></param>
+    /// <param name="playerInTeam"></param>
+    /// <returns></returns>
+    public ServerPlayerData? GetPlayerByTeam(int team, int playerInTeam)
+    {
+        foreach (ServerPlayerData player in PlayerData.Values)
+        {
+            if (player.Team == team && playerInTeam == team) return player;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Starts the game
+    /// </summary>
+    /// <returns>Null if successful or a string error</returns>
+    public string? StartGame()
+    {
+        string? validate = ValidateTeams();
+        if (validate is not null) return validate;
+        Debug.Log("Starting game...");
         SendToAll(StartGamePacket.Build());
-        return true;
+        AcceptingClients = false;
+        return null;
     }
 
     /// <summary>
@@ -259,14 +343,25 @@ public class Server
                     continue;
                 }
 
-                
+                string? validation_result = Validators.ValidatePlayerName(initPacket.Name);
+                if (validation_result is not null)
+                {
+                    handler.Send(
+                       ServerKickPacket.Build(
+                           "Illeagal Name: "
+                               + validation_result
+                       )
+                    );
+                    continue;
+                }
 
+                Debug.Log("Client connected");
                 int playerID;
                 while (true)
                 {
                     Tuple<bool, int> add_result = TryAddPlayer(handler, initPacket.Name, -1, -1);
                     if (add_result.Item1) { playerID = add_result.Item2; break; }
-                    Thread.Sleep(CLIENT_ADD_COOLDOWN);
+                    Thread.Sleep(CONCURRENT_DICT_COOLDOWN);
                 }
                 SendMessage(playerID, ServerConnectAcceptPacket.Build(playerID));
 
@@ -278,7 +373,7 @@ public class Server
         }
         catch (ThreadAbortException)
         {
-            try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
+            try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception) { /* Debug.LogError(e); */ }
             try { listener?.Close(); } catch (Exception e) { Debug.LogError(e); }
         }
         catch (Exception e)
@@ -408,7 +503,7 @@ public class Server
                 catch (PacketDecodeError e)
                 {
                     Debug.LogError(e);
-                    while (!TryRemovePlayer(content.Item1, "Fatal packet handling error")) Thread.Sleep(CLIENT_REMOVE_COOLDOWN);
+                    TryRemovePlayer(content.Item1, "Fatal packet handling error");
                 }
             }
         }
