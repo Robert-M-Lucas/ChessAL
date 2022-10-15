@@ -11,13 +11,14 @@ public class SampleGameManagerData : AbstractGameManagerData
 
     public override string GetName() => "Sample Gamemode";
 
-    public override TeamSize[] GetTeamSizes() => new TeamSize[0];
+    public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 4) };
 }
 
 public class SampleGameManager : AbstractGameManager
 {
     public SampleGameManager(AbstractGameManagerData d) : base(d)
     {
+        Board = new SampleBoard();
     }
 
     public override void LoadData(byte[] data)
