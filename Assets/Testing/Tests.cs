@@ -28,6 +28,8 @@ public class Tests
     private static void OnAfterAssemblyReload()
     {
         Debug.Log("Starting tests");
+        Stopwatch s = new Stopwatch();
+        s.Start();
 
         foreach (var test in tests)
         {
@@ -38,7 +40,8 @@ public class Tests
             }
         }
 
-        Debug.Log("Tests successful!");
+
+        Debug.Log($"Tests successful! ({s.ElapsedMilliseconds}ms)");
     }
 
     /// <summary>
