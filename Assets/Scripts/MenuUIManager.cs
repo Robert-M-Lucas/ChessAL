@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Concurrent;
 using UnityEngine.UI;
+using System;
+
+#nullable enable
 
 /// <summary>
 /// Manages the UI on the main menu
@@ -11,35 +14,44 @@ using UnityEngine.UI;
 public class MenuUIManager : MonoBehaviour
 {
     #region GameObject References
-    public GameObject HostConfig;
+    public GameObject HostConfig = default!;
     private bool showingHostSettings;
-    public TMP_Text HostNameInput;
-    public TMP_Text HostPasswordInput;
-    public TMP_Dropdown HostGamemodeDropdown;
-    public TMP_Text HostStatusText;
-    public Button HostStartButton;
+    public TMP_InputField HostNameInput = default!;
+    public TMP_Text HostNameDisallowedReason = default!;
+    public TMP_InputField HostPasswordInput = default!;
+    public TMP_Dropdown HostGamemodeDropdown = default!;
+    public TMP_Text HostStatusText = default!;
+    public Button HostStartButton = default!;
+    public TMP_InputField HostPlayerIDInput = default!;
+    public TMP_InputField HostTeamInput = default!;
+    public TMP_InputField HostPlayerInTeamInput = default!;
 
-    public GameObject HostScreen;
+    public GameObject HostScreen = default!;
     private bool showingHostScreen;
 
-    public GameObject JoinConfig;
+    public GameObject JoinConfig = default!;
     private bool showingJoinSettings;
-    public TMP_Text JoinIpInput;
-    public TMP_Text JoinNameInput;
-    public TMP_Text JoinPasswordInput;
+    public TMP_InputField JoinIpInput = default!;
+    public TMP_InputField JoinNameInput = default!;
+    public TMP_Text JoinNameDisallowedReason = default!;
+    public TMP_InputField JoinPasswordInput = default!;
 
-    public GameObject JoinScreen;
+    public GameObject JoinScreen = default!;
     private bool showingJoinScreen;
-    public TMP_Text JoinStatusText;
+    public TMP_Text JoinStatusText = default!;
 
-    public TMP_Text LobbyDisplay;
+    public TMP_Text LobbyDisplay = default!;
     #endregion
 
-    private ChessManager chessManager;
+    private ChessManager chessManager = default!;
 
     private Dictionary<string, AbstractGameManagerData> gamemodes = new Dictionary<string, AbstractGameManagerData>();
 
-    // Start is called before the first frame update
+    public MenuUIManager()
+    {
+
+    }
+
     void Start()
     {
         chessManager = FindObjectOfType<ChessManager>();
@@ -61,6 +73,20 @@ public class MenuUIManager : MonoBehaviour
     public void FullHost()
     {
         if (HostGamemodeDropdown.value == 0) return;
+
+        string? validation_result = Validators.ValidatePlayerName(HostNameInput.text);
+        if (validation_result is not null)
+        {
+            HostNameDisallowedReason.text = "Name: " + validation_result;
+            return;
+        }
+
+        validation_result = Validators.ValidatePassword(HostPasswordInput.text);
+        if (validation_result is not null)
+        {
+            HostNameDisallowedReason.text = "Password: " + validation_result;
+            return;
+        }
 
         HostSettings host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], HostPasswordInput.text, HostNameInput.text, null);
 
@@ -97,7 +123,21 @@ public class MenuUIManager : MonoBehaviour
         HostStartButton.gameObject.SetActive(false);
     }
 
+    public void HostSetTeam()
+    {
+        try
+        {
+            chessManager.HostSetTeam(int.Parse(HostPlayerIDInput.text), int.Parse(HostTeamInput.text), int.Parse(HostPlayerInTeamInput.text));
+        }
+        catch (FormatException) { }
+    }
+
     public void HostStartGame() => chessManager.HostStartGame();
+
+    public void HostStartGameFailed(string reason)
+    {
+        Debug.Log(reason);
+    }
 
     public void Join()
     {
@@ -109,6 +149,13 @@ public class MenuUIManager : MonoBehaviour
 
     public void FullJoin()
     {
+        string? validation_result = Validators.ValidatePlayerName(JoinNameInput.text);
+        if (validation_result is not null)
+        {
+            JoinNameDisallowedReason.text = "Name: " + validation_result;
+            return;
+        }
+
         JoinSettings join_settings = new JoinSettings(JoinIpInput.text, JoinPasswordInput.text, JoinNameInput.text);
 
         chessManager.Join(join_settings);
@@ -157,7 +204,7 @@ public class MenuUIManager : MonoBehaviour
         LobbyDisplay.text = "";
         foreach (ClientPlayerData player in playerData.Values)
         {
-            LobbyDisplay.text += $"[{player.PlayerID}]{player.Name} - [{player.PlayerInTeam}:{player.Team}]\n";
+            LobbyDisplay.text += $"[ID:{player.PlayerID}] {player.Name} - [Team:{player.Team}, Player:{player.PlayerInTeam}]\n";
         }
     }
 
