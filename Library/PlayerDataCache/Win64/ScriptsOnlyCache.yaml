@@ -83,7 +83,13 @@ ScriptsOnlyBuild:
     methodName: Join
   - assembly: Assembly-CSharp
     fullTypeName: MenuUIManager
+    methodName: HostSetTeam
+  - assembly: Assembly-CSharp
+    fullTypeName: MenuUIManager
     methodName: CancelJoin
+  - assembly: Assembly-CSharp
+    fullTypeName: MenuUIManager
+    methodName: HostStartGame
   - assembly: Assembly-CSharp
     fullTypeName: MenuUIManager
     methodName: FullJoin
@@ -100,6 +106,31 @@ ScriptsOnlyBuild:
     fullTypeName: MenuUIManager
     methodName: CancelJoin
   sceneClasses:
+    Assets/Scenes/Game.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 89
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
     Assets/Scenes/Main Menu.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -136,37 +167,37 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 2894}
     - Class: 114
-      Script: {instanceID: 3198}
+      Script: {instanceID: 3200}
     - Class: 114
-      Script: {instanceID: 3858}
+      Script: {instanceID: 3862}
     - Class: 114
-      Script: {instanceID: 4034}
+      Script: {instanceID: 4038}
     - Class: 114
-      Script: {instanceID: 4272}
+      Script: {instanceID: 4276}
     - Class: 114
-      Script: {instanceID: 4286}
+      Script: {instanceID: 4290}
     - Class: 114
-      Script: {instanceID: 4564}
+      Script: {instanceID: 4568}
     - Class: 114
-      Script: {instanceID: 5136}
+      Script: {instanceID: 5140}
     - Class: 114
-      Script: {instanceID: 5208}
+      Script: {instanceID: 5212}
     - Class: 114
-      Script: {instanceID: 5358}
+      Script: {instanceID: 5362}
     - Class: 114
-      Script: {instanceID: 5982}
+      Script: {instanceID: 5986}
     - Class: 114
-      Script: {instanceID: 6134}
+      Script: {instanceID: 6138}
     - Class: 114
-      Script: {instanceID: 6452}
+      Script: {instanceID: 6458}
     - Class: 114
-      Script: {instanceID: 6484}
+      Script: {instanceID: 6490}
     - Class: 114
-      Script: {instanceID: 6496}
+      Script: {instanceID: 6502}
     - Class: 114
-      Script: {instanceID: 7426}
+      Script: {instanceID: 7432}
     - Class: 114
-      Script: {instanceID: 7614}
+      Script: {instanceID: 7620}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -418,6 +449,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnScrollMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 751e5bae2a317288c2ab58d66687092b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: VisualManager
   - hash:
       serializedVersion: 2
       Hash: 0249933f35dcc970b31eaae0159aebf9
@@ -750,7 +787,7 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpAsButtonMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 44ac8a8c79e2a740f16d5336b26e38c7
+      Hash: 8d1dc907219b42a3d727999d95b4e4c5
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MenuUIManager
@@ -894,7 +931,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: 5ba0f535f32cf639b435d82c92dcfa8c
+      Hash: fe5f30d068d4570042c38c02c80775b9
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ChessManager
@@ -985,4 +1022,5 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main Menu.unity
+  - Assets/Scenes/Game.unity
   playerPath: C:/Users/rober/Desktop/ChessAL Builds/ChessAL.exe
