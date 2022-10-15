@@ -7,10 +7,10 @@ using UnityEngine;
 /// </summary>
 public struct BoardRenderInfo
 {
-    public V2 BoardSize;
+    public int BoardSize;
     public List<V2> RemovedSquares;
 
-    public BoardRenderInfo(V2 boardSize, List<V2> removedSquares = null)
+    public BoardRenderInfo(int boardSize, List<V2> removedSquares = null)
     {
         BoardSize = boardSize;
         RemovedSquares = removedSquares ?? new List<V2>();
