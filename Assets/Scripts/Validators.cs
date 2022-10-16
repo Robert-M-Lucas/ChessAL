@@ -24,6 +24,7 @@ public static class Validators
         {
             if (!allowed_chars.Contains(c))
             {
+                if (c == ' ') return $"Character '{c}' (space) not allowed";
                 return $"Character '{c}' not allowed";
             }
         }
@@ -52,6 +53,7 @@ public static class Validators
         {
             if (!allowed_chars.Contains(c))
             {
+                if (c == ' ') return $"Character '{c}' (space) not allowed";
                 return $"Character '{c}' not allowed";
             }
         }
