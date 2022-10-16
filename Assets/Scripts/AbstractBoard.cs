@@ -17,7 +17,7 @@ public abstract class AbstractBoard
         {
             for (int y = 0; y < PieceBoard.GetLength(1); y++)
             {
-                if (PieceBoard[x, y] != null) moves.Concat(PieceBoard[x, y].GetMoves());
+                if (PieceBoard[x, y] is not null) moves = moves.Concat(PieceBoard[x, y].GetMoves());
             }
         }
         return moves.ToList();
