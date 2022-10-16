@@ -13,6 +13,7 @@ public class VisualManager : MonoBehaviour
     public GameObject WhiteSquare;
     public GameObject BlockedSquare;
     public GameObject PiecePrefab;
+    public GameObject MoveOptionPrefab;
 
     private ChessManager chessManager;
     private Resolution resolution = new Resolution();
@@ -22,6 +23,7 @@ public class VisualManager : MonoBehaviour
     private BoardRenderInfo boardRenderInfo;
 
     private List<Move> possibleMoves = new List<Move>();
+    private List<GameObject> moveIndicators = new List<GameObject>();
 
     void Start()
     {
@@ -56,12 +58,8 @@ public class VisualManager : MonoBehaviour
         GameObject new_gameobject = Instantiate(PiecePrefab);
         Image image = new_gameobject.GetComponent<Image>();
         RectTransform rect = new_gameobject.GetComponent<RectTransform>();
-
-        rect.SetParent(renderBox);
-        rect.anchorMin = new Vector2((float)piece.Position.X / boardRenderInfo.BoardSize, (float)piece.Position.Y / boardRenderInfo.BoardSize);
-        rect.anchorMax = new Vector2((float)(piece.Position.X + 1) / boardRenderInfo.BoardSize, (float)(piece.Position.Y + 1) / boardRenderInfo.BoardSize);
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
+        RenderedPieceData rendered_piece_data = new_gameobject.GetComponent<RenderedPieceData>();
+        rendered_piece_data.Position = piece.Position;
 
         new_gameobject.SetActive(true);
 
@@ -79,9 +77,7 @@ public class VisualManager : MonoBehaviour
         Image image = piece_images[piece];
         image.sprite = PieceSprites[piece.AppearanceID];
 
-        RectTransform rect = image.gameObject.GetComponent<RectTransform>();
-        rect.localPosition = new Vector2((piece.Position.X + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
-                    (piece.Position.Y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+        SizeGameObject(image.gameObject, piece.Position);
     }
 
     /// <summary>
@@ -133,17 +129,22 @@ public class VisualManager : MonoBehaviour
                 }
 
                 GameObject new_square = Instantiate(square);
-                RectTransform rect = new_square.GetComponent<RectTransform>();
-                rect.SetParent(renderBox);
-                rect.anchorMin = new Vector2((float)x / boardRenderInfo.BoardSize, (float)y / boardRenderInfo.BoardSize);
-                rect.anchorMax = new Vector2((float)(x + 1) / boardRenderInfo.BoardSize, (float)(y + 1) / boardRenderInfo.BoardSize);
-                rect.localPosition = new Vector2((x + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2), 
-                    (y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
+                SizeGameObject(new_square, new V2(x, y));
                 new_square.SetActive(true);
             }
         }
+    }
+
+    private void SizeGameObject(GameObject gameObject, V2 position)
+    {
+        RectTransform rect = gameObject.GetComponent<RectTransform>();
+        rect.SetParent(renderBox);
+        rect.anchorMin = new Vector2((float)position.X / boardRenderInfo.BoardSize, (float)position.Y / boardRenderInfo.BoardSize);
+        rect.anchorMax = new Vector2((float)(position.X + 1) / boardRenderInfo.BoardSize, (float)(position.Y + 1) / boardRenderInfo.BoardSize);
+        rect.localPosition = new Vector2((position.X + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
+            (position.Y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
     }
 
     void Update()
@@ -159,5 +160,24 @@ public class VisualManager : MonoBehaviour
     public void SetPossibleMoves(List<Move> possibleMoves)
     {
         this.possibleMoves = possibleMoves;
+    }
+
+    public void ShowMoves(V2 piecePosition)
+    {
+        while (moveIndicators.Count > 0)
+        {
+            Destroy(moveIndicators[0]);
+            moveIndicators.RemoveAt(0);
+        }
+
+        foreach (Move move in possibleMoves)
+        {
+            if (move.From.X == piecePosition.X && move.From.Y == piecePosition.Y)
+            {
+                GameObject new_indicator = Instantiate(MoveOptionPrefab);
+                SizeGameObject(new_indicator, move.To);
+                new_indicator.SetActive(true);
+            }
+        }
     }
 }
