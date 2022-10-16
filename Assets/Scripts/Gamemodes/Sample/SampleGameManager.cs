@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class SampleGameManagerData : AbstractGameManagerData
 {
@@ -28,7 +29,7 @@ public class SampleGameManager : AbstractGameManager
 
     public override List<Move> GetMoves()
     {
-        return new List<Move>();
+        return Board.GetMoves();
     }
 
     public override void OnForeignMove(MoveData moveData)
