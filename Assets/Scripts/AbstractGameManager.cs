@@ -43,5 +43,8 @@ public abstract class AbstractGameManager
 
     public abstract void OnForeignMove(MoveData moveData);
 
-    public abstract List<Move> GetMoves();
+    public virtual List<Move> GetMoves()
+    {
+        return Board.GetMoves();
+    }
 }
