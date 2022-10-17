@@ -1,64 +1,67 @@
 using System.Net.Sockets;
 using System.Text;
 
-/// <summary>
-/// Data server holds about player
-/// </summary>
-public class ServerPlayerData
+namespace Networking.Server
 {
-    public int PlayerID;
-    public string Name;
-
-    public int Team;
-
     /// <summary>
-    /// E.g. Player *1* in team x
+    /// Data server holds about player
     /// </summary>
-    public int PlayerInTeam;
-
-    public ServerPlayerData(Socket handler, int playerID, string name, int team, int playerInTeam)
+    public class ServerPlayerData
     {
-        Handler = handler;
-        PlayerID = playerID;
-        Name = name;
-        Team = team;
-        PlayerInTeam = playerInTeam;
-    }
+        public int PlayerID;
+        public string Name;
 
-    /// <summary>
-    /// Returns a unique string that represents the player
-    /// </summary>
-    /// <returns></returns>
-    public string GetUniqueString()
-    {
-        return "[" + PlayerID + "] " + Name + "";
-    }
+        public int Team;
 
-    // Networking
+        /// <summary>
+        /// E.g. Player *1* in team x
+        /// </summary>
+        public int PlayerInTeam;
 
-    public Socket Handler;
+        public ServerPlayerData(Socket handler, int playerID, string name, int team, int playerInTeam)
+        {
+            Handler = handler;
+            PlayerID = playerID;
+            Name = name;
+            Team = team;
+            PlayerInTeam = playerInTeam;
+        }
 
-    public byte[] Buffer = new byte[1024];
-    public byte[] LongBuffer = new byte[1024];
-    public int CurrentPacketLength = -1;
-    public int LongBufferSize = 0;
-    public StringBuilder SB = new StringBuilder();
+        /// <summary>
+        /// Returns a unique string that represents the player
+        /// </summary>
+        /// <returns></returns>
+        public string GetUniqueString()
+        {
+            return "[" + PlayerID + "] " + Name + "";
+        }
 
-    /// <summary>
-    /// Resets buffers
-    /// </summary>
-    public void Reset()
-    {
-        Buffer = new byte[1024];
-        SB = new StringBuilder();
-    }
+        // Networking
 
-    /// <summary>
-    /// Shuts down the connection between the client and the server
-    /// </summary>
-    public void ShutdownSocket()
-    {
-        Handler.Shutdown(SocketShutdown.Both);
-        Handler.Close();
+        public Socket Handler;
+
+        public byte[] Buffer = new byte[1024];
+        public byte[] LongBuffer = new byte[1024];
+        public int CurrentPacketLength = -1;
+        public int LongBufferSize = 0;
+        public StringBuilder SB = new StringBuilder();
+
+        /// <summary>
+        /// Resets buffers
+        /// </summary>
+        public void Reset()
+        {
+            Buffer = new byte[1024];
+            SB = new StringBuilder();
+        }
+
+        /// <summary>
+        /// Shuts down the connection between the client and the server
+        /// </summary>
+        public void ShutdownSocket()
+        {
+            Handler.Shutdown(SocketShutdown.Both);
+            Handler.Close();
+        }
     }
 }

@@ -1,23 +1,26 @@
-/// <summary>
-/// Data client holds about other players
-/// </summary>
-public class ClientPlayerData
+namespace Networking.Client
 {
-    public int PlayerID;
-    public string Name;
-
-    public int Team;
-
     /// <summary>
-    /// E.g. Player *1* in team x
+    /// Data client holds about other players
     /// </summary>
-    public int PlayerInTeam;
-
-    public ClientPlayerData(int playerID, string name, int team, int playerInTeam)
+    public class ClientPlayerData
     {
-        PlayerID = playerID;
-        Name = name;
-        Team = team;
-        PlayerInTeam = playerInTeam;
+        public int PlayerID;
+        public string Name;
+
+        public int Team;
+
+        /// <summary>
+        /// E.g. Player *1* in team x
+        /// </summary>
+        public int PlayerInTeam;
+
+        public ClientPlayerData(int playerID, string name, int team, int playerInTeam)
+        {
+            PlayerID = playerID;
+            Name = name;
+            Team = team;
+            PlayerInTeam = playerInTeam;
+        }
     }
 }
