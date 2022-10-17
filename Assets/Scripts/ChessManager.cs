@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using Networking.Client;
 using UnityEngine.SceneManagement;
 
 #nullable enable
@@ -23,7 +24,7 @@ public class ChessManager : MonoBehaviour
 
     public AbstractGameManagerData currentGameManager = default!;
     private byte[] saveData = new byte[0];
-    public AbstractGameManager gameManager = default!;
+    public AbstractGameManager GameManager = default!;
     public bool InGame = false;
 
     private NetworkManager networkManager = default!;
@@ -111,8 +112,8 @@ public class ChessManager : MonoBehaviour
     private void LoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
-        gameManager = currentGameManager.Instantiate();
-        if (saveData.Length > 0) gameManager.LoadData(saveData);
+        GameManager = currentGameManager.Instantiate();
+        if (saveData.Length > 0) GameManager.LoadData(saveData);
     }
 
     public void ExitGame()
@@ -124,7 +125,7 @@ public class ChessManager : MonoBehaviour
     public void OnTurn()
     {
         MyTurn = true;
-        var possible_moves = gameManager.GetMoves();
+        var possible_moves = GameManager.GetMoves();
         visualManager.SetPossibleMoves(possible_moves);
         inputManager.SetPossibleMoves(possible_moves);
     }
