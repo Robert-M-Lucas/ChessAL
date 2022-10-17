@@ -57,24 +57,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Networking\Packets\5_ServerPingPacket.cs" />
-    <Compile Include="Assets\Scripts\Networking\ArrayExtentions.cs" />
-    <Compile Include="Assets\Scripts\Gamemodes\Sample\SampleGameManager.cs" />
+    <Compile Include="Assets\Scripts\Util\ArrayExtentions.cs" />
+    <Compile Include="Assets\Scripts\$ Gamemodes\Sample\SampleGameManager.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\100_SampleTestPacket.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\200_GamemodeDataRequestPacket.cs" />
-    <Compile Include="Assets\Scripts\Gamemodes\Sample\SamplePiece.cs" />
+    <Compile Include="Assets\Scripts\$ Gamemodes\Sample\SamplePiece.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\202_StartGamePacket.cs" />
     <Compile Include="Assets\Scripts\Networking\ServerGameData.cs" />
-    <Compile Include="Assets\Scripts\RenderedPieceData.cs" />
-    <Compile Include="Assets\Scripts\VisualManager.cs" />
+    <Compile Include="Assets\Scripts\Game\RenderedCellData.cs" />
+    <Compile Include="Assets\Scripts\Game\VisualManager.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\4_ClientPingPacket.cs" />
-    <Compile Include="Assets\Scripts\Validators.cs" />
-    <Compile Include="Assets\Scripts\V2.cs" />
-    <Compile Include="Assets\Scripts\BoardRenderInfo.cs" />
-    <Compile Include="Assets\Scripts\AbstractGameManager.cs" />
+    <Compile Include="Assets\Scripts\Util\Validators.cs" />
+    <Compile Include="Assets\Scripts\Util\V2.cs" />
+    <Compile Include="Assets\Scripts\Game\BoardRenderInfo.cs" />
+    <Compile Include="Assets\Scripts\Abstract Gamemode\AbstractGameManager.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkManager.cs" />
-    <Compile Include="Assets\Scripts\BuildIndex.cs" />
+    <Compile Include="Assets\Scripts\Util\BuildIndex.cs" />
     <Compile Include="Assets\Scripts\Networking\InternalClientPacketHandler.cs" />
-    <Compile Include="Assets\Scripts\I.cs" />
+    <Compile Include="Assets\Scripts\Util\I.cs" />
     <Compile Include="Assets\Scripts\Networking\HostJoinSettings.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\201_GamemodeDataPacket.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkSettings.cs" />
@@ -84,14 +84,14 @@
     <Compile Include="Assets\Scripts\Networking\Packets\1_ServerConnectAcceptPacket.cs" />
     <Compile Include="Assets\Scripts\Networking\Server.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\0_ClientConnectRequestPacket.cs" />
-    <Compile Include="Assets\Scripts\InputManager.cs" />
+    <Compile Include="Assets\Scripts\Game\InputManager.cs" />
     <Compile Include="Assets\Scripts\Move.cs" />
-    <Compile Include="Assets\Scripts\AbstractPiece.cs" />
-    <Compile Include="Assets\Scripts\Util.cs" />
+    <Compile Include="Assets\Scripts\Abstract Gamemode\AbstractPiece.cs" />
+    <Compile Include="Assets\Scripts\Util\Util.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\6_ServerInformOfClientDisconnectPacket.cs" />
     <Compile Include="Assets\Scripts\Networking\MoveData.cs" />
-    <Compile Include="Assets\Scripts\Gamemodes\Sample\SampleBoard.cs" />
-    <Compile Include="Assets\Scripts\MenuUIManager.cs" />
+    <Compile Include="Assets\Scripts\$ Gamemodes\Sample\SampleBoard.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\MenuUIManager.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\2_ServerKickPacket.cs" />
     <Compile Include="Assets\Scripts\Networking\InternalServerPacketHandler.cs" />
     <Compile Include="Assets\Testing\Tests.cs" />
@@ -100,8 +100,9 @@
     <Compile Include="Assets\Scripts\Networking\ClientPlayerData.cs" />
     <Compile Include="Assets\Scripts\K.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\204_MoveUpdatePacket.cs" />
-    <Compile Include="Assets\Scripts\AbstractBoard.cs" />
+    <Compile Include="Assets\Scripts\Abstract Gamemode\AbstractBoard.cs" />
     <Compile Include="Assets\Scripts\Networking\ServerPlayerData.cs" />
+    <Compile Include="Assets\Scripts\Networking\TeamSize.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
