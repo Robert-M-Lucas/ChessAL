@@ -47,19 +47,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-public class {packet_name}Packet {{
+namespace Networking.Packets.Generated 
+{{
+    public class {packet_name}Packet {{
 """
-    data += f"    public const int UID = {uid};\n"
+    data += f"        public const int UID = {uid};\n"
     for i in attributes[1:]:
         splitted = i[0].split("=")
-        data += "    public " + i[1] + " " + splitted[0] + ";" + "\n"
+        data += "        public " + i[1] + " " + splitted[0] + ";" + "\n"
 
-    data += f"""    public {packet_name}Packet(Packet packet){{
+    data += f"""        public {packet_name}Packet(Packet packet){{
 """
 
     for j, i in enumerate(attributes[1:]):
         splitted = i[0].split("=")
-        data += "        " + splitted[0] + " = "
+        data += "            " + splitted[0] + " = "
         if i[1] == "string":
             data += "ASCIIEncoding.ASCII.GetString"
         elif i[1] == "int":
@@ -74,11 +76,11 @@ public class {packet_name}Packet {{
         data += f"(packet.Contents[{j}]);\n"
 
 
-    data += """    }
+    data += """        }
 
 """
 
-    data += """    public static byte[] Build("""
+    data += """       public static byte[] Build("""
 
     for i in attributes[1:]:
         splitted = i[0].split("=")
@@ -91,19 +93,20 @@ public class {packet_name}Packet {{
         data = data[:-2]
 
     data += """) {
-            List<byte[]> contents = new List<byte[]>();
+           List<byte[]> contents = new List<byte[]>();
 """
 
     for i in attributes[1:]:
         splitted = i[0].split("=")
         if i[1] == "string":
-            data += f"            contents.Add(ASCIIEncoding.ASCII.GetBytes(_{splitted[0]}));\n"
+            data += f"           contents.Add(ASCIIEncoding.ASCII.GetBytes(_{splitted[0]}));\n"
         elif i[1] == "byte[]":
-            data += f"            contents.Add(_{splitted[0]});\n"
+            data += f"           contents.Add(_{splitted[0]});\n"
         else:
-            data += f"            contents.Add(BitConverter.GetBytes(_{splitted[0]}));\n"
+            data += f"           contents.Add(BitConverter.GetBytes(_{splitted[0]}));\n"
 
-    data += """            return PacketBuilder.Build(UID, contents);
+    data += """           return PacketBuilder.Build(UID, contents);
+    }
     }
 }"""
 
