@@ -5,6 +5,8 @@ using System;
 using System.Reflection;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using Networking.Packets;
+using Networking.Packets.Generated;
 
 #nullable enable
 
