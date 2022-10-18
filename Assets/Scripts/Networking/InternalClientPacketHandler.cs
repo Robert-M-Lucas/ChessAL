@@ -30,7 +30,7 @@ namespace Networking.Client
             { 5, PingResponse },
             { 201, GamemodeDataRecieve},
             { 202, OnGameStart },
-            { 204, OnMoveUpdate }
+            { 205, OnMoveUpdate }
         };
         }
 
@@ -104,10 +104,7 @@ namespace Networking.Client
         {
             MoveUpdatePacket moveUpdatePacket = new MoveUpdatePacket(p);
 
-            MoveData moveData = MoveData.FromSerialised(moveUpdatePacket.TileUpdates);
-            moveData.NextPlayerTurn = moveUpdatePacket.NextPlayerTurn;
-
-            client.networkManager.OnForeignMove(moveData);
+            client.networkManager.OnForeignMove(moveUpdatePacket.NextPlayer, new V2(moveUpdatePacket.FromX, moveUpdatePacket.FromY), new V2(moveUpdatePacket.ToX, moveUpdatePacket.ToY));
         }
     }
 }

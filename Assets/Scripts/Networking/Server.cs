@@ -56,7 +56,7 @@ namespace Networking.Server
         public bool AcceptingClients = false;
         public int ClientsConnected { get; private set; } = 0;
 
-        private ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
+        public ConcurrentDictionary<int, ServerPlayerData> PlayerData = new ConcurrentDictionary<int, ServerPlayerData>();
         private int PlayerIDCounter = 0;
 
         private InternalServerPacketHandler internalPackerHandler;
@@ -502,7 +502,7 @@ namespace Networking.Server
 
                         if (!handled)
                         {
-                            // Pass to game manager
+                            Debug.LogError($"Packet [UID:{packet.UID}] not handled");
                         }
                     }
                     catch (PacketDecodeError e)

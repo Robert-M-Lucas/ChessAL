@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -11,9 +12,15 @@ public class InputManager : MonoBehaviour
 
     private VisualManager visualManager;
 
+    private bool showingMoves = false;
+    private V2? selectedPiece = null;
+    
+    private ChessManager chessManager;
+
     public void Start()
     {
         visualManager = FindObjectOfType<VisualManager>();
+        chessManager = FindObjectOfType<ChessManager>();
     }
 
     /// <summary>
@@ -27,7 +34,30 @@ public class InputManager : MonoBehaviour
 
     public void OnCellClick(V2 position)
     {
-        visualManager.ToggleShowMoves(position);
+        Debug.Log("Cell click");
+        if (!chessManager.MyTurn)
+        { 
+            visualManager.HideMoves(); 
+            return; 
+        }
+
+        Debug.Log("Showing moves");
+
+        if (showingMoves)
+        {
+            foreach (Move m in possibleMoves)
+            {
+                if ((V2)selectedPiece == m.From && position == m.To)
+                {
+                    chessManager.GetLocalMove(m.From, m.To);
+                    visualManager.ToggleShowMoves(m.From);
+                    return;
+                }
+            }
+        }
+
+        showingMoves = visualManager.ToggleShowMoves(position);
+        if (showingMoves) selectedPiece = position;
     }
 
     private void Update()

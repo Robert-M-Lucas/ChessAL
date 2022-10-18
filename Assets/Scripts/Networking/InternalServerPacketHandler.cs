@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Networking.Packets;
 using Networking.Packets.Generated;
+
 
 namespace Networking.Server
 {
@@ -21,7 +23,8 @@ namespace Networking.Server
             UIDtoAction = new Dictionary<int, Action<Packet>> {
             { 4, PingRespond },
             { 7, RemoveClient },
-            { 200, SendGamemodeData }
+            { 200, SendGamemodeData },
+            {205, OnMoveUpdate }
         };
         }
 
@@ -54,6 +57,14 @@ namespace Networking.Server
         public void SendGamemodeData(Packet packet)
         {
             server.SendMessage(packet.From, GamemodeDataPacket.Build(server.gameData.GameModeID, new byte[0]));
+        }
+        
+        public void OnMoveUpdate(Packet packet)
+        {
+            Debug.Log("Turn update");
+            MoveUpdatePacket p = new MoveUpdatePacket(packet);
+
+            server.SendToAll(MoveUpdatePacket.Build(p.NextPlayer, p.FromX, p.FromY, p.ToX, p.ToY));
         }
     }
 }

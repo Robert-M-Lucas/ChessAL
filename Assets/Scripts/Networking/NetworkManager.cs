@@ -39,7 +39,7 @@ public class NetworkManager : MonoBehaviour
         client = null;
     }
 
-    public void OnLocalMove(MoveData moveData) => client?.OnLocalMove(moveData);
+    public void OnLocalMove(int nextPlayer, V2 from, V2 to) => client?.OnLocalMove(nextPlayer, from, to);
 
     /// <summary>
     /// Gets the player list from the client
@@ -113,7 +113,7 @@ public class NetworkManager : MonoBehaviour
     public void OnPlayersChange() => chessManager.PlayerListUpdate();
     public void OnGamemodeRecieve(int gameMode, byte[] saveData) => chessManager.GameDataRecived(gameMode, saveData);
     public void OnGameStart() => chessManager.OnGameStart();
-    public void OnForeignMove(MoveData moveData) => chessManager.OnForeignMove(moveData);
+    public void OnForeignMove(int nextPlayer, V2 from, V2 to) => chessManager.OnForeignMoveUpdate(nextPlayer, from, to);
     private void OnPing(int ping) => Debug.Log($"Ping {ping}ms");
     public void HostSetTeam(int playerID, int team, int playerInTeam) => server?.SetTeam(playerID, team, playerInTeam);
     #endregion

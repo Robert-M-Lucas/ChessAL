@@ -1,50 +1,65 @@
 using System.Collections.Generic;
 
-/// <summary>
-/// A reduced version of AbstractGameManager for use before a game has been selected
-/// </summary>
-public abstract class AbstractGameManagerData
+namespace Gamemodes
 {
     /// <summary>
-    ///
+    /// A reduced version of AbstractGameManager for use before a game has been selected
     /// </summary>
-    /// <returns>Unique UID of this GameMode</returns>
-    public abstract int GetUID();
-
-    /// <summary>
-    ///
-    /// </summary>
-    /// <returns>Non-unique name of this GameMode</returns>
-    public abstract string GetName();
-
-    /// <summary>
-    ///
-    /// </summary>
-    /// <returns>{ Team1Size, Team2Size, Team3Size, ... }</returns>
-    public abstract TeamSize[] GetTeamSizes();
-
-    public abstract AbstractGameManager Instantiate();
-}
-
-/// <summary>
-/// Top level gamemode control
-/// </summary>
-public abstract class AbstractGameManager
-{
-    public AbstractGameManagerData GameManagerData;
-    public AbstractBoard Board;
-
-    public AbstractGameManager(AbstractGameManagerData gameManagerData)
+    public abstract class AbstractGameManagerData
     {
-        this.GameManagerData = gameManagerData;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns>Unique UID of this GameMode</returns>
+        public abstract int GetUID();
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns>Non-unique name of this GameMode</returns>
+        public abstract string GetName();
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns>{ Team1Size, Team2Size, Team3Size, ... }</returns>
+        public abstract TeamSize[] GetTeamSizes();
+
+        public abstract AbstractGameManager Instantiate(ChessManager chessManager);
     }
 
-    public abstract void LoadData(byte[] data);
-
-    public abstract void OnForeignMove(MoveData moveData);
-
-    public virtual List<Move> GetMoves()
+    /// <summary>
+    /// Top level gamemode control
+    /// </summary>
+    public abstract class AbstractGameManager
     {
-        return Board.GetMoves();
+        public AbstractGameManagerData GameManagerData;
+        public AbstractBoard Board;
+        protected ChessManager chessManager;
+
+        public AbstractGameManager(AbstractGameManagerData gameManagerData, ChessManager chessManager)
+        {
+            this.GameManagerData = gameManagerData;
+            this.chessManager = chessManager;
+        }
+
+        public abstract void LoadData(byte[] data);
+
+        public virtual List<Move> GetMoves()
+        {
+            return Board.GetMoves();
+        }
+
+        /// <summary>
+        /// Handles an incoming move (local or foreign)
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns>Next player's turn</returns>
+        public virtual int OnMove(V2 from, V2 to)
+        {
+            Board.OnMove(from, to);
+            return -1;
+        }
     }
 }

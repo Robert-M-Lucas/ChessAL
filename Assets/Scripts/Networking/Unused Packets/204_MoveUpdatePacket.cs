@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Networking.Packets.Generated 
+namespace Networking.Packets.Unused
 {
     public class MoveUpdatePacket {
         public const int UID = 204;

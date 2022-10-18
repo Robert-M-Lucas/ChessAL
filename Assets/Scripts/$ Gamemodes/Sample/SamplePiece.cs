@@ -16,7 +16,12 @@ namespace Gamemodes.Sample
 
         public override List<Move> GetMoves()
         {
-            return new List<Move>() { new Move(Position.X, Position.Y, Position.X + 1, Position.Y + 1) };
+            return new List<Move>() { 
+                new Move(Position, Position + new V2(1, 1)),
+                new Move(Position, Position + new V2(-1, 1)),
+                new Move(Position, Position + new V2(1, -1)),
+                new Move(Position, Position + new V2(-1, -1))
+            };
         }
 
         public override int GetUID() => 1;

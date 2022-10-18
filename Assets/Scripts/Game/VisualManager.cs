@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Gamemodes;
+using System.Net.NetworkInformation;
 
 public class VisualManager : MonoBehaviour
 {
@@ -25,6 +27,8 @@ public class VisualManager : MonoBehaviour
     private List<Move> possibleMoves = new List<Move>();
     private List<GameObject> moveIndicators = new List<GameObject>();
 
+    private List<GameObject> pieces = new List<GameObject>();
+
     private V2? currentlyShowing = null;
 
     void Start()
@@ -34,14 +38,17 @@ public class VisualManager : MonoBehaviour
         // Render(new SampleBoard().GetBoardRenderInfo());
         boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
         RenderBoardBackground();
-        AddAllPieces();
+        UpdateAllPieces();
     }
 
     /// <summary>
     /// Renders all pieces in BoardManager
     /// </summary>
-    private void AddAllPieces()
+    public void UpdateAllPieces()
     {
+        foreach (GameObject g in pieces) Destroy(g);
+        pieces.Clear();
+
         for (int x = 0; x < boardRenderInfo.BoardSize; x++)
         {
             for (int y = 0; y < boardRenderInfo.BoardSize; y++)
@@ -58,6 +65,7 @@ public class VisualManager : MonoBehaviour
     private void AddPiece(AbstractPiece piece)
     {
         GameObject new_gameobject = Instantiate(PiecePrefab);
+        pieces.Add(new_gameobject);
         Image image = new_gameobject.GetComponent<Image>();
         RectTransform rect = new_gameobject.GetComponent<RectTransform>();
 
@@ -164,31 +172,36 @@ public class VisualManager : MonoBehaviour
         this.possibleMoves = possibleMoves;
     }
 
-    public void ToggleShowMoves(V2 clickPosition)
+    public void HideMoves()
     {
         while (moveIndicators.Count > 0)
         {
             Destroy(moveIndicators[0]);
             moveIndicators.RemoveAt(0);
         }
+    }
+
+    public bool ToggleShowMoves(V2 clickPosition)
+    {
+        HideMoves();
 
         if (chessManager.GameManager.Board.PieceBoard[clickPosition.X, clickPosition.Y] is null)
         {
             currentlyShowing = null;
-            return;
+            return false;
         }
 
-        if (currentlyShowing is not null && ((V2)currentlyShowing).X == clickPosition.X && ((V2)currentlyShowing).Y == clickPosition.Y)
+        if (currentlyShowing is not null && (V2)currentlyShowing == clickPosition)
         {
             currentlyShowing = null;
-            return;
+            return false;
         }
 
         currentlyShowing = clickPosition;
 
         foreach (Move move in possibleMoves)
         {
-            if (move.From.X == clickPosition.X && move.From.Y == clickPosition.Y)
+            if (move.From == clickPosition)
             {
                 GameObject new_indicator = Instantiate(MoveOptionPrefab);
                 SizeGameObject(new_indicator, move.To);
@@ -196,5 +209,7 @@ public class VisualManager : MonoBehaviour
                 moveIndicators.Add(new_indicator);
             }
         }
+
+        return true;
     }
 }

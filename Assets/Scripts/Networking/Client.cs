@@ -167,9 +167,9 @@ namespace Networking.Client
         /// Updates the server of a local move that has been made
         /// </summary>
         /// <param name="moveData"></param>
-        public void OnLocalMove(MoveData moveData)
+        public void OnLocalMove(int nextPlayer, V2 from, V2 to)
         {
-            SendMessage(MoveUpdatePacket.Build(moveData.NextPlayerTurn, moveData.Serialise()));
+            SendMessage(MoveUpdatePacket.Build(nextPlayer, (int) from.X, (int) from.Y, (int)to.X, (int)to.Y));
         }
 
         /// <summary>
@@ -305,10 +305,12 @@ namespace Networking.Client
 
                         if (!handled)
                         {
+                            Debug.LogError($"Packet [UID:{packet.UID}] not handled");
                         }
                     }
                     catch (PacketDecodeError)
                     {
+                        Debug.LogError("Packed decode error");
                     }
                 }
             }

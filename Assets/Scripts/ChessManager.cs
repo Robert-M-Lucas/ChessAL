@@ -6,6 +6,7 @@ using System.Threading;
 using UnityEngine;
 using Networking.Client;
 using UnityEngine.SceneManagement;
+using Gamemodes;
 
 #nullable enable
 
@@ -30,6 +31,8 @@ public class ChessManager : MonoBehaviour
     private NetworkManager networkManager = default!;
 
     private Queue<Action> monobehaviourActions = new Queue<Action>();
+
+    int prevPlayer = -1;
 
     public bool MyTurn = false;
 
@@ -112,7 +115,7 @@ public class ChessManager : MonoBehaviour
     private void LoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
-        GameManager = currentGameManager.Instantiate();
+        GameManager = currentGameManager.Instantiate(this);
         if (saveData.Length > 0) GameManager.LoadData(saveData);
     }
 
@@ -122,23 +125,43 @@ public class ChessManager : MonoBehaviour
         InGame = false;
     }
 
+    public int GetLocalPlayerID()
+    {
+        return networkManager.GetLocalPlayerID();
+    }
+
     public void OnTurn()
     {
+        Debug.Log("On Turn");
+        prevPlayer = GetLocalPlayerID();
         MyTurn = true;
         var possible_moves = GameManager.GetMoves();
         visualManager.SetPossibleMoves(possible_moves);
         inputManager.SetPossibleMoves(possible_moves);
     }
 
-    public void OnForeignMove(MoveData moveData)
+    public void OnForeignMoveUpdate(int nextPlayer, V2 from, V2 to) => monobehaviourActions.Enqueue(() => OnForeignMove(nextPlayer, from, to));
+
+    public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
-        
+        Debug.Log("Foreign Move");
+        if (nextPlayer != GetLocalPlayerID() || prevPlayer != nextPlayer) GameManager.OnMove(from, to);
+        visualManager.UpdateAllPieces();
+        if (nextPlayer == GetLocalPlayerID()) OnTurn();
     }
 
-    public void OnLocalMove(MoveData moveData)
+    public void GetLocalMove(V2 from, V2 to)
     {
+        Debug.Log("Get Local Move");
+        int next_player = GameManager.OnMove(from, to);
+        OnLocalMove(next_player, from, to);
+    }
+
+    public void OnLocalMove(int nextPlayer, V2 from, V2 to)
+    {
+        Debug.Log("On Local Move");
         MyTurn = false;
-        networkManager.OnLocalMove(moveData);
+        networkManager.OnLocalMove(nextPlayer, from, to);
     }
     
     public void Update()

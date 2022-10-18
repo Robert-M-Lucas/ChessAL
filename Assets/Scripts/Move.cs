@@ -15,4 +15,10 @@ public struct Move
         From = new V2(xFrom, yFrom);
         To = new V2(xTo, yTo);
     }
+
+    public Move(V2 from, V2 to) 
+    {
+        From = from;
+        To = to;
+    }
 }

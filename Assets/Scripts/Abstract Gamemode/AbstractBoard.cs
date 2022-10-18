@@ -3,25 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// Handles the board's configuration and stores pieces
-/// </summary>
-public abstract class AbstractBoard
+namespace Gamemodes
 {
-    public AbstractPiece[,] PieceBoard;
-
-    public virtual List<Move> GetMoves()
+    /// <summary>
+    /// Handles the board's configuration and stores pieces
+    /// </summary>
+    public abstract class AbstractBoard
     {
-        IEnumerable<Move> moves = new List<Move>();
-        for (int x = 0; x < PieceBoard.GetLength(0); x++)
+        public AbstractPiece[,] PieceBoard;
+
+        public virtual List<Move> GetMoves()
         {
-            for (int y = 0; y < PieceBoard.GetLength(1); y++)
+            IEnumerable<Move> moves = new List<Move>();
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                if (PieceBoard[x, y] is not null) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+                }
+            }
+            return moves.ToList();
+        }
+
+        public abstract BoardRenderInfo GetBoardRenderInfo();
+
+        public virtual void OnMove(V2 from, V2 to)
+        {
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null) PieceBoard[x, y].OnMove(from, to);
+                }
             }
         }
-        return moves.ToList();
     }
-
-    public abstract BoardRenderInfo GetBoardRenderInfo();
 }

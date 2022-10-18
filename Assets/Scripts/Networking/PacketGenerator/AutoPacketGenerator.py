@@ -115,4 +115,3 @@ namespace Networking.Packets.Generated
         f.write(data)
 
 print(f"Time taken: {round((time.time()-start_time)*1000, 2)}ms")
-input()
