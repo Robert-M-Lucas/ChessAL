@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
@@ -7,17 +7,20 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using Networking.Packets;
 using Networking.Packets.Generated;
+using Gamemodes;
 
 #nullable enable
 
 #if UNITY_EDITOR
 /// <summary>
-/// Class for automatically testing project every time the solution is recompiled
+/// Class for automatically testing project every time the solution is recompiled. Not included in build.
 /// </summary>
 [InitializeOnLoad]
 public class Tests
 {
-    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers, TestValidators };
+    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers, TestValidators, TestV2 };
+
+    private static string output_string = "Test log:\n";
 
     static Tests()
     {
@@ -37,11 +40,13 @@ public class Tests
         {
             if (!test())
             {
+                Debug.Log(output_string);
                 Debug.LogError("Tests failed");
                 return;
             }
         }
 
+        Debug.Log(output_string);
 
         Debug.Log($"Tests successful! ({s.ElapsedMilliseconds}ms)");
     }
@@ -52,7 +57,7 @@ public class Tests
     /// <returns></returns>
     private static bool TestPacketEncoding()
     {
-        Debug.Log("Testing packet encoding");
+        output_string += "Testing packet encoding\n";
         try
         {
             int arg_one = 2;
@@ -82,7 +87,7 @@ public class Tests
     /// <returns></returns>
     private static bool TestGameManagers()
     {
-        Debug.Log("Running Game Manager Tests");
+        output_string += "Running Game Manager Tests\n";
 
         // Get all AbstractGameManagerData
         List<AbstractGameManagerData> abstract_game_managers_data = Util.GetAllGameManagers();
@@ -104,7 +109,7 @@ public class Tests
     /// <returns></returns>
     private static bool TestValidators()
     {
-        Debug.Log("Running validator tests");
+        output_string += "Running validator tests\n";
 
         Func<string, string?> validator = Validators.ValidatePlayerName;
         Tuple<string, bool>[] tests = new Tuple<string, bool>[] {
@@ -146,6 +151,25 @@ public class Tests
                 else Debug.LogError($"Password '{test.Item1}' passed validation when it should have failed");
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private static bool TestV2()
+    {
+        output_string += "Testing V2 functions\n";
+
+        if (new V2(1, 3) != new V2(1,3) || new V2(1, 5) == new V2(3, 4))
+        {
+            Debug.LogError("V2 equality testing failed");
+            return false;
+        }
+
+        if (new V2(1, 4) + new V2(2, 7) != new V2(3, 11) || new V2(20, 10) - new V2(2, 4) != new V2(18, 6))
+        {
+            Debug.LogError("V2 operator testing failed");
+            return false;
         }
 
         return true;
