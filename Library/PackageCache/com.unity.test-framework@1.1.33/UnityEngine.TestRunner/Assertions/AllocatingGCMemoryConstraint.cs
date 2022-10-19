@@ -1,13 +1,13 @@
+using System;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using System;
 using UnityEngine.Profiling;
 
 namespace UnityEngine.TestTools.Constraints
 {
     /// <summary>
     /// An NUnit test constraint class to test whether a given block of code makes any GC allocations.
-    ///
+    /// 
     /// Use this class with NUnit's Assert.That() method to make assertions about the GC behaviour of your code. The constraint executes the delegate you provide, and checks if it has caused any GC memory to be allocated. If any GC memory was allocated, the constraint passes; otherwise, the constraint fails.
     ///
     /// Usually you negate this constraint to make sure that your delegate does not allocate any GC memory. This is easy to do using the Is class:
@@ -17,7 +17,7 @@ namespace UnityEngine.TestTools.Constraints
     /// using NUnit.Framework;
     /// using UnityEngine.TestTools.Constraints;
     /// using Is = UnityEngine.TestTools.Constraints.Is;
-    ///
+    /// 
     /// public class MyTestClass
     /// {
     ///     [Test]
@@ -36,7 +36,6 @@ namespace UnityEngine.TestTools.Constraints
         private class AllocatingGCMemoryResult : ConstraintResult
         {
             private readonly int diff;
-
             public AllocatingGCMemoryResult(IConstraint constraint, object actualValue, int diff) : base(constraint, actualValue, diff > 0)
             {
                 this.diff = diff;
