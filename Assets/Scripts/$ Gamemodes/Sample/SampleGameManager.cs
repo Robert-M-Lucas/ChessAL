@@ -36,6 +36,7 @@ namespace Gamemodes.Sample
 
         public override int OnMove(V2 from, V2 to)
         {
+            Debug.Log("On move manager");
             Board.PieceBoard[to.X, to.Y] = Board.PieceBoard[from.X, from.Y];
             Board.PieceBoard[to.X, to.Y].Position = to;
             Board.PieceBoard[from.X, from.Y] = null;

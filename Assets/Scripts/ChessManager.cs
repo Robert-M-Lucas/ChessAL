@@ -145,9 +145,12 @@ public class ChessManager : MonoBehaviour
     public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
         Debug.Log("Foreign Move");
-        if (nextPlayer != GetLocalPlayerID() || prevPlayer != nextPlayer) GameManager.OnMove(from, to);
+        if (prevPlayer != GetLocalPlayerID()) GameManager.OnMove(from, to);
+
         visualManager.UpdateAllPieces();
+
         if (nextPlayer == GetLocalPlayerID()) OnTurn();
+        else prevPlayer = nextPlayer;
     }
 
     public void GetLocalMove(V2 from, V2 to)
