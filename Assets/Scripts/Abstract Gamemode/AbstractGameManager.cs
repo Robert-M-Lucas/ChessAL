@@ -35,7 +35,7 @@ namespace Gamemodes
     {
         public AbstractGameManagerData GameManagerData;
         public AbstractBoard Board;
-        protected ChessManager chessManager;
+        public ChessManager chessManager;
 
         public AbstractGameManager(AbstractGameManagerData gameManagerData, ChessManager chessManager)
         {

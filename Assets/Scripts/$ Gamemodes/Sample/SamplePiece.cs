@@ -7,9 +7,9 @@ namespace Gamemodes.Sample
     /// <summary>
     /// Sample Piece
     /// </summary>
-    public class SamplePiece : AbstractPiece
+    public class Piece : AbstractPiece
     {
-        public SamplePiece(V2 position) : base(position)
+        public Piece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
             AppearanceID = 0;
         }

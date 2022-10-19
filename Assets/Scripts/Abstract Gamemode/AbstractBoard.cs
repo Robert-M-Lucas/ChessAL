@@ -12,6 +12,13 @@ namespace Gamemodes
     {
         public AbstractPiece[,] PieceBoard;
 
+        protected AbstractGameManager gameManager;
+
+        public AbstractBoard(AbstractGameManager gameManager)
+        {
+            this.gameManager = gameManager;
+        }
+
         public virtual List<Move> GetMoves()
         {
             IEnumerable<Move> moves = new List<Move>();
@@ -19,10 +26,11 @@ namespace Gamemodes
             {
                 for (int y = 0; y < PieceBoard.GetLength(1); y++)
                 {
-                    if (PieceBoard[x, y] is not null) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+                    if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == gameManager.chessManager.GetLocalPlayerTeam()) moves = moves.Concat(PieceBoard[x, y].GetMoves());
                 }
             }
-            return moves.ToList();
+            
+            return GamemodeUtil.RemoveBlocked(moves.ToList(), this);
         }
 
         public abstract BoardRenderInfo GetBoardRenderInfo();

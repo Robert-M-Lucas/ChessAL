@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using UnityEngine;
 using Networking.Client;
 using UnityEngine.SceneManagement;
@@ -130,6 +127,16 @@ public class ChessManager : MonoBehaviour
         return networkManager.GetLocalPlayerID();
     }
 
+    public int GetLocalPlayerTeam()
+    {
+        return networkManager.GetPlayerList()[GetLocalPlayerID()].Team;
+    }
+
+    public int GetPlayerByTeam(int team, int playerInTeam)
+    {
+        return networkManager.GetPlayerByTeam(team, playerInTeam);
+    }
+
     public void OnTurn()
     {
         Debug.Log("On Turn");
@@ -166,7 +173,7 @@ public class ChessManager : MonoBehaviour
         MyTurn = false;
         networkManager.OnLocalMove(nextPlayer, from, to);
     }
-    
+
     public void Update()
     {
         while (monobehaviourActions.Count > 0)

@@ -7,12 +7,13 @@ namespace Gamemodes.Sample
     /// <summary>
     /// Sample Board
     /// </summary>
-    public class SampleBoard : AbstractBoard
+    public class Board : AbstractBoard
     {
-        public SampleBoard()
+        public Board(AbstractGameManager gameManager) : base(gameManager)
         {
             PieceBoard = new AbstractPiece[8, 8];
-            PieceBoard[1, 1] = new SamplePiece(new V2(1, 1));
+            PieceBoard[1, 1] = new Piece(new V2(1, 1), 0, this);
+            PieceBoard[6, 6] = new Piece(new V2(6, 6), 1, this);
         }
 
         public override BoardRenderInfo GetBoardRenderInfo()

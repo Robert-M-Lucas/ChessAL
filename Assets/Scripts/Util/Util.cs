@@ -29,6 +29,23 @@ public static class Util
     }
 
     /// <summary>
+    /// Retrieves a list of all subclasses of AbstractPiece
+    /// </summary>
+    /// <returns></returns>
+    public static List<AbstractPiece> GetAllPieces()
+    {
+        List<AbstractPiece> pieces = new List<AbstractPiece>();
+
+        foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+                 .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece))))
+        {
+            pieces.Add((AbstractPiece)Activator.CreateInstance(type, new object[] { new V2(0, 0), 0, null }));
+        }
+
+        return pieces;
+    }
+
+    /// <summary>
     /// Strips a string of invisible characters
     /// </summary>
     /// <param name="input"></param>

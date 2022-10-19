@@ -3,25 +3,25 @@ using UnityEngine;
 
 namespace Gamemodes.Sample
 {
-    public class SampleGameManagerData : AbstractGameManagerData
+    public class GameManagerData : AbstractGameManagerData
     {
         public override AbstractGameManager Instantiate(ChessManager chessManager)
         {
-            return new SampleGameManager(this, chessManager);
+            return new GameManager(this, chessManager);
         }
 
         public override int GetUID() => 1;
 
         public override string GetName() => "Sample Gamemode";
 
-        public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 2) };
+        public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 
-    public class SampleGameManager : AbstractGameManager
+    public class GameManager : AbstractGameManager
     {
-        public SampleGameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
         {
-            Board = new SampleBoard();
+            Board = new Board(this);
         }
 
         public override void LoadData(byte[] data)

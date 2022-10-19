@@ -18,9 +18,9 @@ using Gamemodes;
 [InitializeOnLoad]
 public class Tests
 {
-    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers, TestValidators, TestV2 };
+    private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers, TestPieces, TestValidators, TestV2 };
 
-    private static string output_string = "Test log:\n";
+    private static string output_string = "Test log: [...]\n";
 
     static Tests()
     {
@@ -97,6 +97,28 @@ public class Tests
         foreach (AbstractGameManagerData data in abstract_game_managers_data)
         {
             if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Gamemode UID ({data.GetUID()}) used twice"); return false; }
+            used_uids.Add(data.GetUID());
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Runs various tests on game managers
+    /// </summary>
+    /// <returns></returns>
+    private static bool TestPieces()
+    {
+        output_string += "Running Piece Tests\n";
+
+        // Get all AbstractGameManagerData
+        List<AbstractPiece> pieces = Util.GetAllPieces();
+
+        // Ensure no duplicate UIDs
+        HashSet<int> used_uids = new HashSet<int>();
+        foreach (AbstractPiece data in pieces)
+        {
+            if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Piece UID ({data.GetUID()}) used twice"); return false; }
             used_uids.Add(data.GetUID());
         }
 

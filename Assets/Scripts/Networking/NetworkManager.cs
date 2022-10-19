@@ -49,6 +49,16 @@ public class NetworkManager : MonoBehaviour
     public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList() => client?.PlayerData ?? throw new NullReferenceException();
     public int GetLocalPlayerID() => client!.PlayerID;
 
+    public int GetPlayerByTeam(int team, int playerInTeam)
+    {
+        foreach (ClientPlayerData player_data in client!.PlayerData.Values)
+        {
+            if (player_data.Team == team && player_data.PlayerInTeam == playerInTeam) return player_data.PlayerID;
+        }
+
+        throw new Exception("Player not found");
+    }
+
     /// <summary>
     /// Hosts a game
     /// </summary>

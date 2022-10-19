@@ -15,9 +15,15 @@ namespace Gamemodes
         /// </summary>
         public int AppearanceID;
 
-        public AbstractPiece(V2 position)
+        public int Team;
+
+        public AbstractBoard Board;
+
+        public AbstractPiece(V2 position, int team, AbstractBoard board)
         {
             Position = position;
+            Team = team;
+            Board = board;
         }
 
         public virtual List<Move> GetMoves() { return new List<Move>(); }

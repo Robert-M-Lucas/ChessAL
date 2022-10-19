@@ -67,6 +67,10 @@ public class VisualManager : MonoBehaviour
         GameObject new_gameobject = Instantiate(PiecePrefab);
         pieces.Add(new_gameobject);
         Image image = new_gameobject.GetComponent<Image>();
+        if (ColorMap.Map.ContainsKey(piece.Team))
+        {
+            image.color = ColorMap.Map[piece.Team];
+        }
         RectTransform rect = new_gameobject.GetComponent<RectTransform>();
 
         new_gameobject.SetActive(true);
