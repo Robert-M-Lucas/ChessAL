@@ -20,7 +20,11 @@ namespace Gamemodes.Sample
                 new Move(Position, Position + new V2(1, 1)),
                 new Move(Position, Position + new V2(-1, 1)),
                 new Move(Position, Position + new V2(1, -1)),
-                new Move(Position, Position + new V2(-1, -1))
+                new Move(Position, Position + new V2(-1, -1)),
+                new Move(Position, Position + new V2(0, -1)),
+                new Move(Position, Position + new V2(-1, 0)),
+                new Move(Position, Position + new V2(0, 1)),
+                new Move(Position, Position + new V2(1, 0)),
             };
         }
 
