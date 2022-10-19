@@ -13,7 +13,8 @@ namespace Gamemodes
 
             for (int i = 0; i < moves.Count; i++)
             {
-                if (boardRenderInfo.RemovedSquares.Contains(moves[i].To) || moves[i].To.X < 0 || moves[i].To.Y < 0 || moves[i].To.X >= boardRenderInfo.BoardSize || moves[i].To.Y >= boardRenderInfo.BoardSize)
+                if (boardRenderInfo.RemovedSquares.Contains(moves[i].To) || moves[i].To.X < 0 || moves[i].To.Y < 0 
+                    || moves[i].To.X >= boardRenderInfo.BoardSize || moves[i].To.Y >= boardRenderInfo.BoardSize)
                 {
                     moves.RemoveAt(i);
                     i--;
@@ -66,6 +67,33 @@ namespace Gamemodes
                     moves.RemoveAt(i);
                     i--;
                 }
+            }
+
+            return moves;
+        }
+
+        public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board)
+        {
+            List<Move> moves = new List<Move>();
+
+            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+
+            V2 current_pos = piece.Position + direction;
+            while (true)
+            {
+                if (boardRenderInfo.RemovedSquares.Contains(current_pos) || current_pos.X < 0 || current_pos.Y < 0
+                    || current_pos.X >= boardRenderInfo.BoardSize || current_pos.Y >= boardRenderInfo.BoardSize)
+                    break;
+
+                if (board.PieceBoard[current_pos.X, current_pos.Y] is not null)
+                {
+                    if (board.PieceBoard[current_pos.X, current_pos.Y].Team == piece.Team) break;
+                    moves.Add(new Move(piece.Position, current_pos));
+                    break;
+                }
+
+                moves.Add(new Move(piece.Position, current_pos));
+                current_pos += direction;
             }
 
             return moves;

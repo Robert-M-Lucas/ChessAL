@@ -32,6 +32,24 @@ namespace Gamemodes.NormalChess
 
             PieceBoard[4, 0] = new KingPiece(new V2(4, 0), 0, this);
             PieceBoard[4, 7] = new KingPiece(new V2(4, 7), 1, this);
+
+            PieceBoard[1, 0] = new KnightPiece(new V2(1, 0), 0, this);
+            PieceBoard[6, 0] = new KnightPiece(new V2(6, 0), 0, this);
+            PieceBoard[1, 7] = new KnightPiece(new V2(1, 7), 1, this);
+            PieceBoard[6, 7] = new KnightPiece(new V2(6, 7), 1, this);
+
+            PieceBoard[2, 0] = new BishopPiece(new V2(2, 0), 0, this);
+            PieceBoard[5, 0] = new BishopPiece(new V2(5, 0), 0, this);
+            PieceBoard[2, 7] = new BishopPiece(new V2(2, 7), 1, this);
+            PieceBoard[5, 7] = new BishopPiece(new V2(5, 7), 1, this);
+
+            PieceBoard[0, 0] = new RookPiece(new V2(0, 0), 0, this);
+            PieceBoard[7, 0] = new RookPiece(new V2(7, 0), 0, this);
+            PieceBoard[0, 7] = new RookPiece(new V2(0, 7), 1, this);
+            PieceBoard[7, 7] = new RookPiece(new V2(7, 7), 1, this);
+
+            PieceBoard[3, 0] = new QueenPiece(new V2(3, 0), 0, this);
+            PieceBoard[3, 7] = new QueenPiece(new V2(3, 7), 1, this);
         }
 
         public override BoardRenderInfo GetBoardRenderInfo()
