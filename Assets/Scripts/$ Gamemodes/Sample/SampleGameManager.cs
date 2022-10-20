@@ -12,7 +12,7 @@ namespace Gamemodes.Sample
 
         public override int GetUID() => 1;
 
-        public override string GetName() => "Sample Gamemode";
+        public override string GetName() => "Sample";
 
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
