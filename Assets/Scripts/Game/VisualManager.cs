@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Gamemodes;
 using System.Net.NetworkInformation;
+using TMPro;
 
 public class VisualManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class VisualManager : MonoBehaviour
     public GameObject BlockedSquare;
     public GameObject PiecePrefab;
     public GameObject MoveOptionPrefab;
+
+    public TMP_Text TeamWinText;
 
     private ChessManager chessManager;
     private Resolution resolution = new Resolution();
@@ -39,6 +42,12 @@ public class VisualManager : MonoBehaviour
         boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
         RenderBoardBackground();
         UpdateAllPieces();
+    }
+
+    public void OnTeamWin(int team)
+    {
+        TeamWinText.text = $"Team {team} won!";
+        TeamWinText.gameObject.SetActive(true);
     }
 
     /// <summary>

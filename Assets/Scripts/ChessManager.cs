@@ -161,8 +161,19 @@ public class ChessManager : MonoBehaviour
 
         VisualManager.UpdateAllPieces();
 
+        if (nextPlayer < 0)
+        {
+            OnTeamWin(-(nextPlayer + 1));
+            return;
+        }
+
         if (nextPlayer == GetLocalPlayerID()) OnTurn();
         else prevPlayer = nextPlayer;
+    }
+
+    public void OnTeamWin(int team)
+    {
+        VisualManager.OnTeamWin(team);
     }
 
     public void GetLocalMove(V2 from, V2 to)

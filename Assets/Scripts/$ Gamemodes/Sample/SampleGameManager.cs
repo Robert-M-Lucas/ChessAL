@@ -41,8 +41,15 @@ namespace Gamemodes.Sample
             Board.PieceBoard[to.X, to.Y].Position = to;
             Board.PieceBoard[from.X, from.Y] = null;
 
-            if (chessManager.GetLocalPlayerID() == 0) return 1;
-            return 0;
+            if (Random.Range(0, 100) > 10)
+            {
+                if (chessManager.GetLocalPlayerID() == 0) return 1;
+                return 0;
+            }
+            else
+            {
+                return -((int) Mathf.Floor(Random.Range(0, 1.999f))) - 1;
+            }
         }
     }
 }

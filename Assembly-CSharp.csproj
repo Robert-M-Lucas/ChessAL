@@ -98,6 +98,7 @@
     <Compile Include="Assets\Scripts\Networking\Packets\6_ServerInformOfClientDisconnectPacket.cs" />
     <Compile Include="Assets\Scripts\$ Gamemodes\Sample\SampleBoard.cs" />
     <Compile Include="Assets\Scripts\Main Menu\MenuUIManager.cs" />
+    <Compile Include="Assets\Scripts\Main Menu\PlayerCardController.cs" />
     <Compile Include="Assets\Scripts\Networking\Packets\2_ServerKickPacket.cs" />
     <Compile Include="Assets\Scripts\Abstract Gamemode\GamemodeUtil.cs" />
     <Compile Include="Assets\Scripts\Networking\InternalServerPacketHandler.cs" />
@@ -113,7 +114,6 @@
     <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\KnightPiece.cs" />
     <Compile Include="Assets\Scripts\Networking\ServerPlayerData.cs" />
     <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\QueenPiece.cs" />
-    <Compile Include="Assets\Scripts\Main Menu\PlayerCardController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -867,21 +867,21 @@
       <Project>{6F905C79-5803-87A1-56DE-96E0B2C17A52}</Project>
       <Name>Unity.Timeline.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.csproj">
-      <Project>{C852CEE4-6E4E-E0B9-C9D2-36C3A3DCB188}</Project>
-      <Name>Unity.TestTools.CodeCoverage.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.State.csproj">
-      <Project>{53CF2079-7AD1-840F-8F45-5B70EC872EA0}</Project>
-      <Name>Unity.VisualScripting.State</Name>
-    </ProjectReference>
     <ProjectReference Include="DualPlay.Settings.csproj">
       <Project>{91A7DA03-16A5-C4D6-C923-FD0E78E75CD6}</Project>
       <Name>DualPlay.Settings</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.TestTools.CodeCoverage.Editor.csproj">
+      <Project>{C852CEE4-6E4E-E0B9-C9D2-36C3A3DCB188}</Project>
+      <Name>Unity.TestTools.CodeCoverage.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="DualPlay.Editor.csproj">
       <Project>{5627F967-0D20-915D-CAF2-926423FDFDC8}</Project>
       <Name>DualPlay.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.State.csproj">
+      <Project>{53CF2079-7AD1-840F-8F45-5B70EC872EA0}</Project>
+      <Name>Unity.VisualScripting.State</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
