@@ -79,14 +79,14 @@ public class MenuUIManager : MonoBehaviour
         string? validation_result = Validators.ValidatePlayerName(HostNameInput.text);
         if (validation_result is not null)
         {
-            HostNameDisallowedReason.text = "Name: " + validation_result;
+            HostNameDisallowedReason.text = "[Name] " + validation_result;
             return;
         }
 
         validation_result = Validators.ValidatePassword(HostPasswordInput.text);
         if (validation_result is not null)
         {
-            HostNameDisallowedReason.text = "Password: " + validation_result;
+            HostNameDisallowedReason.text = "[Password] " + validation_result;
             return;
         }
 
