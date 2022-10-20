@@ -74,7 +74,9 @@
     <Compile Include="Assets\Scripts\Game\BoardRenderInfo.cs" />
     <Compile Include="Assets\Scripts\Abstract Gamemode\AbstractGameManager.cs" />
     <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\KingPiece.cs" />
+    <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\RookPiece.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkManager.cs" />
+    <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\BishopPiece.cs" />
     <Compile Include="Assets\Scripts\Util\BuildIndex.cs" />
     <Compile Include="Assets\Scripts\Util\ColorMap.cs" />
     <Compile Include="Assets\Scripts\Networking\InternalClientPacketHandler.cs" />
@@ -108,10 +110,8 @@
     <Compile Include="Assets\Scripts\K.cs" />
     <Compile Include="Assets\Scripts\Networking\Unused Packets\204_MoveUpdatePacket.cs" />
     <Compile Include="Assets\Scripts\Abstract Gamemode\AbstractBoard.cs" />
-    <Compile Include="Assets\Scripts\Networking\ServerPlayerData.cs" />
     <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\KnightPiece.cs" />
-    <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\BishopPiece.cs" />
-    <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\RookPiece.cs" />
+    <Compile Include="Assets\Scripts\Networking\ServerPlayerData.cs" />
     <Compile Include="Assets\Scripts\$ Gamemodes\Normal Chess\QueenPiece.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -774,6 +774,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{BAAABEA2-EC1C-0726-6F37-C737182412B8}</Project>
+      <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
       <Project>{88849E93-8213-C43C-5C90-6C9078C78537}</Project>
       <Name>Unity.VisualScripting.Flow.Editor</Name>
@@ -869,6 +873,14 @@
     <ProjectReference Include="Unity.VisualScripting.State.csproj">
       <Project>{53CF2079-7AD1-840F-8F45-5B70EC872EA0}</Project>
       <Name>Unity.VisualScripting.State</Name>
+    </ProjectReference>
+    <ProjectReference Include="DualPlay.Settings.csproj">
+      <Project>{91A7DA03-16A5-C4D6-C923-FD0E78E75CD6}</Project>
+      <Name>DualPlay.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="DualPlay.Editor.csproj">
+      <Project>{5627F967-0D20-915D-CAF2-926423FDFDC8}</Project>
+      <Name>DualPlay.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
