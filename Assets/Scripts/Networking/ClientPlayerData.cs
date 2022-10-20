@@ -13,14 +13,14 @@ namespace Networking.Client
         /// <summary>
         /// E.g. Player *1* in team x
         /// </summary>
-        public int PlayerInTeam;
+        public int PlayerOnTeam;
 
         public ClientPlayerData(int playerID, string name, int team, int playerInTeam)
         {
             PlayerID = playerID;
             Name = name;
             Team = team;
-            PlayerInTeam = playerInTeam;
+            PlayerOnTeam = playerInTeam;
         }
     }
 }

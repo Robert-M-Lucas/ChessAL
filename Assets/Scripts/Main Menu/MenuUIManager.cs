@@ -24,9 +24,11 @@ public class MenuUIManager : MonoBehaviour
     public TMP_Dropdown HostGamemodeDropdown = default!;
     public TMP_Text HostStatusText = default!;
     public Button HostStartButton = default!;
+    /*
     public TMP_InputField HostPlayerIDInput = default!;
     public TMP_InputField HostTeamInput = default!;
     public TMP_InputField HostPlayerInTeamInput = default!;
+    */
 
     public GameObject HostScreen = default!;
     private bool showingHostScreen;
@@ -42,7 +44,9 @@ public class MenuUIManager : MonoBehaviour
     private bool showingJoinScreen;
     public TMP_Text JoinStatusText = default!;
 
-    public TMP_Text LobbyDisplay = default!;
+    public GameObject LobbyDisplay = default!;
+    public PlayerCardController PlayerCardPrefab = default!;
+    private List<PlayerCardController> playerCardControllers = new List<PlayerCardController>();
     #endregion
 
     private ChessManager chessManager = default!;
@@ -125,6 +129,7 @@ public class MenuUIManager : MonoBehaviour
         HostStartButton.gameObject.SetActive(false);
     }
 
+    /*
     public void HostSetTeam()
     {
         try
@@ -133,6 +138,7 @@ public class MenuUIManager : MonoBehaviour
         }
         catch (FormatException) { }
     }
+    */
 
     public void HostStartGame() => chessManager.HostStartGame();
 
@@ -203,11 +209,62 @@ public class MenuUIManager : MonoBehaviour
 
     public void UpdateLobbyDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
     {
-        LobbyDisplay.text = "";
-        foreach (ClientPlayerData player in playerData.Values)
+        List<PlayerCardController> to_remove = new List<PlayerCardController>();
+
+        foreach (PlayerCardController player_card in playerCardControllers)
         {
-            LobbyDisplay.text += $"[ID:{player.PlayerID}] {player.Name} - [Team:{player.Team}, Player:{player.PlayerInTeam}]\n";
+            if (!playerData.ContainsKey(player_card.PlayerID))
+            {
+                Destroy(player_card.gameObject);
+                to_remove.Add(player_card);
+            }
+            else
+            {
+                ClientPlayerData player_data = playerData[player_card.PlayerID];
+                player_card.PlayerName = player_data.Name;
+                player_card.Team = player_data.Team;
+                player_card.PlayerOnTeam = player_data.PlayerOnTeam;
+                player_card.UpdateFields();
+            }
         }
+
+        foreach (PlayerCardController player_card in to_remove) playerCardControllers.Remove(player_card);
+
+
+        foreach (ClientPlayerData player_data in playerData.Values)
+        {
+            bool shown = false;
+            foreach (PlayerCardController player_card in playerCardControllers)
+            {
+                if (player_card.PlayerID == player_data.PlayerID)
+                { 
+                    shown = true; 
+                    break;
+                }
+            }
+
+            if (!shown) CreatePlayerCard(player_data);
+        }
+    }
+
+    private void CreatePlayerCard(ClientPlayerData playerData)
+    {
+        GameObject new_card = Instantiate(PlayerCardPrefab.gameObject);
+        PlayerCardController card_controller = new_card.GetComponent<PlayerCardController>();
+        card_controller.PlayerID = playerData.PlayerID;
+        card_controller.PlayerName = playerData.Name;
+        card_controller.Team = playerData.Team;
+        card_controller.PlayerOnTeam = playerData.PlayerOnTeam;
+        card_controller.ChessManager = chessManager;
+        card_controller.MenuUIManager = this;
+
+        new_card.transform.SetParent(PlayerCardPrefab.transform.parent);
+
+        card_controller.UpdateFields();
+
+        playerCardControllers.Add(card_controller);
+
+        new_card.SetActive(true);
     }
 
     // Update is called once per frame

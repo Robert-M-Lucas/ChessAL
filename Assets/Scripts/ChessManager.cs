@@ -17,10 +17,10 @@ public class ChessManager : MonoBehaviour
 
     public MenuUIManager menuUI = default!;
 
-    public InputManager inputManager = default!;
-    public VisualManager visualManager = default!;
+    public InputManager InputManager = default!;
+    public VisualManager VisualManager = default!;
 
-    public AbstractGameManagerData currentGameManager = default!;
+    public AbstractGameManagerData CurrentGameManager = default!;
     private byte[] saveData = new byte[0];
     public AbstractGameManager GameManager = default!;
     public bool InGame = false;
@@ -50,22 +50,22 @@ public class ChessManager : MonoBehaviour
         }
         else // Main Scene
         {
-            inputManager = FindObjectOfType<InputManager>();
-            visualManager = FindObjectOfType<VisualManager>();
+            InputManager = FindObjectOfType<InputManager>();
+            VisualManager = FindObjectOfType<VisualManager>();
             InGame = true;
 
             // Later load from save data
             int team_start = 0;
             int player_in_team_start = 0;
             ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
-            if (local_player.Team == team_start && local_player.PlayerInTeam == player_in_team_start) { OnTurn(); }
+            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) { OnTurn(); }
         }
 
     }
 
     public void Host(HostSettings hostSettings)
     {
-        currentGameManager = hostSettings.GameMode;
+        CurrentGameManager = hostSettings.GameMode;
         networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
     }
 
@@ -80,7 +80,7 @@ public class ChessManager : MonoBehaviour
         {
             if (g.GetUID() == gameMode)
             {
-                currentGameManager = g;
+                CurrentGameManager = g;
                 break;
             }
         }
@@ -112,7 +112,7 @@ public class ChessManager : MonoBehaviour
     private void LoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
-        GameManager = currentGameManager.Instantiate(this);
+        GameManager = CurrentGameManager.Instantiate(this);
         if (saveData.Length > 0) GameManager.LoadData(saveData);
     }
 
@@ -120,6 +120,11 @@ public class ChessManager : MonoBehaviour
     {
         SceneManager.LoadScene(1); // Load menu scene
         InGame = false;
+    }
+
+    public bool IsHost()
+    {
+        return networkManager.IsHost;
     }
 
     public int GetLocalPlayerID()
@@ -143,8 +148,8 @@ public class ChessManager : MonoBehaviour
         prevPlayer = GetLocalPlayerID();
         MyTurn = true;
         var possible_moves = GameManager.GetMoves();
-        visualManager.SetPossibleMoves(possible_moves);
-        inputManager.SetPossibleMoves(possible_moves);
+        VisualManager.SetPossibleMoves(possible_moves);
+        InputManager.SetPossibleMoves(possible_moves);
     }
 
     public void OnForeignMoveUpdate(int nextPlayer, V2 from, V2 to) => monobehaviourActions.Enqueue(() => OnForeignMove(nextPlayer, from, to));
@@ -154,7 +159,7 @@ public class ChessManager : MonoBehaviour
         Debug.Log("Foreign Move");
         if (prevPlayer != GetLocalPlayerID()) GameManager.OnMove(from, to);
 
-        visualManager.UpdateAllPieces();
+        VisualManager.UpdateAllPieces();
 
         if (nextPlayer == GetLocalPlayerID()) OnTurn();
         else prevPlayer = nextPlayer;

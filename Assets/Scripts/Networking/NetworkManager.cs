@@ -53,7 +53,7 @@ public class NetworkManager : MonoBehaviour
     {
         foreach (ClientPlayerData player_data in client!.PlayerData.Values)
         {
-            if (player_data.Team == team && player_data.PlayerInTeam == playerInTeam) return player_data.PlayerID;
+            if (player_data.Team == team && player_data.PlayerOnTeam == playerInTeam) return player_data.PlayerID;
         }
 
         throw new Exception("Player not found");
@@ -105,6 +105,7 @@ public class NetworkManager : MonoBehaviour
         client?.GetPing(OnPing);
 
         chessManager.HostSucceed();
+        OnPlayersChange();
     }
     public void OnJoinSuccessOrFail(string? status)
     {
@@ -118,6 +119,7 @@ public class NetworkManager : MonoBehaviour
         client?.GetPing(OnPing);
 
         chessManager.JoinSucceed();
+        OnPlayersChange();
     }
     public void OnClientKick(string reason) => chessManager.JoinFailed(reason);
     public void OnPlayersChange() => chessManager.PlayerListUpdate();
