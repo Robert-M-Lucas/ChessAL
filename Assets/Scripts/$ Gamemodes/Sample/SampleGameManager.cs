@@ -48,7 +48,7 @@ namespace Gamemodes.Sample
             }
             else
             {
-                return -((int) Mathf.Floor(Random.Range(0, 1.999f))) - 1;
+                return GamemodeUtil.TeamToEncodedNextTurn((int) Mathf.Floor(Random.Range(0, 1.999f)));
             }
         }
     }

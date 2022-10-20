@@ -108,5 +108,10 @@ namespace Gamemodes
 
             return chessManager.GetPlayerByTeam(team, 0);
         }
+
+        public static int TeamToEncodedNextTurn(int winningTeam)
+        {
+            return -winningTeam - 1;
+        }
     }
 }
