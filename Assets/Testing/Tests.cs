@@ -138,7 +138,8 @@ public class Tests
             new Tuple<string, bool>("PlayerName", true), 
             new Tuple<string, bool>("Player Name", false), // Illegal char
             new Tuple<string, bool>("1234", true),
-            new Tuple<string, bool>("pls", false), // Too short
+            new Tuple<string, bool>("pls", false),
+            new Tuple<string, bool>("", false),// Too short
             new Tuple<string, bool>("rjfnsmekfntismes", true),
             new Tuple<string, bool>("rjfnsmekfntismess", false), // Too long
         };
