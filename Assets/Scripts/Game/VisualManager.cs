@@ -46,7 +46,7 @@ public class VisualManager : MonoBehaviour
 
     public void OnTeamWin(int team)
     {
-        TeamWinText.text = $"Team {team} won!";
+        TeamWinText.text = $"Team {team + 1} won!";
         TeamWinText.gameObject.SetActive(true);
     }
 
