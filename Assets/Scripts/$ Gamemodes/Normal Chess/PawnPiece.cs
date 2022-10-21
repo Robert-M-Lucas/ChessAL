@@ -91,6 +91,7 @@ namespace Gamemodes.NormalChess
 
             if ((to.Y == 7 && Team == 0) || (to.Y == 0 && Team == 1))
             {
+                (Board.GameManager as GameManager).CancelDefaultMove = true;
                 Board.PieceBoard[to.X, to.Y] = new QueenPiece(to, Team, Board);
                 Board.PieceBoard[from.X, from.Y] = null;
             }
