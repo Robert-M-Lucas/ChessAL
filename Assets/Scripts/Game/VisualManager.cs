@@ -6,9 +6,16 @@ using Gamemodes;
 using System.Net.NetworkInformation;
 using TMPro;
 
+[System.Serializable]
+public class PieceSprite
+{
+    public string Name;
+    public Sprite Sprite;
+}
+
 public class VisualManager : MonoBehaviour
 {
-    public Sprite[] PieceSprites;
+    public PieceSprite[] PieceSprites;
 
     public RectTransform renderBox;
 
@@ -76,11 +83,6 @@ public class VisualManager : MonoBehaviour
         GameObject new_gameobject = Instantiate(PiecePrefab);
         pieces.Add(new_gameobject);
         Image image = new_gameobject.GetComponent<Image>();
-        if (ColorMap.Map.ContainsKey(piece.Team))
-        {
-            image.color = ColorMap.Map[piece.Team];
-        }
-        RectTransform rect = new_gameobject.GetComponent<RectTransform>();
 
         new_gameobject.SetActive(true);
 
@@ -96,7 +98,7 @@ public class VisualManager : MonoBehaviour
     private void UpdatePiece(AbstractPiece piece)
     {
         Image image = piece_images[piece];
-        image.sprite = PieceSprites[piece.AppearanceID];
+        image.sprite = PieceSprites[piece.AppearanceID].Sprite;
 
         SizeGameObject(image.gameObject, piece.Position);
     }

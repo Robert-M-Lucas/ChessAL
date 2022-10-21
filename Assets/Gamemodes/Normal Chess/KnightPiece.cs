@@ -10,6 +10,7 @@ namespace Gamemodes.NormalChess
         public KnightPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
             AppearanceID = 2;
+            if (team != 0) AppearanceID += 6;
         }
 
         public override List<Move> GetMoves()
