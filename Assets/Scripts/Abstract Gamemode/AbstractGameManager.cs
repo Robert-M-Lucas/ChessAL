@@ -51,11 +51,20 @@ namespace Gamemodes
         }
 
         /// <summary>
+        /// Pass turn on if no moves are available
+        /// </summary>
+        /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
+        public virtual int OnNoMoves()
+        {
+            return -1;
+        }
+
+        /// <summary>
         /// Handles an incoming move (local or foreign)
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        /// <returns>Next player's turn</returns>
+        /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
         public virtual int OnMove(V2 from, V2 to)
         {
             Board.OnMove(from, to);

@@ -52,6 +52,11 @@ namespace Gamemodes.NormalChess
             PieceBoard[3, 7] = new QueenPiece(new V2(3, 7), 1, this);
         }
 
+        public override void OnMove(V2 from, V2 to)
+        {
+            PieceBoard[from.X, from.Y].OnMove(from, to);
+        }
+
         public override BoardRenderInfo GetBoardRenderInfo()
         {
             return new BoardRenderInfo(8, new List<V2>());

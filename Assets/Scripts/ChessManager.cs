@@ -148,6 +148,11 @@ public class ChessManager : MonoBehaviour
         prevPlayer = GetLocalPlayerID();
         MyTurn = true;
         var possible_moves = GameManager.GetMoves();
+        if (possible_moves.Count == 0)
+        {
+            OnLocalMove(GameManager.OnNoMoves(), new V2(0, 0), new V2(0, 0));
+            return;
+        }
         VisualManager.SetPossibleMoves(possible_moves);
         InputManager.SetPossibleMoves(possible_moves);
     }

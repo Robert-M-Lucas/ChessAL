@@ -9,12 +9,11 @@ namespace Gamemodes
     {
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)
         {
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+            
 
             for (int i = 0; i < moves.Count; i++)
             {
-                if (boardRenderInfo.RemovedSquares.Contains(moves[i].To) || moves[i].To.X < 0 || moves[i].To.Y < 0 
-                    || moves[i].To.X >= boardRenderInfo.BoardSize || moves[i].To.Y >= boardRenderInfo.BoardSize)
+                if (!IsOnBoard(moves[i].To, board))
                 {
                     moves.RemoveAt(i);
                     i--;
@@ -22,6 +21,14 @@ namespace Gamemodes
             }
 
             return moves;
+        }
+
+        public static bool IsOnBoard(V2 position, AbstractBoard board)
+        {
+            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+
+            return !(boardRenderInfo.RemovedSquares.Contains(position) || position.X < 0 || position.Y < 0
+                    || position.X >= boardRenderInfo.BoardSize || position.Y >= boardRenderInfo.BoardSize);
         }
 
         public static List<Move> RemoveFriendlies(List<Move> moves, AbstractBoard board)

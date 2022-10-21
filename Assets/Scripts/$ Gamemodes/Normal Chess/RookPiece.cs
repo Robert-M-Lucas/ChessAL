@@ -7,6 +7,8 @@ namespace Gamemodes.NormalChess
 {
     public class RookPiece : AbstractPiece
     {
+        public bool HasMoved;
+
         public RookPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
             AppearanceID = 4;
@@ -25,12 +27,12 @@ namespace Gamemodes.NormalChess
             return moves;
         }
 
-        /*
+        
         public override void OnMove(V2 from, V2 to)
         {
-
+            HasMoved = true;
         }
-        */
+        
 
         public override int GetUID() => 6;
     }
