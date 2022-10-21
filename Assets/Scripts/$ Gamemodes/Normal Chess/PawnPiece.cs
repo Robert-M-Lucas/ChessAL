@@ -27,10 +27,10 @@ namespace Gamemodes.NormalChess
 
             // En passant logic
 
-            if (GamemodeUtil.IsOnBoard(Position + new V2(1, 1 * m), Board) && // Is move to square empty
+            if (GUtil.IsOnBoard(Position + new V2(1, 1 * m), Board) && // Is move to square empty
                 Board.GetPiece(Position + new V2(1, 1 * m)) is null)
             {
-                if (GamemodeUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(1, 0)) is not null) // Is there a piece beside me
+                if (GUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(1, 0)) is not null) // Is there a piece beside me
                 {
                     AbstractPiece piece = Board.GetPiece(Position + new V2(1, 0));
                     if (piece.GetUID() == GetUID() && // Is this a pawn, dashed last turn and not on my team
@@ -43,10 +43,10 @@ namespace Gamemodes.NormalChess
                 attacking_moves.Add(new Move(Position, Position + new V2(1, 1 * m)));
             }
 
-            if (GamemodeUtil.IsOnBoard(Position + new V2(-1, 1 * m), Board) &&
+            if (GUtil.IsOnBoard(Position + new V2(-1, 1 * m), Board) &&
                 Board.GetPiece(Position + new V2(-1, 1 * m)) is null)
             {
-                if (GamemodeUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(-1, 0)) is not null)
+                if (GUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(-1, 0)) is not null)
                 {
                     AbstractPiece piece = Board.GetPiece(Position + new V2(-1, 0));
                     if (piece.GetUID() == GetUID() && 
@@ -59,14 +59,14 @@ namespace Gamemodes.NormalChess
                 attacking_moves.Add(new Move(Position, Position + new V2(-1, 1 * m)));
             }
 
-            attacking_moves = GamemodeUtil.RemoveNonEnemy(GamemodeUtil.RemoveBlocked(attacking_moves, Board), Board);
+            attacking_moves = GUtil.RemoveNonEnemy(GUtil.RemoveBlocked(attacking_moves, Board), Board);
 
             if (!HasMoved)
             {
                 forward_moves.Add(new Move(Position, Position + new V2(0, 2 * m)));
             }
 
-            forward_moves = GamemodeUtil.RemoveNonEmpty(GamemodeUtil.RemoveBlocked(forward_moves, Board), Board);
+            forward_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(forward_moves, Board), Board);
             return forward_moves.Concat(attacking_moves).Concat(en_passant).ToList();
         }
 

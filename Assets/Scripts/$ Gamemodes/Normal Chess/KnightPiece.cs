@@ -26,7 +26,7 @@ namespace Gamemodes.NormalChess
                 new Move(Position, Position + new V2(-2, -1)),
             };
            
-            return GamemodeUtil.RemoveFriendlies(GamemodeUtil.RemoveBlocked(moves, Board), Board);
+            return GUtil.RemoveFriendlies(GUtil.RemoveBlocked(moves, Board), Board);
         }
 
         /*

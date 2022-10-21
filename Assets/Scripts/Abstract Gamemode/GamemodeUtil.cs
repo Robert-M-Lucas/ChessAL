@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gamemodes
 {
-    public static class GamemodeUtil
+    public static class GUtil
     {
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)
         {
@@ -116,7 +116,7 @@ namespace Gamemodes
             return chessManager.GetPlayerByTeam(team, 0);
         }
 
-        public static int TeamToEncodedNextTurn(int winningTeam)
+        public static int TurnEncodeTeam(int winningTeam)
         {
             return -winningTeam - 1;
         }

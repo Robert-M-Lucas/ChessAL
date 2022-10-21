@@ -39,7 +39,7 @@ namespace Gamemodes.NormalChess
 
         public override int OnNoMoves()
         {
-            return GamemodeUtil.TeamToEncodedNextTurn(GamemodeUtil.SwitchPlayerTeam(chessManager));
+            return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(chessManager));
         }
 
         public override int OnMove(V2 from, V2 to)
@@ -58,7 +58,27 @@ namespace Gamemodes.NormalChess
 
             MoveCounter ++;
 
-            return GamemodeUtil.SwitchPlayerTeam(chessManager);
+            bool white_king = false;
+            bool black_king = false;
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    if (Board.PieceBoard[x, y] is not null)
+                    {
+                        if (Board.PieceBoard[x, y].GetUID() == PieceUIDs.KING)
+                        {
+                            if (Board.PieceBoard[x, y].Team == 0) white_king = true;
+                            else black_king = true;
+                        }
+                    }
+                }
+            }
+
+            if (!white_king) return GUtil.TurnEncodeTeam(1);
+            if (!black_king) return GUtil.TurnEncodeTeam(0);
+
+            return GUtil.SwitchPlayerTeam(chessManager);
         }
     }
 }

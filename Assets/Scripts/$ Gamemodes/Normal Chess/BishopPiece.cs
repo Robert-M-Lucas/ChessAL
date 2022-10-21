@@ -19,7 +19,7 @@ namespace Gamemodes.NormalChess
             V2[] directions = new V2[] { new V2(1, 1), new V2(-1, 1), new V2(1, -1), new V2(-1, -1) };
             foreach (V2 direction in directions)
             {
-                moves = moves.Concat(GamemodeUtil.RaycastMoves(this, direction, Board)).ToList();
+                moves = moves.Concat(GUtil.RaycastMoves(this, direction, Board)).ToList();
             }
            
             return moves;

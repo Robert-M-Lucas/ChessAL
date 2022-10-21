@@ -30,7 +30,7 @@ namespace Gamemodes
 				}
 			}
 			
-			return GamemodeUtil.RemoveBlocked(moves.ToList(), this);
+			return GUtil.RemoveBlocked(moves.ToList(), this);
 		}
 
 		public AbstractPiece GetPiece(V2 position)
