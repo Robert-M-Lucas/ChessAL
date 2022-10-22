@@ -12,6 +12,10 @@ public class PieceSprite
     public Sprite Sprite;
 }
 
+
+/// <summary>
+/// Stores a map of Appearance IDs to Sprites
+/// </summary>
 [CreateAssetMenu(fileName = "AppearanceTable", menuName = "AppearanceTable", order = 1)]
 public class AppearanceTable: ScriptableObject
 {
