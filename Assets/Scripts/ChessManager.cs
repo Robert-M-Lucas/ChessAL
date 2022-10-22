@@ -216,7 +216,6 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
-        Debug.Log("Foreign Move");
         if (prevPlayer != GetLocalPlayerID()) GameManager.OnMove(from, to);
 
         VisualManager.UpdateAllPieces();
@@ -238,7 +237,6 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void GetLocalMove(V2 from, V2 to)
     {
-        Debug.Log("Get Local Move");
         int next_player = GameManager.OnMove(from, to);
         OnLocalMove(next_player, from, to);
     }
@@ -251,7 +249,6 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void OnLocalMove(int nextPlayer, V2 from, V2 to)
     {
-        Debug.Log("On Local Move");
         MyTurn = false;
         networkManager.OnLocalMove(nextPlayer, from, to);
     }

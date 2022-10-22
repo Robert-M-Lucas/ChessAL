@@ -61,7 +61,6 @@ namespace Networking.Server
         
         public void OnMoveUpdate(Packet packet)
         {
-            Debug.Log("Turn update");
             MoveUpdatePacket p = new MoveUpdatePacket(packet);
 
             server.SendToAll(MoveUpdatePacket.Build(p.NextPlayer, p.FromX, p.FromY, p.ToX, p.ToY));

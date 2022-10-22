@@ -34,14 +34,11 @@ public class InputManager : MonoBehaviour
 
     public void OnCellClick(V2 position)
     {
-        Debug.Log("Cell click");
         if (!chessManager.MyTurn)
         { 
             visualManager.HideMoves(); 
             return; 
         }
-
-        Debug.Log("Showing moves");
 
         if (showingMoves)
         {
