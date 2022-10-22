@@ -10,7 +10,7 @@ namespace Gamemodes.NormalChess
             return new GameManager(this, chessManager);
         }
 
-        public override int GetUID() => 2;
+        public override int GetUID() => 100;
 
         public override string GetName() => "Normal Chess";
 

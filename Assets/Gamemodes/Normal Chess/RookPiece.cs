@@ -11,7 +11,7 @@ namespace Gamemodes.NormalChess
 
         public RookPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 4;
+            AppearanceID = 104;
             if (team != 0) AppearanceID += 6;
         }
         

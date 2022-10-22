@@ -11,7 +11,7 @@ namespace Gamemodes.Sample
     {
         public Piece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 0;
+            AppearanceID = 100;
         }
 
         public override List<Move> GetMoves()

@@ -6,16 +6,12 @@ using Gamemodes;
 using System.Net.NetworkInformation;
 using TMPro;
 
-[System.Serializable]
-public class PieceSprite
-{
-    public string Name;
-    public Sprite Sprite;
-}
+
 
 public class VisualManager : MonoBehaviour
 {
-    public PieceSprite[] PieceSprites;
+    public AppearanceTable[] AppearanceTables;
+    private Dictionary<int, Sprite> internalSpriteTable;
 
     public RectTransform renderBox;
 
@@ -40,6 +36,17 @@ public class VisualManager : MonoBehaviour
     private List<GameObject> pieces = new List<GameObject>();
 
     private V2? currentlyShowing = null;
+
+    private void Awake()
+    {
+        foreach (AppearanceTable appearance_table in AppearanceTables)
+        {
+            foreach (PieceSprite piece_sprite in appearance_table.Appearances)
+            {
+                internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
+            }
+        }
+    }
 
     void Start()
     {
@@ -98,7 +105,7 @@ public class VisualManager : MonoBehaviour
     private void UpdatePiece(AbstractPiece piece)
     {
         Image image = piece_images[piece];
-        image.sprite = PieceSprites[piece.AppearanceID].Sprite;
+        image.sprite = internalSpriteTable[piece.AppearanceID];
 
         SizeGameObject(image.gameObject, piece.Position);
     }

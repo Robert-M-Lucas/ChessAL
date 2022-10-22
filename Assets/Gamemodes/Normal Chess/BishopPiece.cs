@@ -9,8 +9,9 @@ namespace Gamemodes.NormalChess
     {
         public BishopPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 3;
+            AppearanceID = 103;
             if (team != 0) AppearanceID += 6;
+            
         }
         
         public override List<Move> GetMoves()

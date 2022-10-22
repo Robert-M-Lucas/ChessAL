@@ -9,7 +9,7 @@ namespace Gamemodes.NormalChess
     {
         public KnightPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 2;
+            AppearanceID = 102;
             if (team != 0) AppearanceID += 6;
         }
 
