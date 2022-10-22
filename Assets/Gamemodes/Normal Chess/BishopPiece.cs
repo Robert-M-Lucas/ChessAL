@@ -34,6 +34,6 @@ namespace Gamemodes.NormalChess
         }
         */
 
-        public override int GetUID() => 5;
+        public override int GetUID() => 103;
     }
 }

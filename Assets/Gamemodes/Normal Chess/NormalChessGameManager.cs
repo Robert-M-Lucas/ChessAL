@@ -42,9 +42,8 @@ namespace Gamemodes.NormalChess
             return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(chessManager));
         }
 
-        public override int OnMove(V2 from, V2 to)
+        protected int FalseOnMove(V2 from, V2 to)
         {
-            Debug.Log("On move manager");
             CancelDefaultMove = false;
 
             base.OnMove(from, to);
@@ -56,7 +55,7 @@ namespace Gamemodes.NormalChess
                 Board.PieceBoard[from.X, from.Y] = null;
             }
 
-            MoveCounter ++;
+            MoveCounter++;
 
             bool white_king = false;
             bool black_king = false;
@@ -79,6 +78,11 @@ namespace Gamemodes.NormalChess
             if (!black_king) return GUtil.TurnEncodeTeam(0);
 
             return GUtil.SwitchPlayerTeam(chessManager);
+        }
+
+        public override int OnMove(V2 from, V2 to)
+        {
+            return FalseOnMove(from, to);
         }
     }
 }

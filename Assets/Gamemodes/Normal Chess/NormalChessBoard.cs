@@ -11,6 +11,11 @@ namespace Gamemodes.NormalChess
     {
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
+            InitialiseBoard();
+        }
+
+        protected void InitialiseBoard()
+        {
             PieceBoard = new AbstractPiece[8, 8];
             PieceBoard[0, 1] = new PawnPiece(new V2(0, 1), 0, this);
             PieceBoard[1, 1] = new PawnPiece(new V2(1, 1), 0, this);
