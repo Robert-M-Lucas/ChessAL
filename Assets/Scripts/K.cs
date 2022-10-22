@@ -8,4 +8,6 @@ using UnityEngine;
 public static class K
 {
     public static int PrimaryClick = 0;
+
+    public static KeyCode EscapeKey = KeyCode.Escape;
 }

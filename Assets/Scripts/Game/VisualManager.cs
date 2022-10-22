@@ -11,7 +11,7 @@ using TMPro;
 public class VisualManager : MonoBehaviour
 {
     public AppearanceTable[] AppearanceTables;
-    private Dictionary<int, Sprite> internalSpriteTable;
+    private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
     public RectTransform renderBox;
 
@@ -58,6 +58,10 @@ public class VisualManager : MonoBehaviour
         UpdateAllPieces();
     }
 
+    /// <summary>
+    /// Shows that a team has won
+    /// </summary>
+    /// <param name="team"></param>
     public void OnTeamWin(int team)
     {
         TeamWinText.text = $"Team {team + 1} won!";
@@ -167,6 +171,7 @@ public class VisualManager : MonoBehaviour
         }
     }
 
+    // Gives a GameObject the correct size, scale and position
     private void SizeGameObject(GameObject gameObject, V2 position)
     {
         RectTransform rect = gameObject.GetComponent<RectTransform>();
@@ -178,12 +183,6 @@ public class VisualManager : MonoBehaviour
         rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
         rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
     }
-
-    void Update()
-    {
-        // Check for resolution change
-        if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
-    }
     
     /// <summary>
     /// Updates the VisualManager's internal list of possible moves
@@ -194,6 +193,9 @@ public class VisualManager : MonoBehaviour
         this.possibleMoves = possibleMoves;
     }
 
+    /// <summary>
+    /// Hides the currently shown move indicators
+    /// </summary>
     public void HideMoves()
     {
         while (moveIndicators.Count > 0)
@@ -203,6 +205,11 @@ public class VisualManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles a click somewhere on the board
+    /// </summary>
+    /// <param name="clickPosition"></param>
+    /// <returns></returns>
     public bool ToggleShowMoves(V2 clickPosition)
     {
         HideMoves();
@@ -233,5 +240,11 @@ public class VisualManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    void Update()
+    {
+        // Check for resolution change
+        if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
     }
 }

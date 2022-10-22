@@ -25,20 +25,14 @@ public class NetworkManager : MonoBehaviour
         chessManager = FindObjectOfType<ChessManager>();
     }
 
+    // Shuts down client and server correctly
     private void OnApplicationQuit()
     {
         client?.Shutdown();
         server?.Shutdown();
     }
-
-    private void ConnectionFailed()
-    {
-        server?.Shutdown();
-        server = null;
-        client?.Shutdown();
-        client = null;
-    }
-
+    
+    #region Client encapsulations
     public void OnLocalMove(int nextPlayer, V2 from, V2 to) => client?.OnLocalMove(nextPlayer, from, to);
 
     /// <summary>
@@ -58,6 +52,7 @@ public class NetworkManager : MonoBehaviour
 
         throw new Exception("Player not found");
     }
+    #endregion
 
     /// <summary>
     /// Hosts a game
@@ -92,6 +87,18 @@ public class NetworkManager : MonoBehaviour
         client.Connect();
     }
 
+    /// <summary>
+    /// Called on connection failure to correctly shut down server and client
+    /// </summary>
+    private void ConnectionFailed()
+    {
+        server?.Shutdown();
+        server = null;
+        client?.Shutdown();
+        client = null;
+    }
+
+    // Encapsulated methods the client calls
     #region Client Callbacks
     public void OnHostSuccessOrFail(string? status)
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a possible piece move
+/// Represents a piece move
 /// </summary>
 public struct Move
 {
