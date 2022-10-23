@@ -3,12 +3,13 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - AppearanceTable
     - ChessManager
-    - InputManager
-    - MenuUIManager
+    - Game.GameMenuManager
+    - Game.InputManager
+    - Game.RenderedCellData
+    - Game.VisualManager
+    - MainMenu.MenuUIManager
+    - MainMenu.PlayerCardController
     - NetworkManager
-    - PlayerCardController
-    - RenderedCellData
-    - VisualManager
     DualPlay.Editor.dll:
     - DualPlay.Editor.DualPlayEditor
     DualPlay.Settings.dll:
@@ -96,46 +97,52 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Toggle/ToggleEvent
   methodsToPreserve:
   - assembly: Assembly-CSharp
-    fullTypeName: PlayerCardController
+    fullTypeName: MainMenu.PlayerCardController
     methodName: OnPlayerOnTeamClick
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelHost
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: Join
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: HostStartGame
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: FullJoin
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelHost
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: FullHost
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: Host
   - assembly: Assembly-CSharp
-    fullTypeName: MenuUIManager
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
   - assembly: Assembly-CSharp
-    fullTypeName: PlayerCardController
+    fullTypeName: MainMenu.PlayerCardController
     methodName: OnTeamClick
   - assembly: Assembly-CSharp
-    fullTypeName: RenderedCellData
+    fullTypeName: Game.GameMenuManager
+    methodName: Resume
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.GameMenuManager
+    methodName: ExitToMenu
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.RenderedCellData
     methodName: ActivateInputManager
   - assembly: Assembly-CSharp
-    fullTypeName: RenderedCellData
+    fullTypeName: Game.RenderedCellData
     methodName: ActivateInputManager
   - assembly: Assembly-CSharp
-    fullTypeName: RenderedCellData
+    fullTypeName: Game.RenderedCellData
     methodName: ActivateInputManager
   sceneClasses:
     Assets/Scenes/Game.unity:
@@ -166,23 +173,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 2898}
     - Class: 114
+      Script: {instanceID: 3212}
+    - Class: 114
       Script: {instanceID: 3304}
     - Class: 114
       Script: {instanceID: 3386}
     - Class: 114
       Script: {instanceID: 5240}
     - Class: 114
-      Script: {instanceID: 5394}
+      Script: {instanceID: 5396}
     - Class: 114
-      Script: {instanceID: 6022}
+      Script: {instanceID: 6024}
     - Class: 114
-      Script: {instanceID: 6176}
+      Script: {instanceID: 6178}
     - Class: 114
-      Script: {instanceID: 6528}
+      Script: {instanceID: 6530}
     - Class: 114
-      Script: {instanceID: 7314}
+      Script: {instanceID: 7316}
     - Class: 114
-      Script: {instanceID: 7664}
+      Script: {instanceID: 7666}
+    - Class: 114
+      Script: {instanceID: 24204}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -257,25 +268,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 5312}
     - Class: 114
-      Script: {instanceID: 5394}
+      Script: {instanceID: 5396}
     - Class: 114
-      Script: {instanceID: 6022}
+      Script: {instanceID: 6024}
     - Class: 114
-      Script: {instanceID: 6176}
+      Script: {instanceID: 6178}
     - Class: 114
-      Script: {instanceID: 6496}
+      Script: {instanceID: 6498}
     - Class: 114
-      Script: {instanceID: 6528}
+      Script: {instanceID: 6530}
     - Class: 114
-      Script: {instanceID: 6540}
+      Script: {instanceID: 6542}
     - Class: 114
-      Script: {instanceID: 6630}
+      Script: {instanceID: 6632}
     - Class: 114
-      Script: {instanceID: 6982}
+      Script: {instanceID: 6984}
     - Class: 114
-      Script: {instanceID: 7480}
+      Script: {instanceID: 7482}
     - Class: 114
-      Script: {instanceID: 7670}
+      Script: {instanceID: 7672}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -525,7 +536,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 08d30943d80c0a9361c93cc2ded69eb5
     assemblyName: Assembly-CSharp.dll
-    namespaceName: 
+    namespaceName: Game
     className: RenderedCellData
   - hash:
       serializedVersion: 2
@@ -543,7 +554,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: fadef59c685f71f4b2e8174298ea93fc
     assemblyName: Assembly-CSharp.dll
-    namespaceName: 
+    namespaceName: Game
     className: VisualManager
   - hash:
       serializedVersion: 2
@@ -777,7 +788,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
     assemblyName: Assembly-CSharp.dll
-    namespaceName: 
+    namespaceName: Game
     className: InputManager
   - hash:
       serializedVersion: 2
@@ -885,7 +896,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 9e5aec18c60e2f5fb77a62311f5828b1
     assemblyName: Assembly-CSharp.dll
-    namespaceName: 
+    namespaceName: MainMenu
     className: MenuUIManager
   - hash:
       serializedVersion: 2
@@ -921,7 +932,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 96f930af74f23af5872d7eb2a6474122
     assemblyName: Assembly-CSharp.dll
-    namespaceName: 
+    namespaceName: MainMenu
     className: PlayerCardController
   - hash:
       serializedVersion: 2
@@ -1127,6 +1138,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 28a95a47e5e34db2e617b15c847d8d2d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Game
+    className: GameMenuManager
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main Menu.unity

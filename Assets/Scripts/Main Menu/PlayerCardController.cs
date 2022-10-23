@@ -3,60 +3,63 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerCardController : MonoBehaviour
+namespace MainMenu
 {
-    public int PlayerID;
-    public string PlayerName;
-    public int Team;
-    public int PlayerOnTeam;
-
-    public ChessManager ChessManager;
-    public MenuUIManager MenuUIManager;
-
-    public TMP_Text PlayerIDText;
-    public TMP_Text PlayerNameText;
-    public TMP_Text TeamText;
-    public TMP_Text PlayerOnTeamText;
-
-    public void UpdateFields()
+    public class PlayerCardController : MonoBehaviour
     {
-        PlayerIDText.text = PlayerID.ToString();
-        PlayerNameText.text = PlayerName;
+        public int PlayerID;
+        public string PlayerName;
+        public int Team;
+        public int PlayerOnTeam;
 
-        if (Team != -1) TeamText.text = $"Team: {(Team+1)}";
-        else TeamText.text = "Spectator";
+        public ChessManager ChessManager;
+        public MenuUIManager MenuUIManager;
 
-        if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
-        else PlayerOnTeamText.text = "Spectator";
-    }
+        public TMP_Text PlayerIDText;
+        public TMP_Text PlayerNameText;
+        public TMP_Text TeamText;
+        public TMP_Text PlayerOnTeamText;
 
-    public void OnTeamClick()
-    {
-        if (!ChessManager.IsHost()) return;
+        public void UpdateFields()
+        {
+            PlayerIDText.text = PlayerID.ToString();
+            PlayerNameText.text = PlayerName;
 
-        TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
+            if (Team != -1) TeamText.text = $"Team: {(Team + 1)}";
+            else TeamText.text = "Spectator";
 
-        Team++;
-        if (Team >= team_sizes.Length) Team = -1;
+            if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
+            else PlayerOnTeamText.text = "Spectator";
+        }
 
-        if (Team == -1) PlayerOnTeam = -1;
+        public void OnTeamClick()
+        {
+            if (!ChessManager.IsHost()) return;
 
-        ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
-        UpdateFields();
-    }
+            TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
 
-    public void OnPlayerOnTeamClick()
-    {
-        if (!ChessManager.IsHost()) return;
-        if (Team == -1) return;
+            Team++;
+            if (Team >= team_sizes.Length) Team = -1;
 
-        TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
+            if (Team == -1) PlayerOnTeam = -1;
 
-        PlayerOnTeam++;
-        if (PlayerOnTeam >= team_size.Max) PlayerOnTeam = 0;
+            ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
+            UpdateFields();
+        }
+
+        public void OnPlayerOnTeamClick()
+        {
+            if (!ChessManager.IsHost()) return;
+            if (Team == -1) return;
+
+            TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
+
+            PlayerOnTeam++;
+            if (PlayerOnTeam >= team_size.Max) PlayerOnTeam = 0;
 
 
-        ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
-        UpdateFields();
+            ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
+            UpdateFields();
+        }
     }
 }

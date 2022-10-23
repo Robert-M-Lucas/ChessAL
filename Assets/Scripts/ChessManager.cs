@@ -4,6 +4,8 @@ using UnityEngine;
 using Networking.Client;
 using UnityEngine.SceneManagement;
 using Gamemodes;
+using Game;
+using MainMenu;
 
 #nullable enable
 
@@ -165,8 +167,11 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void ExitGame()
     {
-        SceneManager.LoadScene(1); // Load menu scene
         InGame = false;
+        networkManager.Shutdown();
+        Destroy(networkManager.gameObject);
+        Destroy(this.gameObject);
+        SceneManager.LoadScene(0); // Load menu scene
     }
     #endregion
 
