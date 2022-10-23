@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+
 namespace Gamemodes.Sample
 {
     public class GameManagerData : AbstractGameManagerData
@@ -53,3 +55,5 @@ namespace Gamemodes.Sample
         }
     }
 }
+
+*/

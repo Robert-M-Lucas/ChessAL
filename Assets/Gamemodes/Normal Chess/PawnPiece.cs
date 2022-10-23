@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
-    public class PawnPiece : AbstractPiece
+    public class PawnPiece : NormalChessPiece
     {
         public bool HasMoved = false;
         public int DashMove = -1;
@@ -35,7 +35,7 @@ namespace Gamemodes.NormalChess
                 {
                     AbstractPiece piece = Board.GetPiece(Position + new V2(1, 0));
                     if (piece.GetUID() == GetUID() && // Is this a pawn, dashed last turn and not on my team
-                        (piece as PawnPiece).DashMove == (Board.GameManager as GameManager).MoveCounter - 1 &&
+                        (piece as PawnPiece).DashMove == (Board as Board).MoveCounter - 1 &&
                         (piece as PawnPiece).Team != Team) en_passant.Add(new Move(Position, Position + new V2(1, 1 * m)));
                 }
             }
@@ -51,7 +51,7 @@ namespace Gamemodes.NormalChess
                 {
                     AbstractPiece piece = Board.GetPiece(Position + new V2(-1, 0));
                     if (piece.GetUID() == GetUID() && 
-                        (piece as PawnPiece).DashMove == (Board.GameManager as GameManager).MoveCounter - 1 &&
+                        (piece as PawnPiece).DashMove == (Board as Board).MoveCounter - 1 &&
                         (piece as PawnPiece).Team != Team) en_passant.Add(new Move(Position, Position + new V2(-1, 1 * m)));
                 }
             }
@@ -76,7 +76,7 @@ namespace Gamemodes.NormalChess
             HasMoved = true;
             if (to - from == new V2(0, 2) || to - from == new V2(0, -2))
             {
-                DashMove = (Board.GameManager as GameManager).MoveCounter;
+                DashMove = (Board as Board).MoveCounter;
             }
             else if ((to - from).X != 0 && Board.GetPiece(to) is null)
             {
@@ -96,6 +96,14 @@ namespace Gamemodes.NormalChess
                 Board.PieceBoard[to.X, to.Y] = new QueenPiece(to, Team, Board);
                 Board.PieceBoard[from.X, from.Y] = null;
             }
+        }
+
+        public override NormalChessPiece Clone(AbstractBoard new_board)
+        {
+            PawnPiece new_piece = new PawnPiece(Position, Team, new_board);
+            new_piece.DashMove = DashMove;
+            new_piece.HasMoved = HasMoved;
+            return new_piece;
         }
 
         public override int GetUID() => 100;

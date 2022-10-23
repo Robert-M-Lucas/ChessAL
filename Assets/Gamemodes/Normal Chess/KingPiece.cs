@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
-    public class KingPiece : AbstractPiece
+    public class KingPiece : NormalChessPiece
     {
         public KingPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
@@ -36,6 +36,8 @@ namespace Gamemodes.NormalChess
 
         }
         */
+
+        public override NormalChessPiece Clone(AbstractBoard new_board) => new KingPiece(Position, Team, new_board);
 
         public override int GetUID() => 101;
     }

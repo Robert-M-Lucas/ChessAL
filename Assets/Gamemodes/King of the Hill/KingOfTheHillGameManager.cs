@@ -28,7 +28,7 @@ namespace Gamemodes.KingOfTheHill
 
         public override int OnMove(V2 from, V2 to)
         {
-            int default_return = FalseOnMove(from, to);
+            int default_return = FalseOnMove(Board, from, to);
 
             List<V2> centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Gamemodes.NormalChess
@@ -13,13 +14,12 @@ namespace Gamemodes.NormalChess
         public override int GetUID() => 100;
 
         public override string GetName() => "Normal Chess";
-
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 
     public class GameManager : AbstractGameManager
     {
-        public int MoveCounter;
+        
         public bool CancelDefaultMove;
 
         public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
@@ -34,7 +34,39 @@ namespace Gamemodes.NormalChess
 
         public override List<Move> GetMoves()
         {
-            return Board.GetMoves();
+            (Board as Board).VirtualTeam = chessManager.GetLocalPlayerTeam();
+            List<Move> possible_moves = Board.GetMoves();
+            
+            int i = 0;
+            while (i < possible_moves.Count)
+            {
+                Board temp_board = (Board as Board).Clone();
+                FalseOnMove(temp_board, possible_moves[i].From, possible_moves[i].To);
+                temp_board.VirtualTeam = GUtil.SwitchPlayerTeam(chessManager);
+
+                bool failed = false;
+                List<Move> possible_enemy_moves = temp_board.GetMoves();
+                foreach (Move move in possible_enemy_moves)
+                {
+                    AbstractPiece piece = temp_board.GetPiece(move.To);
+                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == chessManager.GetLocalPlayerTeam())
+                    {
+                        failed = true;
+                        break;
+                    }
+                }
+
+                if (failed)
+                {
+                    possible_moves.RemoveAt(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            return possible_moves;
         }
 
         public override int OnNoMoves()
@@ -42,32 +74,32 @@ namespace Gamemodes.NormalChess
             return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(chessManager));
         }
 
-        protected int FalseOnMove(V2 from, V2 to)
+        protected int FalseOnMove(AbstractBoard board, V2 from, V2 to)
         {
             CancelDefaultMove = false;
 
-            base.OnMove(from, to);
+            board.OnMove(from, to);
 
             if (!CancelDefaultMove)
             {
-                Board.PieceBoard[to.X, to.Y] = Board.PieceBoard[from.X, from.Y];
-                Board.PieceBoard[to.X, to.Y].Position = to;
-                Board.PieceBoard[from.X, from.Y] = null;
+                board.PieceBoard[to.X, to.Y] = board.PieceBoard[from.X, from.Y];
+                board.PieceBoard[to.X, to.Y].Position = to;
+                board.PieceBoard[from.X, from.Y] = null;
             }
 
-            MoveCounter++;
+            (board as Board).MoveCounter++;
 
             bool white_king = false;
             bool black_king = false;
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < board.PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (int y = 0; y < board.PieceBoard.GetLength(1); y++)
                 {
-                    if (Board.PieceBoard[x, y] is not null)
+                    if (board.PieceBoard[x, y] is not null)
                     {
-                        if (Board.PieceBoard[x, y].GetUID() == PieceUIDs.KING)
+                        if (board.PieceBoard[x, y].GetUID() == PieceUIDs.KING)
                         {
-                            if (Board.PieceBoard[x, y].Team == 0) white_king = true;
+                            if (board.PieceBoard[x, y].Team == 0) white_king = true;
                             else black_king = true;
                         }
                     }
@@ -82,7 +114,7 @@ namespace Gamemodes.NormalChess
 
         public override int OnMove(V2 from, V2 to)
         {
-            return FalseOnMove(from, to);
+            return FalseOnMove(Board, from, to);
         }
     }
 }

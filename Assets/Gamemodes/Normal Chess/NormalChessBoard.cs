@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Gamemodes.NormalChess
@@ -9,6 +11,9 @@ namespace Gamemodes.NormalChess
     /// </summary>
     public class Board : AbstractBoard
     {
+        public int MoveCounter;
+        public int VirtualTeam;
+
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
             InitialiseBoard();
@@ -59,7 +64,59 @@ namespace Gamemodes.NormalChess
 
         public override void OnMove(V2 from, V2 to)
         {
+            /*
+            if (PieceBoard[from.X, from.Y] is null)
+            {
+                string s = "";
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 8; y++)
+                    {
+                        if (PieceBoard[x, y] is null) s += "---";
+                        else s += PieceBoard[x, y].GetUID();
+                        s += " ";
+                    }
+                    s += "\n";
+                }
+                s += $"{from.X}, {from.Y}";
+                Debug.Log(s);
+            }
+            */
             PieceBoard[from.X, from.Y].OnMove(from, to);
+        }
+
+        public override List<Move> GetMoves()
+        {
+            IEnumerable<Move> moves = new List<Move>();
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == VirtualTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+                }
+            }
+
+            return GUtil.RemoveBlocked(moves.ToList(), this);
+        }
+
+        public virtual Board Clone()
+        {
+            Board new_board = new Board(GameManager);
+            
+            new_board.MoveCounter = MoveCounter;
+            new_board.VirtualTeam = VirtualTeam; ;
+            new_board.PieceBoard = new AbstractPiece[PieceBoard.Length, PieceBoard.Length];
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null)
+                    {
+                        new_board.PieceBoard[x, y] = (PieceBoard[x, y] as NormalChessPiece).Clone(new_board);
+                    }
+                }
+            }
+            return new_board;
         }
 
         public override BoardRenderInfo GetBoardRenderInfo()

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+
 namespace Gamemodes.Sample
 {
     /// <summary>
@@ -31,3 +33,5 @@ namespace Gamemodes.Sample
         public override int GetUID() => 1;
     }
 }
+
+*/

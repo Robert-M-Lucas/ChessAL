@@ -37,7 +37,7 @@ public static class Util
         List<AbstractPiece> pieces = new List<AbstractPiece>();
 
         foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
-                 .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece))))
+                 .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
         {
             pieces.Add((AbstractPiece)Activator.CreateInstance(type, new object[] { new V2(0, 0), 0, null }));
         }

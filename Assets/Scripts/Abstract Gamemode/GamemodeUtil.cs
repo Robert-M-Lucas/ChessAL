@@ -33,7 +33,7 @@ namespace Gamemodes
 
         public static List<Move> RemoveFriendlies(List<Move> moves, AbstractBoard board)
         {
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+            // BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
 
             for (int i = 0; i < moves.Count; i++)
             {
@@ -119,6 +119,11 @@ namespace Gamemodes
         public static int TurnEncodeTeam(int winningTeam)
         {
             return -winningTeam - 1;
+        }
+
+        public static int TurnDecodeTeam(int winningTeam)
+        {
+            return -(winningTeam + 1);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
-    public class RookPiece : AbstractPiece
+    public class RookPiece : NormalChessPiece
     {
         public bool HasMoved;
 
@@ -33,7 +33,13 @@ namespace Gamemodes.NormalChess
         {
             HasMoved = true;
         }
-        
+
+        public override NormalChessPiece Clone(AbstractBoard new_board)
+        {
+            RookPiece new_piece = new RookPiece(Position, Team, new_board);
+            new_piece.HasMoved = HasMoved;
+            return new_piece;
+        }
 
         public override int GetUID() => 104;
     }
