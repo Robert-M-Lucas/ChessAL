@@ -64,25 +64,21 @@ namespace Gamemodes.NormalChess
 
         public override void OnMove(V2 from, V2 to)
         {
-            /*
-            if (PieceBoard[from.X, from.Y] is null)
-            {
-                string s = "";
-                for (int x = 0; x < 8; x++)
-                {
-                    for (int y = 0; y < 8; y++)
-                    {
-                        if (PieceBoard[x, y] is null) s += "---";
-                        else s += PieceBoard[x, y].GetUID();
-                        s += " ";
-                    }
-                    s += "\n";
-                }
-                s += $"{from.X}, {from.Y}";
-                Debug.Log(s);
-            }
-            */
             PieceBoard[from.X, from.Y].OnMove(from, to);
+        }
+
+        public override List<Move> GetMoves()
+        {
+            IEnumerable<Move> moves = new List<Move>();
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == VirtualTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+                }
+            }
+
+            return GUtil.RemoveBlocked(moves.ToList(), this);
         }
 
         public virtual Board Clone()
@@ -92,6 +88,7 @@ namespace Gamemodes.NormalChess
             new_board.MoveCounter = MoveCounter;
             new_board.VirtualTeam = VirtualTeam;
             new_board.PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
+
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(1); y++)

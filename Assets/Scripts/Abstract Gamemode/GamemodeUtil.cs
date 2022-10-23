@@ -65,8 +65,6 @@ namespace Gamemodes
 
         public static List<Move> RemoveNonEmpty(List<Move> moves, AbstractBoard board)
         {
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
-
             for (int i = 0; i < moves.Count; i++)
             {
                 if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is not null)
@@ -81,6 +79,7 @@ namespace Gamemodes
 
         public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
+            Debug.Log(board);
             List<Move> moves = new List<Move>();
 
             V2 current_pos = piece.Position + direction;
@@ -113,6 +112,16 @@ namespace Gamemodes
             else team = 0;
 
             return chessManager.GetPlayerByTeam(team, 0);
+        }
+
+        public static int SwitchTeam(ChessManager chessManager)
+        {
+            int team = chessManager.GetLocalPlayerTeam();
+
+            if (team == 0) team = 1;
+            else team = 0;
+
+            return team;
         }
 
         public static int TurnEncodeTeam(int winningTeam)

@@ -9,10 +9,10 @@ namespace Gamemodes.MegaChess
     {
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
-            InitialiseBoard();
+            InitialiseBoard2();
         }
 
-        public new void InitialiseBoard()
+        public void InitialiseBoard2()
         {
             PieceBoard = new AbstractPiece[16, 16];
 
@@ -53,17 +53,17 @@ namespace Gamemodes.MegaChess
             for (int i = 9; i < 14; i++) PieceBoard[i, 15] = new BishopPiece(new V2(i, 15), 1, this);
         }
 
-        /*
         public override NormalChess.Board Clone()
         {
-            NormalChess.Board new_board = new NormalChess.Board(GameManager);
+            Board new_board = new Board(GameManager);
 
             new_board.MoveCounter = MoveCounter;
-            new_board.VirtualTeam = VirtualTeam; ;
-            new_board.PieceBoard = new AbstractPiece[16, 16];
-            for (int x = 0; x < 16; x++)
+            new_board.VirtualTeam = VirtualTeam;
+            new_board.PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
+
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < 16; y++)
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
                 {
                     if (PieceBoard[x, y] is not null)
                     {
@@ -73,7 +73,6 @@ namespace Gamemodes.MegaChess
             }
             return new_board;
         }
-        */
 
         public override BoardRenderInfo GetBoardRenderInfo()
         {

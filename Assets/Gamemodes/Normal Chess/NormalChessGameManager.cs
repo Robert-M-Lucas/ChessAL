@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Gamemodes.NormalChess
@@ -42,7 +41,7 @@ namespace Gamemodes.NormalChess
             {
                 Board temp_board = (Board as Board).Clone();
                 FalseOnMove(temp_board, possible_moves[i].From, possible_moves[i].To);
-                temp_board.VirtualTeam = GUtil.SwitchPlayerTeam(chessManager);
+                temp_board.VirtualTeam = GUtil.SwitchTeam(chessManager);
 
                 bool failed = false;
                 List<Move> possible_enemy_moves = temp_board.GetMoves();
@@ -108,7 +107,7 @@ namespace Gamemodes.NormalChess
             if (!white_king) return GUtil.TurnEncodeTeam(1);
             if (!black_king) return GUtil.TurnEncodeTeam(0);
 
-            return GUtil.SwitchPlayerTeam(chessManager);
+            return GUtil.SwitchTeam(chessManager);
         }
 
         public override int OnMove(V2 from, V2 to)
