@@ -79,7 +79,6 @@ namespace Gamemodes
 
         public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
-            Debug.Log(board);
             List<Move> moves = new List<Move>();
 
             V2 current_pos = piece.Position + direction;

@@ -10,6 +10,8 @@ namespace Game
 {
     public class VisualManager : MonoBehaviour
     {
+        public float HighlightedSquareOpacity = 0.2f;
+
         public AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
@@ -166,6 +168,13 @@ namespace Game
                     SizeGameObject(new_square, new V2(x, y));
                     RenderedCellData rendered_piece_data = new_square.GetComponent<RenderedCellData>();
                     rendered_piece_data.Position = new V2(x, y);
+
+                    if (boardRenderInfo.HighlightedSquares.Contains(new V2(x, y))) 
+                    {
+                        Color old_color = new_square.GetComponent<Image>().color;
+                        new_square.GetComponent<Image>().color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
+                    }
+
                     new_square.SetActive(true);
                 }
             }

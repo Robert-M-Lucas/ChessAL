@@ -24,6 +24,7 @@ namespace MainMenu
         public TMP_Text HostNameDisallowedReason = default!;
         public TMP_InputField HostPasswordInput = default!;
         public TMP_Dropdown HostGamemodeDropdown = default!;
+        public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
         public Button HostStartButton = default!;
         /*
@@ -76,6 +77,13 @@ namespace MainMenu
             if (showingJoinSettings || showingJoinScreen || showingHostScreen) return;
             showingHostSettings = true;
             HostConfig.SetActive(true);
+        }
+
+        public void HostConfigGamemodeHelp()
+        {
+            if (HostGamemodeDropdown.value == 0) return;
+
+            HostConfigHelpText.text = gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetDescription();
         }
 
         public void FullHost()

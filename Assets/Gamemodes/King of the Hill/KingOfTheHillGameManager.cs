@@ -16,6 +16,12 @@ namespace Gamemodes.KingOfTheHill
 
         public override string GetName() => "King of the Hill";
 
+        public override string GetDescription()
+        {
+            return @"King of the Hill
+First king to the 2x2 square in the center of the board wins. Normal check and checkmate rules apply";
+        }
+
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 
@@ -23,7 +29,7 @@ namespace Gamemodes.KingOfTheHill
     {
         public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
         {
-            Board = new NormalChess.Board(this);
+            Board = new Board(this);
         }
 
         public override int OnMove(V2 from, V2 to)

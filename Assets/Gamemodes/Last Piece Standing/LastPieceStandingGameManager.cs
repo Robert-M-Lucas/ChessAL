@@ -16,6 +16,12 @@ namespace Gamemodes.LastPieceStanding
 
         public override string GetName() => "Last Piece Standing";
 
+        public override string GetDescription()
+        {
+            return @"Last Piece Standing
+Chess played until one team has no pieces remaining";
+        }
+
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 

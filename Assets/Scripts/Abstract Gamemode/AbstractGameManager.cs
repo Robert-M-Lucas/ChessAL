@@ -25,6 +25,8 @@ namespace Gamemodes
         /// <returns>{ Team1Size, Team2Size, Team3Size, ... }</returns>
         public abstract TeamSize[] GetTeamSizes();
 
+        public virtual string GetDescription() => "No description";
+
         public abstract AbstractGameManager Instantiate(ChessManager chessManager);
     }
 

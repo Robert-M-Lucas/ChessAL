@@ -15,6 +15,12 @@ namespace Gamemodes.HoleChess
 
         public override string GetName() => "Hole Chess";
 
+        public override string GetDescription()
+        {
+            return @"Hole Chess
+Chess with a 2x2 square taken out of the center";
+        }
+
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 

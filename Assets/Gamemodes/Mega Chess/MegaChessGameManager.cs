@@ -15,6 +15,12 @@ namespace Gamemodes.MegaChess
 
         public override string GetName() => "Mega Chess";
 
+        public override string GetDescription()
+        {
+            return @"Mega Chess
+Chess played on a 16x16 board with more pieces on each side";
+        }
+
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
     }
 
