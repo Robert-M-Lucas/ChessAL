@@ -62,7 +62,7 @@ namespace Gamemodes.NormalChess
 
             attacking_moves = GUtil.RemoveNonEnemy(GUtil.RemoveBlocked(attacking_moves, Board), Board);
 
-            if (!HasMoved)
+            if (!HasMoved && Board.GetPiece(Position + new V2(0, m)) is null)
             {
                 forward_moves.Add(new Move(Position, Position + new V2(0, 2 * m)));
             }
@@ -90,7 +90,7 @@ namespace Gamemodes.NormalChess
                 }
             }
 
-            if ((to.Y == 7 && Team == 0) || (to.Y == 0 && Team == 1))
+            if ((to.Y == Board.PieceBoard.GetLength(1)-1 && Team == 0) || (to.Y == 0 && Team == 1))
             {
                 (Board.GameManager as GameManager).CancelDefaultMove = true;
                 Board.PieceBoard[to.X, to.Y] = new QueenPiece(to, Team, Board);

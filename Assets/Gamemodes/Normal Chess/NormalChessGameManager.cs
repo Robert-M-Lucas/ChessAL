@@ -65,7 +65,6 @@ namespace Gamemodes.NormalChess
                     i++;
                 }
             }
-
             return possible_moves;
         }
 

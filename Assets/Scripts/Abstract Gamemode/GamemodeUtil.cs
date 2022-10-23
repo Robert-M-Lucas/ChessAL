@@ -79,18 +79,16 @@ namespace Gamemodes
             return moves;
         }
 
-        public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board)
+        public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
             List<Move> moves = new List<Move>();
 
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
-
             V2 current_pos = piece.Position + direction;
+            int move = 0;
             while (true)
             {
-                if (boardRenderInfo.RemovedSquares.Contains(current_pos) || current_pos.X < 0 || current_pos.Y < 0
-                    || current_pos.X >= boardRenderInfo.BoardSize || current_pos.Y >= boardRenderInfo.BoardSize)
-                    break;
+                if (move == maxMoves) break;
+                if (!IsOnBoard(current_pos, board)) break;
 
                 if (board.PieceBoard[current_pos.X, current_pos.Y] is not null)
                 {
@@ -100,6 +98,7 @@ namespace Gamemodes
                 }
 
                 moves.Add(new Move(piece.Position, current_pos));
+                move++;
                 current_pos += direction;
             }
 

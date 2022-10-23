@@ -85,27 +85,13 @@ namespace Gamemodes.NormalChess
             PieceBoard[from.X, from.Y].OnMove(from, to);
         }
 
-        public override List<Move> GetMoves()
-        {
-            IEnumerable<Move> moves = new List<Move>();
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
-            {
-                for (int y = 0; y < PieceBoard.GetLength(1); y++)
-                {
-                    if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == VirtualTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
-                }
-            }
-
-            return GUtil.RemoveBlocked(moves.ToList(), this);
-        }
-
         public virtual Board Clone()
         {
             Board new_board = new Board(GameManager);
             
             new_board.MoveCounter = MoveCounter;
-            new_board.VirtualTeam = VirtualTeam; ;
-            new_board.PieceBoard = new AbstractPiece[PieceBoard.Length, PieceBoard.Length];
+            new_board.VirtualTeam = VirtualTeam;
+            new_board.PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(1); y++)
