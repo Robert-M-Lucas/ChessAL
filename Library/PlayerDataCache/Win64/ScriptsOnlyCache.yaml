@@ -125,7 +125,13 @@ ScriptsOnlyBuild:
     methodName: FullHost
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: OpenSaveFolder
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: Host
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LoadSaveAndFullHost
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
@@ -135,6 +141,12 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
     methodName: Resume
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.GameMenuManager
+    methodName: OpenSaveLocation
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.GameMenuManager
+    methodName: Save
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
     methodName: ExitToMenu
@@ -172,6 +184,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1592}
     - Class: 114
+      Script: {instanceID: 1726}
+    - Class: 114
       Script: {instanceID: 2672}
     - Class: 114
       Script: {instanceID: 2900}
@@ -182,21 +196,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3388}
     - Class: 114
-      Script: {instanceID: 4892}
+      Script: {instanceID: 4312}
     - Class: 114
-      Script: {instanceID: 5244}
+      Script: {instanceID: 4896}
     - Class: 114
-      Script: {instanceID: 5400}
+      Script: {instanceID: 5180}
     - Class: 114
-      Script: {instanceID: 6028}
+      Script: {instanceID: 5248}
     - Class: 114
-      Script: {instanceID: 6182}
+      Script: {instanceID: 5404}
     - Class: 114
-      Script: {instanceID: 6534}
+      Script: {instanceID: 6032}
     - Class: 114
-      Script: {instanceID: 7320}
+      Script: {instanceID: 6186}
     - Class: 114
-      Script: {instanceID: 7670}
+      Script: {instanceID: 6538}
+    - Class: 114
+      Script: {instanceID: 7324}
+    - Class: 114
+      Script: {instanceID: 7674}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -257,39 +275,39 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3888}
     - Class: 114
-      Script: {instanceID: 4066}
+      Script: {instanceID: 4068}
     - Class: 114
-      Script: {instanceID: 4310}
+      Script: {instanceID: 4312}
     - Class: 114
-      Script: {instanceID: 4324}
+      Script: {instanceID: 4326}
     - Class: 114
-      Script: {instanceID: 4602}
+      Script: {instanceID: 4606}
     - Class: 114
-      Script: {instanceID: 5176}
+      Script: {instanceID: 5180}
     - Class: 114
-      Script: {instanceID: 5248}
+      Script: {instanceID: 5252}
     - Class: 114
-      Script: {instanceID: 5316}
+      Script: {instanceID: 5320}
     - Class: 114
-      Script: {instanceID: 5400}
+      Script: {instanceID: 5404}
     - Class: 114
-      Script: {instanceID: 6028}
+      Script: {instanceID: 6032}
     - Class: 114
-      Script: {instanceID: 6182}
+      Script: {instanceID: 6186}
     - Class: 114
-      Script: {instanceID: 6502}
+      Script: {instanceID: 6506}
     - Class: 114
-      Script: {instanceID: 6534}
+      Script: {instanceID: 6538}
     - Class: 114
-      Script: {instanceID: 6546}
+      Script: {instanceID: 6550}
     - Class: 114
-      Script: {instanceID: 6636}
+      Script: {instanceID: 6640}
     - Class: 114
-      Script: {instanceID: 6988}
+      Script: {instanceID: 6992}
     - Class: 114
-      Script: {instanceID: 7486}
+      Script: {instanceID: 7490}
     - Class: 114
-      Script: {instanceID: 7676}
+      Script: {instanceID: 7680}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -741,7 +759,7 @@ ScriptsOnlyBuild:
     className: UnityOnPointerClickMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 28a95a47e5e34db2e617b15c847d8d2d
+      Hash: 978f5a19e27f59333f362258993c9037
     assemblyName: Assembly-CSharp.dll
     namespaceName: Game
     className: GameMenuManager
@@ -903,7 +921,7 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpAsButtonMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 308e815906a5fb200170282f879d89d1
+      Hash: 2d4e787b850c6aa6938af9abbeacdda5
     assemblyName: Assembly-CSharp.dll
     namespaceName: MainMenu
     className: MenuUIManager

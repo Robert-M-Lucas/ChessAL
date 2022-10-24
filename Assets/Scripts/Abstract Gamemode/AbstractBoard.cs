@@ -45,9 +45,12 @@ namespace Gamemodes
 
 		public virtual void LoadData(SerialisationData data)
 		{
+			PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
 			List<AbstractPiece> all_pieces = Util.GetAllPieces();
 			Dictionary<int, Type> mapped_pieces = new Dictionary<int, Type>();
 			foreach (AbstractPiece piece in all_pieces) mapped_pieces[piece.GetUID()] = piece.GetType();
+
+			Debug.Log(data.PieceData.Count);
 
 			foreach (PieceSerialisationData piece_data in data.PieceData)
 			{

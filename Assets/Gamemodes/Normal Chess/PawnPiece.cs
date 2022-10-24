@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,25 @@ namespace Gamemodes.NormalChess
             new_piece.DashMove = DashMove;
             new_piece.HasMoved = HasMoved;
             return new_piece;
+        }
+
+        public override PieceSerialisationData GetData()
+        {
+            PieceSerialisationData data = new PieceSerialisationData();
+            data.Team = Team;
+            data.Position = Position;
+            data.UID = GetUID();
+            data.Data = new byte[5];
+            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(HasMoved), 0);
+            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(DashMove), 1);
+            return data;
+        }
+
+        public override void LoadData(PieceSerialisationData data)
+        {
+            HasMoved = BitConverter.ToBoolean(ArrayExtensions.Slice(data.Data, 0, 1));
+            DashMove = BitConverter.ToInt32(ArrayExtensions.Slice(data.Data, 1, 5));
+            base.LoadData(data);
         }
 
         public override int GetUID() => 100;

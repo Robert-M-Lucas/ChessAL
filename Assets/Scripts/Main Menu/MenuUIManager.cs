@@ -27,6 +27,7 @@ namespace MainMenu
         public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
         public TMP_Text HostScreenDescriptionText = default!;
+        public TMP_InputField HostSavePathInput = default!;
         public Button HostStartButton = default!;
         /*
         public TMP_InputField HostPlayerIDInput = default!;
@@ -88,10 +89,22 @@ namespace MainMenu
             HostConfigHelpText.text = gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetDescription();
         }
 
-        public void FullHost()
+        public void OpenSaveFolder()
         {
-            if (HostGamemodeDropdown.value == 0) return;
+            SaveSystem.OpenSaveFolder();
+        }
 
+        public void LoadSaveAndFullHost()
+        {
+            byte[] save_data = chessManager.Load(HostSavePathInput.text);
+            int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
+            FullHost(save_data, gamemode);
+        }
+
+        public void FullHost() => FullHost(null, null);
+
+        public void FullHost(byte[]? saveData, int? gameMode)
+        {
             string? validation_result = Validators.ValidatePlayerName(HostNameInput.text);
             if (validation_result is not null)
             {
@@ -106,7 +119,32 @@ namespace MainMenu
                 return;
             }
 
-            HostSettings host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], HostPasswordInput.text, HostNameInput.text, null);
+            HostSettings host_settings;
+            if (saveData is null)
+            {
+                if (HostGamemodeDropdown.value == 0) return;
+
+                host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], HostPasswordInput.text, HostNameInput.text, null);
+            }
+            else
+            {
+                AbstractGameManagerData? game_data_selected = null;
+
+                foreach (AbstractGameManagerData game_data in chessManager.GameManagersData)
+                {
+                    if (game_data.GetUID() == gameMode) game_data_selected = game_data;
+                }
+
+                if (game_data_selected is null)
+                {
+                    HostNameDisallowedReason.text = "Gamemode in save file no longer exists";
+                    return;
+                }
+
+                host_settings = new HostSettings(game_data_selected, HostPasswordInput.text, HostNameInput.text, saveData);
+            }
+
+            
 
             chessManager.Host(host_settings);
 

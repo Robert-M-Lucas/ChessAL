@@ -127,7 +127,13 @@ namespace Gamemodes
             data.GameManagerData = ArrayExtensions.Slice(saveData, cursor, cursor + game_manager_data_length);
             cursor += game_manager_data_length;
 
-            while (cursor < data.GameManagerData.Length)
+            int board_data_length = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+            cursor += 4;
+
+            data.BoardData = ArrayExtensions.Slice(saveData, cursor, cursor + board_data_length);
+            cursor += board_data_length;
+
+            while (cursor < saveData.Length)
             {
                 PieceSerialisationData piece_data = new PieceSerialisationData();
 

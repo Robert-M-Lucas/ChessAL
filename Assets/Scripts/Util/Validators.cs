@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using UnityEngine;
 
 #nullable enable
@@ -57,6 +59,19 @@ public static class Validators
                 return $"Character '{c}' not allowed";
             }
         }
+
+        return null;
+    }
+
+    public static string? ValidateFileName(string fileName)
+    {
+        if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+        {
+            return $"File name contains illegal character '{fileName[fileName.IndexOfAny(Path.GetInvalidFileNameChars())]}'";
+        }
+
+        if (fileName.Length > 16) return "File name must be shorter than 17 character";
+        if (fileName.Length < 4) return "File name must be longer than 3 character";
 
         return null;
     }

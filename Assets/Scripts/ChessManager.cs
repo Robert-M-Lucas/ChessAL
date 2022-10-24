@@ -33,6 +33,8 @@ public class ChessManager : MonoBehaviour
 
     public bool MyTurn = false;
 
+    private int currentPlayer = -1;
+
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
     /// </summary>
@@ -66,6 +68,7 @@ public class ChessManager : MonoBehaviour
             InputManager = FindObjectOfType<InputManager>();
             VisualManager = FindObjectOfType<VisualManager>();
             InGame = true;
+            if (MyTurn) OnTurn();
         }
 
     }
@@ -156,15 +159,21 @@ public class ChessManager : MonoBehaviour
         if (saveData.Length > 0)
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
+            Debug.Log(data.PieceData.Count);
+
             if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
+            else MyTurn = false;
             GameManager.LoadData(data);
+            currentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
         } 
         else
         {
             int team_start = 0;
             int player_in_team_start = 0;
             ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
-            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) { OnTurn(); }
+            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) MyTurn = true;
+            else MyTurn = false;
+            currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
         }
     }
 
@@ -237,6 +246,8 @@ public class ChessManager : MonoBehaviour
             return;
         }
 
+        currentPlayer = nextPlayer;
+
         if (nextPlayer == GetLocalPlayerID()) OnTurn();
         else prevPlayer = nextPlayer;
     }
@@ -262,6 +273,24 @@ public class ChessManager : MonoBehaviour
     {
         MyTurn = false;
         networkManager.OnLocalMove(nextPlayer, from, to);
+    }
+    #endregion
+
+    // Handles game saves
+    #region Save Systems
+    public string? Save(string fileName)
+    {
+        SerialisationData data = GameManager.GetData();
+        ClientPlayerData current_player = networkManager.GetPlayerList()[currentPlayer];
+        data.TeamTurn = current_player.Team;
+        data.PlayerOnTeamTurn = current_player.PlayerOnTeam;
+        Debug.Log(data.PieceData.Count);
+        return SaveSystem.Save(SerialisationUtil.Construct(data), fileName);
+    }
+
+    public byte[] Load(string fileName)
+    {
+        return SaveSystem.Load(fileName);
     }
     #endregion
 

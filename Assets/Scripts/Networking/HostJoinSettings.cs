@@ -12,14 +12,14 @@ public class HostSettings
     public AbstractGameManagerData GameMode;
     public string Password;
     public string PlayerName;
-    public string? SavePath;
+    public byte[] SaveData;
 
-    public HostSettings(AbstractGameManagerData gameMode, string password, string playerName, string? savePath)
+    public HostSettings(AbstractGameManagerData gameMode, string password, string playerName, byte[]? saveData = null)
     {
         GameMode = gameMode;
         Password = password;
         PlayerName = playerName;
-        SavePath = savePath;
+        SaveData = saveData ?? new byte[0];
     }
 }
 

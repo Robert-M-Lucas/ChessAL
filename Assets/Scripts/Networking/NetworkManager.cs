@@ -55,7 +55,7 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     public void Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
     {
-        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SavePath);
+        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SaveData);
 
         server = new Server(gameData, settings.Password);
         server.Start();

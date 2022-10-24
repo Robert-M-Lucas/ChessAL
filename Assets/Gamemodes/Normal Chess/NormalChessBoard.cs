@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,19 @@ namespace Gamemodes.NormalChess
 
             PieceBoard[3, 0] = new QueenPiece(new V2(3, 0), 0, this);
             PieceBoard[3, 7] = new QueenPiece(new V2(3, 7), 1, this);
+        }
+
+        public override SerialisationData GetData()
+        {
+            SerialisationData data = base.GetData();
+            data.BoardData = BitConverter.GetBytes(MoveCounter);
+            return data;
+        }
+
+        public override void LoadData(SerialisationData data)
+        {
+            MoveCounter = BitConverter.ToInt32(data.BoardData);
+            base.LoadData(data);
         }
 
         public override void OnMove(V2 from, V2 to)
