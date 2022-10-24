@@ -51,6 +51,16 @@ public struct V2: IEquatable<V2>
         return new V2(lhs.X - rhs.X, lhs.Y - rhs.Y);
     }
 
+    public static V2 operator *(V2 lhs, int rhs)
+    {
+        return new V2(lhs.X * rhs, lhs.Y * rhs);
+    }
+
+    public static V2 operator /(V2 lhs, int rhs)
+    {
+        return new V2(lhs.X / rhs, lhs.Y / rhs);
+    }
+
     public override int GetHashCode()
     {
         int hCode = X ^ Y;

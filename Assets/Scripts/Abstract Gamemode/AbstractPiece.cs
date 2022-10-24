@@ -45,6 +45,9 @@ namespace Gamemodes
             Team = data.Team;
         }
 
-        public virtual void OnMove(V2 from, V2 to) { }
+        public virtual void OnMove(V2 from, V2 to) 
+        {
+
+        }
     }
 }

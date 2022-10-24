@@ -77,6 +77,20 @@ namespace Gamemodes
             return moves;
         }
 
+        public static List<Move> RemoveEmpty(List<Move> moves, AbstractBoard board)
+        {
+            for (int i = 0; i < moves.Count; i++)
+            {
+                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is null)
+                {
+                    moves.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            return moves;
+        }
+
         public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
             List<Move> moves = new List<Move>();

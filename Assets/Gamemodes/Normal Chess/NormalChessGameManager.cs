@@ -69,11 +69,6 @@ Traditional chess played on an 8x8 board";
             return possible_moves;
         }
 
-        public override int OnNoMoves()
-        {
-            return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(chessManager));
-        }
-
         protected int FalseOnMove(AbstractBoard board, V2 from, V2 to)
         {
             CancelDefaultMove = false;
