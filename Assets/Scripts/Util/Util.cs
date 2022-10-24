@@ -32,6 +32,23 @@ public static class Util
     /// Retrieves a list of all subclasses of AbstractPiece
     /// </summary>
     /// <returns></returns>
+    public static List<Type> GetAllPieceTypes()
+    {
+        List<Type> pieces = new List<Type>();
+
+        foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+                 .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
+        {
+            pieces.Add(type);
+        }
+
+        return pieces;
+    }
+
+    /// <summary>
+    /// Retrieves a list of all subclasses of AbstractPiece
+    /// </summary>
+    /// <returns></returns>
     public static List<AbstractPiece> GetAllPieces()
     {
         List<AbstractPiece> pieces = new List<AbstractPiece>();

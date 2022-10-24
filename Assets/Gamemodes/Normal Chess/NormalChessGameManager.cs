@@ -33,11 +33,6 @@ Traditional chess played on an 8x8 board";
             Board = new Board(this);
         }
 
-        public override void LoadData(byte[] data)
-        {
-
-        }
-
         public override List<Move> GetMoves()
         {
             (Board as Board).VirtualTeam = chessManager.GetLocalPlayerTeam();

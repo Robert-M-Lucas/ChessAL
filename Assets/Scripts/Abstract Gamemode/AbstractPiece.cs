@@ -30,6 +30,21 @@ namespace Gamemodes
 
         public abstract int GetUID();
 
+        public virtual PieceSerialisationData GetData()
+        {
+            PieceSerialisationData data = new PieceSerialisationData();
+            data.Team = Team;
+            data.Position = Position;
+            data.UID = GetUID();
+            return data;
+        }
+
+        public virtual void LoadData(PieceSerialisationData data)
+        {
+            Position = data.Position;
+            Team = data.Team;
+        }
+
         public virtual void OnMove(V2 from, V2 to) { }
     }
 }

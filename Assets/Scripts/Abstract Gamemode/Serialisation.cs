@@ -1,0 +1,135 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using UnityEngine.UIElements;
+
+namespace Gamemodes
+{
+    public class SerialisationData
+    {
+        public int GamemodeUID = -1;
+        public int TeamTurn = -1;
+        public int PlayerOnTeamTurn = -1;
+        public byte[] GameManagerData = new byte[0];
+        public byte[] BoardData = new byte[0];
+        public List<PieceSerialisationData> PieceData = new List<PieceSerialisationData>();
+    }
+
+    public class PieceSerialisationData
+    {
+        public int Team = -1;
+        public V2 Position = new V2(-1, -1);
+        public int UID = -1;
+        public byte[] Data = new byte[0];
+    }
+
+    public static class SerialisationUtil
+    {
+        public static byte[] Construct(SerialisationData data)
+        {
+            int length = 12; // GamemodeUID, TeamTurn, PlayerOnTeamTurn
+            length += 4; // GameManagerData length
+            length += data.GameManagerData.Length;
+            length += 4; // BoardData Length
+            length += data.BoardData.Length;
+
+            foreach (PieceSerialisationData piece_data in data.PieceData)
+            {
+                length += 16; // Team, Position, UID
+                length += 4; // PieceData length
+                length += piece_data.Data.Length;
+            }
+
+            byte[] output = new byte[length];
+
+            int cursor = 0;
+
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.GamemodeUID), cursor);
+            cursor += 4;
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.TeamTurn), cursor);
+            cursor += 4;
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.PlayerOnTeamTurn), cursor);
+            cursor += 4;
+
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.GameManagerData.Length), cursor);
+            cursor += 4;
+            ArrayExtensions.Merge(output, data.GameManagerData, cursor);
+            cursor += data.GameManagerData.Length;
+
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.BoardData.Length), cursor);
+            cursor += 4;
+            ArrayExtensions.Merge(output, data.BoardData, cursor);
+            cursor += data.BoardData.Length;
+
+            foreach (PieceSerialisationData piece_data in data.PieceData)
+            {
+                ArrayExtensions.Merge(output, BitConverter.GetBytes(piece_data.Team), cursor);
+                cursor += 4;
+                ArrayExtensions.Merge(output, BitConverter.GetBytes(piece_data.Position.X), cursor);
+                cursor += 4;
+                ArrayExtensions.Merge(output, BitConverter.GetBytes(piece_data.Position.Y), cursor);
+                cursor += 4;
+                ArrayExtensions.Merge(output, BitConverter.GetBytes(piece_data.UID), cursor);
+                cursor += 4;
+
+                ArrayExtensions.Merge(output, BitConverter.GetBytes(piece_data.Data.Length), cursor);
+                cursor += 4;
+                ArrayExtensions.Merge(output, piece_data.Data, cursor);
+                cursor += piece_data.Data.Length;
+            }
+
+            return output;
+        }
+
+        public static int GetGamemodeUID(byte[] saveData)
+        {
+            return BitConverter.ToInt32(ArrayExtensions.Slice(saveData, 0, 4));
+        }
+
+        public static SerialisationData Deconstruct(byte[] saveData)
+        {
+            SerialisationData data = new SerialisationData();
+
+            int cursor = 0;
+
+            data.GamemodeUID = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+            cursor += 4;
+            data.TeamTurn = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+            cursor += 4;
+            data.PlayerOnTeamTurn = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+            cursor += 4;
+
+            int game_manager_data_length = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+            cursor += 4;
+
+            data.GameManagerData = ArrayExtensions.Slice(saveData, cursor, cursor + game_manager_data_length);
+            cursor += game_manager_data_length;
+
+            while (cursor < data.GameManagerData.Length)
+            {
+                PieceSerialisationData piece_data = new PieceSerialisationData();
+
+                piece_data.Team= BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+                cursor += 4;
+                piece_data.Position.X= BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+                cursor += 4;
+                piece_data.Position.Y = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+                cursor += 4;
+                piece_data.UID = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+                cursor += 4;
+
+                int piece_data_length = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
+                cursor += 4;
+
+                piece_data.Data = ArrayExtensions.Slice(saveData, cursor, cursor + piece_data_length);
+                cursor += piece_data_length;
+
+                data.PieceData.Add(piece_data);
+            }
+
+            return data;
+        }
+    }
+}
+

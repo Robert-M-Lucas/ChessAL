@@ -45,8 +45,22 @@ namespace Gamemodes
             this.chessManager = chessManager;
         }
 
-        public abstract void LoadData(byte[] data);
+        public virtual SerialisationData GetData()
+        {
+            SerialisationData serialisationData = Board.GetData();
+            serialisationData.GamemodeUID = GameManagerData.GetUID();
+            return serialisationData;
+        }
 
+        public virtual void LoadData(SerialisationData data)
+        {
+            Board.LoadData(data);
+        }
+
+        /// <summary>
+        /// Returns a list of possible moves
+        /// </summary>
+        /// <returns></returns>
         public virtual List<Move> GetMoves()
         {
             return Board.GetMoves();

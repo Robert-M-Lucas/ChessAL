@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,43 @@ namespace Gamemodes
 		public AbstractBoard(AbstractGameManager gameManager)
 		{
 			this.GameManager = gameManager;
+		}
+
+		public virtual SerialisationData GetData()
+		{
+			SerialisationData serialisationData = new SerialisationData();
+
+            IEnumerable<Move> moves = new List<Move>();
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+                    if (PieceBoard[x, y] is not null)
+					{
+						PieceSerialisationData data = PieceBoard[x, y].GetData();
+                        if (data is not null)
+						{
+							serialisationData.PieceData.Add(data);
+						}
+					}
+                }
+            }
+
+            return serialisationData;
+        }
+
+		public virtual void LoadData(SerialisationData data)
+		{
+			List<AbstractPiece> all_pieces = Util.GetAllPieces();
+			Dictionary<int, Type> mapped_pieces = new Dictionary<int, Type>();
+			foreach (AbstractPiece piece in all_pieces) mapped_pieces[piece.GetUID()] = piece.GetType();
+
+			foreach (PieceSerialisationData piece_data in data.PieceData)
+			{
+				AbstractPiece new_piece = (AbstractPiece)Activator.CreateInstance(mapped_pieces[piece_data.UID], new object[] { piece_data.Position, piece_data.Team, this });
+				new_piece.LoadData(piece_data);
+				PieceBoard[piece_data.Position.X, piece_data.Position.Y] = new_piece;
+			}
 		}
 
 		public virtual List<Move> GetMoves()

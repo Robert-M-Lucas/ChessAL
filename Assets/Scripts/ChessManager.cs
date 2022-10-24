@@ -66,12 +66,6 @@ public class ChessManager : MonoBehaviour
             InputManager = FindObjectOfType<InputManager>();
             VisualManager = FindObjectOfType<VisualManager>();
             InGame = true;
-
-            // Later load from save data
-            int team_start = 0;
-            int player_in_team_start = 0;
-            ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
-            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) { OnTurn(); }
         }
 
     }
@@ -159,7 +153,19 @@ public class ChessManager : MonoBehaviour
     {
         SceneManager.LoadScene(1); // Load main scene
         GameManager = CurrentGameManager.Instantiate(this); // Instantiate GameManager
-        if (saveData.Length > 0) GameManager.LoadData(saveData); // Load save data
+        if (saveData.Length > 0)
+        {
+            SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
+            if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
+            GameManager.LoadData(data);
+        } 
+        else
+        {
+            int team_start = 0;
+            int player_in_team_start = 0;
+            ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
+            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) { OnTurn(); }
+        }
     }
 
     /// <summary>
