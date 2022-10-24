@@ -26,6 +26,7 @@ namespace MainMenu
         public TMP_Dropdown HostGamemodeDropdown = default!;
         public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
+        public TMP_Text HostScreenDescriptionText = default!;
         public Button HostStartButton = default!;
         /*
         public TMP_InputField HostPlayerIDInput = default!;
@@ -46,6 +47,7 @@ namespace MainMenu
         public GameObject JoinScreen = default!;
         private bool showingJoinScreen;
         public TMP_Text JoinStatusText = default!;
+        public TMP_Text JoinScreenDescriptionText = default!;
 
         public GameObject LobbyDisplay = default!;
         public PlayerCardController PlayerCardPrefab = default!;
@@ -115,6 +117,7 @@ namespace MainMenu
             showingHostScreen = true;
             LobbyDisplay.gameObject.SetActive(true);
             HostStatusText.gameObject.SetActive(true);
+            HostScreenDescriptionText.text = host_settings.GameMode.GetDescription();
         }
 
         public void HostConnectionSuccessful()
@@ -196,6 +199,7 @@ namespace MainMenu
         {
             JoinStatusText.text += " SUCCESS";
             JoinStatusText.gameObject.SetActive(false);
+            JoinScreenDescriptionText.text = chessManager.CurrentGameManager.GetDescription();
         }
 
         public void JoinFailed(string reason)
