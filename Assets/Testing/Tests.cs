@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 using Networking.Packets;
 using Networking.Packets.Generated;
 using Gamemodes;
+using System.IO;
 
 #nullable enable
 
@@ -98,6 +99,13 @@ public class Tests
         {
             if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Gamemode UID ({data.GetUID()}) used twice"); return false; }
             used_uids.Add(data.GetUID());
+
+            // Ensure all gamemode names can be used in file names
+            if (data.GetName().IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                Debug.LogError($"{data.GetName()} contains invalid characters for a file name");
+                return false;
+            }
         }
 
         return true;

@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Gamemodes
 {
+    /// <summary>
+    /// Class to hold serialised game data
+    /// </summary>
     public class SerialisationData
     {
         public int GamemodeUID = -1;
@@ -16,6 +19,9 @@ namespace Gamemodes
         public List<PieceSerialisationData> PieceData = new List<PieceSerialisationData>();
     }
 
+    /// <summary>
+    /// Class to hold serialised piece data
+    /// </summary>
     public class PieceSerialisationData
     {
         public int Team = -1;
@@ -26,6 +32,11 @@ namespace Gamemodes
 
     public static class SerialisationUtil
     {
+        /// <summary>
+        /// Converts SerialisationData to a raw byte array
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static byte[] Construct(SerialisationData data)
         {
             int length = 12; // GamemodeUID, TeamTurn, PlayerOnTeamTurn
@@ -82,11 +93,21 @@ namespace Gamemodes
             return output;
         }
 
+        /// <summary>
+        /// Returns the GamemodeUID from save data
+        /// </summary>
+        /// <param name="saveData"></param>
+        /// <returns></returns>
         public static int GetGamemodeUID(byte[] saveData)
         {
             return BitConverter.ToInt32(ArrayExtensions.Slice(saveData, 0, 4));
         }
 
+        /// <summary>
+        /// Converts raw save data to SerialisationData
+        /// </summary>
+        /// <param name="saveData"></param>
+        /// <returns></returns>
         public static SerialisationData Deconstruct(byte[] saveData)
         {
             SerialisationData data = new SerialisationData();
