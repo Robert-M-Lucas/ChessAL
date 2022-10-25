@@ -11,6 +11,7 @@ namespace Game
     public class VisualManager : MonoBehaviour
     {
         public float HighlightedSquareOpacity = 0.2f;
+        public Color HighlightColor;
         
         public RectTransform renderBox;
 
@@ -211,6 +212,8 @@ namespace Game
         /// </summary>
         public void HideMoves()
         {
+            if (currentlyShowing is not null) ResetSquareColor((V2)currentlyShowing);
+
             while (moveIndicators.Count > 0)
             {
                 Destroy(moveIndicators[0]);
@@ -240,6 +243,7 @@ namespace Game
             }
 
             currentlyShowing = clickPosition;
+            HighlightSquare((V2)currentlyShowing);
 
             foreach (Move move in possibleMoves)
             {
@@ -255,6 +259,11 @@ namespace Game
             return true;
         }
 
+        public void HighlightSquare(V2 position)
+        {
+            Squares[position.X, position.Y].color += HighlightColor;
+        }
+
         public void GreyscaleSquare(V2 position)
         { 
             Color base_color = Squares[position.X, position.Y].color;
@@ -266,6 +275,12 @@ namespace Game
         {
             if ((position.X + position.Y) % 2 == 0) Squares[position.X, position.Y].color = WhiteSquare.color;
             else Squares[position.X, position.Y].color = BlackSquare.color;
+
+            if (boardRenderInfo.HighlightedSquares.Contains(position))
+            {
+                Color old_color = Squares[position.X, position.Y].color;
+                Squares[position.X, position.Y].color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
+            }
         }
 
         public void OnMove(V2 from, V2 to)
