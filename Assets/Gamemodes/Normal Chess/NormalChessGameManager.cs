@@ -109,7 +109,6 @@ Traditional chess played on an 8x8 board";
 
         public override int OnMove(V2 from, V2 to)
         {
-            if (from == new V2(-1, -1) || to == new V2(-1, -1)) return 0;
             return FalseOnMove(Board, from, to);
         }
     }

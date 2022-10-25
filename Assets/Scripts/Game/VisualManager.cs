@@ -17,11 +17,13 @@ namespace Game
 
         public RectTransform renderBox;
 
-        public GameObject BlackSquare;
-        public GameObject WhiteSquare;
+        public Image BlackSquare;
+        public Image WhiteSquare;
         public GameObject BlockedSquare;
         public GameObject PiecePrefab;
         public GameObject MoveOptionPrefab;
+
+        public TMP_Text TurnText;
 
         public TMP_Text TeamWinText;
 
@@ -38,6 +40,9 @@ namespace Game
         private List<GameObject> pieces = new List<GameObject>();
 
         private V2? currentlyShowing = null;
+
+        private Image[,] Squares;
+        private List<V2> greyscaled = new List<V2>();
 
         private void Awake()
         {
@@ -56,6 +61,7 @@ namespace Game
             OnResolutionChange();
             // Render(new SampleBoard().GetBoardRenderInfo());
             boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
+            Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
             RenderBoardBackground();
             UpdateAllPieces();
         }
@@ -141,8 +147,6 @@ namespace Game
         /// </summary>
         private void RenderBoardBackground()
         {
-            Vector2 centre = new Vector2(renderBox.rect.width / 2, renderBox.rect.height / 2);
-
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
@@ -160,8 +164,8 @@ namespace Game
 
                     if (square is null)
                     {
-                        if ((x + y) % 2 == 0) square = WhiteSquare;
-                        else square = BlackSquare;
+                        if ((x + y) % 2 == 0) square = WhiteSquare.gameObject;
+                        else square = BlackSquare.gameObject;
                     }
 
                     GameObject new_square = Instantiate(square);
@@ -169,10 +173,12 @@ namespace Game
                     RenderedCellData rendered_piece_data = new_square.GetComponent<RenderedCellData>();
                     rendered_piece_data.Position = new V2(x, y);
 
+                    Image image = new_square.GetComponent<Image>();
+                    Squares[x, y] = image;
                     if (boardRenderInfo.HighlightedSquares.Contains(new V2(x, y))) 
                     {
                         Color old_color = new_square.GetComponent<Image>().color;
-                        new_square.GetComponent<Image>().color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
+                        image.color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
                     }
 
                     new_square.SetActive(true);
@@ -249,6 +255,37 @@ namespace Game
             }
 
             return true;
+        }
+
+        public void GreyscaleSquare(V2 position)
+        { 
+            Color base_color = Squares[position.X, position.Y].color;
+            float color = ((base_color.r + base_color.g + base_color.b) / 3) * 0.75f;
+            Squares[position.X, position.Y].color = new Color(color, color, color);
+        }
+
+        public void ResetSquareColor(V2 position)
+        {
+            if ((position.X + position.Y) % 2 == 0) Squares[position.X, position.Y].color = WhiteSquare.color;
+            else Squares[position.X, position.Y].color = BlackSquare.color;
+        }
+
+        public void OnMove(V2 from, V2 to)
+        {
+            foreach (V2 grey in greyscaled) ResetSquareColor(grey);
+            greyscaled.Clear();
+
+            GreyscaleSquare(from);
+            GreyscaleSquare(to);
+            greyscaled.Add(from);
+            greyscaled.Add(to);
+        }
+
+        public void OnTurn(int team, int playerOnTeam, bool you)
+        {
+            string str = $"Turn: T{team}, P{playerOnTeam}";
+            if (you) str += " (You)";
+            TurnText.text = str;
         }
 
         void Update()

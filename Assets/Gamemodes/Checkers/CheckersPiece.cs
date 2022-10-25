@@ -15,12 +15,13 @@ namespace Gamemodes.Checkers
 
         public override List<Move> GetMoves()
         {
+            int m = 1;
+            if (Team == 1) m = -1;
+
             List<Move> normal_moves = new List<Move>()
             {
-                new Move(Position, Position + new V2(1, 1)),
-                new Move(Position, Position + new V2(-1, 1)),
-                new Move(Position, Position + new V2(1, -1)),
-                new Move(Position, Position + new V2(-1, -1))
+                new Move(Position, Position + new V2(1, 1 * m)),
+                new Move(Position, Position + new V2(-1, 1 * m))
             };
 
             normal_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(normal_moves, Board), Board);

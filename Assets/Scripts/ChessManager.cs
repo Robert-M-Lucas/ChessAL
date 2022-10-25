@@ -69,6 +69,8 @@ public class ChessManager : MonoBehaviour
             VisualManager = FindObjectOfType<VisualManager>();
             InGame = true;
             if (MyTurn) OnTurn();
+
+            VisualManager.OnTurn(networkManager.GetPlayerList()[currentPlayer].Team, networkManager.GetPlayerList()[currentPlayer].PlayerOnTeam, MyTurn);
         }
 
     }
@@ -159,7 +161,6 @@ public class ChessManager : MonoBehaviour
         if (saveData.Length > 0)
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
-            Debug.Log(data.PieceData.Count);
 
             if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
             else MyTurn = false;
@@ -237,7 +238,10 @@ public class ChessManager : MonoBehaviour
     public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
         if (prevPlayer != GetLocalPlayerID()) GameManager.OnMove(from, to);
+        
 
+        VisualManager.OnMove(from, to);
+        
         VisualManager.UpdateAllPieces();
 
         if (nextPlayer < 0)
@@ -248,8 +252,16 @@ public class ChessManager : MonoBehaviour
 
         currentPlayer = nextPlayer;
 
-        if (nextPlayer == GetLocalPlayerID()) OnTurn();
-        else prevPlayer = nextPlayer;
+        if (nextPlayer == GetLocalPlayerID())
+        {
+            VisualManager.OnTurn(networkManager.GetPlayerList()[nextPlayer].Team, networkManager.GetPlayerList()[nextPlayer].PlayerOnTeam, true);
+            OnTurn();
+        }
+        else
+        {
+            VisualManager.OnTurn(networkManager.GetPlayerList()[nextPlayer].Team, networkManager.GetPlayerList()[nextPlayer].PlayerOnTeam, false);
+            prevPlayer = nextPlayer;
+        }
     }
 
     /// <summary>
