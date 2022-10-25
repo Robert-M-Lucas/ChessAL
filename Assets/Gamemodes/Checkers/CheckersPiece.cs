@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ namespace Gamemodes.Checkers
 {
     public class CheckersPiece : AbstractPiece
     {
+        public bool Queen = false;
+
         public CheckersPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
             AppearanceID = 700;
@@ -23,6 +26,12 @@ namespace Gamemodes.Checkers
                 new Move(Position, Position + new V2(1, 1 * m)),
                 new Move(Position, Position + new V2(-1, 1 * m))
             };
+
+            if (Queen)
+            {
+                normal_moves.Add(new Move(Position, Position + new V2(1, -1 * m)));
+                normal_moves.Add(new Move(Position, Position + new V2(-1, -1 * m)));
+            }
 
             normal_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(normal_moves, Board), Board);
 
@@ -51,6 +60,8 @@ namespace Gamemodes.Checkers
 
         public override void OnMove(V2 from, V2 to)
         {
+            if (from != Position) return;
+
             // Jump
             if (to.X - from.X != 1 && to.X - from.X != -1)
             {
@@ -59,7 +70,31 @@ namespace Gamemodes.Checkers
                 (Board.GameManager as GameManager).PieceTaken = true;
             }
 
+            if ((Team == 0 && to.Y == 7) || (Team == 1 && to.Y == 0))
+            {
+                if (!Queen) AppearanceID += 2;
+                Queen = true;
+            }
+
             base.OnMove(from, to);
+        }
+
+        public override PieceSerialisationData GetData()
+        {
+            PieceSerialisationData data = new PieceSerialisationData();
+            data.Team = Team;
+            data.Position = Position;
+            data.UID = GetUID();
+            data.Data = new byte[1];
+            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(Queen), 0);
+            return data;
+        }
+
+        public override void LoadData(PieceSerialisationData data)
+        {
+            Queen = BitConverter.ToBoolean(data.Data);
+            if (Queen) AppearanceID += 2;
+            base.LoadData(data);
         }
 
         public override int GetUID() => 700;

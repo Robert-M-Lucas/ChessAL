@@ -50,8 +50,6 @@ namespace Gamemodes
 			Dictionary<int, Type> mapped_pieces = new Dictionary<int, Type>();
 			foreach (AbstractPiece piece in all_pieces) mapped_pieces[piece.GetUID()] = piece.GetType();
 
-			Debug.Log(data.PieceData.Count);
-
 			foreach (PieceSerialisationData piece_data in data.PieceData)
 			{
 				AbstractPiece new_piece = (AbstractPiece)Activator.CreateInstance(mapped_pieces[piece_data.UID], new object[] { piece_data.Position, piece_data.Team, this });

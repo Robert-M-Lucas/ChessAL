@@ -12,7 +12,7 @@ namespace Gamemodes.Checkers
 
         public override int GetUID() => 700;
 
-        public override string GetName() => "Checkers [WIP]";
+        public override string GetName() => "Checkers";
 
         public override string GetDescription()
         {
