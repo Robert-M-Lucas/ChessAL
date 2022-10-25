@@ -14,6 +14,7 @@ using MainMenu;
 /// </summary>
 public class ChessManager : MonoBehaviour
 {
+    // Managers
     private NetworkManager networkManager = default!;
 
     public MenuUIManager menuUI = default!;
@@ -21,24 +22,22 @@ public class ChessManager : MonoBehaviour
     public InputManager InputManager = default!;
     public VisualManager VisualManager = default!;
 
-
+    // GameManager
     public List<AbstractGameManagerData> GameManagersData = new List<AbstractGameManagerData>();
     public AbstractGameManagerData CurrentGameManager = default!;
     public AbstractGameManager GameManager = default!;
     private byte[] saveData = new byte[0];
     
+    // Turn
     public bool InGame = false;
-
-    private int prevPlayer = -1;
-
     public bool MyTurn = false;
-
     private int currentPlayer = -1;
+    private int prevPlayer = -1;
 
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
     /// </summary>
-    private Queue<Action> monobehaviourActions = new Queue<Action>();
+    private Queue<Action> mainThreadActions = new Queue<Action>();
 
     // Called once
     private void OnEnable()
@@ -112,7 +111,7 @@ public class ChessManager : MonoBehaviour
             }
         }
         this.saveData = saveData;
-        monobehaviourActions.Enqueue(menuUI.GamemodeDataRecieve);
+        mainThreadActions.Enqueue(menuUI.GamemodeDataRecieve);
     }
 
     /// <summary>
@@ -135,13 +134,13 @@ public class ChessManager : MonoBehaviour
 
     // UI updates called from outside the main thread
     #region UIUpdateOnInfo
-    private void HostStartGameFail(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostStartGameFailed(reason); });
-    public void HostSucceed() => monobehaviourActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
-    public void HostFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.HostFailed(reason); });
-    public void JoinSucceed() => monobehaviourActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
-    public void JoinFailed(string reason) => monobehaviourActions.Enqueue(() => { menuUI.JoinFailed(reason); });
-    public void ClientKicked(string reason) => monobehaviourActions.Enqueue(() => { menuUI.ClientKicked(reason); });
-    public void PlayerListUpdate() => monobehaviourActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(networkManager.GetPlayerList()); });
+    private void HostStartGameFail(string reason) => mainThreadActions.Enqueue(() => { menuUI.HostStartGameFailed(reason); });
+    public void HostSucceed() => mainThreadActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
+    public void HostFailed(string reason) => mainThreadActions.Enqueue(() => { menuUI.HostFailed(reason); });
+    public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
+    public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUI.JoinFailed(reason); });
+    public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUI.ClientKicked(reason); });
+    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(networkManager.GetPlayerList()); });
     #endregion
 
     // Handles Scene Changes and Gamemode Loading
@@ -149,7 +148,7 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Called when the game is started
     /// </summary>
-    public void OnGameStart() => monobehaviourActions.Enqueue(() => { LoadGame(); });
+    public void OnGameStart() => mainThreadActions.Enqueue(() => { LoadGame(); });
 
     /// <summary>
     /// Loads the game
@@ -179,7 +178,7 @@ public class ChessManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Exits the game (WIP)
+    /// Exits the game
     /// </summary>
     public void ExitGame()
     {
@@ -227,7 +226,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="nextPlayer"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    public void OnForeignMoveUpdate(int nextPlayer, V2 from, V2 to) => monobehaviourActions.Enqueue(() => OnForeignMove(nextPlayer, from, to));
+    public void OnForeignMoveUpdate(int nextPlayer, V2 from, V2 to) => mainThreadActions.Enqueue(() => OnForeignMove(nextPlayer, from, to));
 
     /// <summary>
     /// Handles a foreign move update. A negative next player indicates a team win
@@ -312,9 +311,9 @@ public class ChessManager : MonoBehaviour
          * Most unity functions can only be called from the main thread so this 
          * goes through queued functions to run them from the main thread on the next frame 
          */
-        while (monobehaviourActions.Count > 0)
+        while (mainThreadActions.Count > 0)
         {
-            monobehaviourActions.Dequeue().Invoke();
+            mainThreadActions.Dequeue().Invoke();
         }
     }
 }

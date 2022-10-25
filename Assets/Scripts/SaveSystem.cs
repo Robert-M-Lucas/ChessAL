@@ -16,6 +16,12 @@ public static class SaveSystem
         Save(Gamemodes.SerialisationUtil.Construct(data), fileName);
     }
 
+    /// <summary>
+    /// Saves game data to disk
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="fileName"></param>
+    /// <returns>Null if successful or a string exception</returns>
     public static string? Save(byte[] data, string fileName)
     {
         try
@@ -29,11 +35,20 @@ public static class SaveSystem
         return null;
     }
 
+    /// <summary>
+    /// Returns a list of save files
+    /// </summary>
+    /// <returns></returns>
     public static string[] ListAllSaveFiles()
     {
         return Directory.GetFiles(Application.persistentDataPath, "*.sav");
     }
 
+    /// <summary>
+    /// Parses a file name and returns its bytes
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     public static byte[] Load(string fileName)
     {
         if (fileName[0] == '"') fileName = fileName.Substring(1, fileName.Length - 1);
@@ -44,9 +59,12 @@ public static class SaveSystem
         return File.ReadAllBytes(fileName);
     }
 
+    /// <summary>
+    /// Opens the windows file explorer in the saves folder
+    /// </summary>
     public static void OpenSaveFolder()
     {
-        Process.Start(new System.Diagnostics.ProcessStartInfo()
+        Process.Start(new ProcessStartInfo()
         {
             FileName = Application.persistentDataPath + "\\",
             UseShellExecute = true,

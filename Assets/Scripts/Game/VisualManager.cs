@@ -11,10 +11,7 @@ namespace Game
     public class VisualManager : MonoBehaviour
     {
         public float HighlightedSquareOpacity = 0.2f;
-
-        public AppearanceTable[] AppearanceTables;
-        private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
-
+        
         public RectTransform renderBox;
 
         public Image BlackSquare;
@@ -24,24 +21,25 @@ namespace Game
         public GameObject MoveOptionPrefab;
 
         public TMP_Text TurnText;
-
         public TMP_Text TeamWinText;
 
+        public AppearanceTable[] AppearanceTables;
+        private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
+
         private ChessManager chessManager;
+        private BoardRenderInfo boardRenderInfo;
+
         private Resolution resolution = new Resolution();
 
         private Dictionary<AbstractPiece, Image> piece_images = new Dictionary<AbstractPiece, Image>();
 
-        private BoardRenderInfo boardRenderInfo;
-
         private List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
-
         private List<GameObject> pieces = new List<GameObject>();
+        private Image[,] Squares;
 
         private V2? currentlyShowing = null;
 
-        private Image[,] Squares;
         private List<V2> greyscaled = new List<V2>();
 
         private void Awake()
