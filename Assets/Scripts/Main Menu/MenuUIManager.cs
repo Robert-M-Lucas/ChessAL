@@ -92,6 +92,7 @@ namespace MainMenu
             showingLocalScreen = false;
             showingLocalSettings = false;
 
+            LobbyDisplay.SetActive(false);
             HostConfig.SetActive(false);
             JoinConfig.SetActive(false);
             LocalConfig.SetActive(false);
@@ -292,9 +293,9 @@ namespace MainMenu
             HostSettings host_settings;
             if (saveData is null)
             {
-                if (HostGamemodeDropdown.value == 0) return;
+                if (LocalGamemodeDropdown.value == 0) return;
 
-                host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], "", "", null);
+                host_settings = new HostSettings(gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text], "", "", null);
             }
             else
             {
@@ -318,8 +319,19 @@ namespace MainMenu
             HideAllScreens();
 
             showingLocalScreen = true;
+            LobbyDisplay.gameObject.SetActive(true);
             LocalScreen.SetActive(true);
-            HostScreenDescriptionText.text = host_settings.GameMode.GetDescription();
+            LocalScreenDescriptionText.text = host_settings.GameMode.GetDescription();
+        }
+
+        public void AddLocalPlayer()
+        {
+            chessManager.AddLocalPlayer();
+        }
+
+        public void AddLocalAI()
+        {
+            chessManager.AddLocalAI();
         }
 
         public void StartLocalGame() => chessManager.StartLocalGame();

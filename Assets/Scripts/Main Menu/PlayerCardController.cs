@@ -34,7 +34,7 @@ namespace MainMenu
 
         public void OnTeamClick()
         {
-            if (!ChessManager.IsHost()) return;
+            if (!ChessManager.IsHost() && !ChessManager.localPlay) return;
 
             TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
 
@@ -49,7 +49,7 @@ namespace MainMenu
 
         public void OnPlayerOnTeamClick()
         {
-            if (!ChessManager.IsHost()) return;
+            if (!ChessManager.IsHost() && !ChessManager.localPlay) return;
             if (Team == -1) return;
 
             TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];

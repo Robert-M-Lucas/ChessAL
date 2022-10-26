@@ -100,7 +100,7 @@ public static class Validators
             else
             {
                 team_dict[player.Team]++;
-                if (players_in_teams[player.Team].Contains(player.PlayerInTeam)) return "Duplicate player in team"; // Duplicate player in team
+                if (players_in_teams[player.Team].Contains(player.PlayerInTeam) && player.Team != -1) return "Duplicate player in team"; // Duplicate player in team (not applicable to spectators)
                 players_in_teams[player.Team].Add(player.PlayerInTeam);
             }
         }

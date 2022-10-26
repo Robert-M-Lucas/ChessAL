@@ -41,11 +41,12 @@ public class ChessManager : MonoBehaviour
     public long TimerOffset = 0;
     public Stopwatch Timer = new Stopwatch();
 
-    // EXPERIMENTAL
-    private bool localPlay = false;
+    // EXPERIMENTAL Local play
+    public bool localPlay = false;
     private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
     private List<int> localAIPlayers = new List<int>();
     private HostSettings localSettings = default!;
+    private int IDCounter = 0;
 
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
@@ -158,13 +159,25 @@ public class ChessManager : MonoBehaviour
 
     public void PrepLocal(HostSettings settings)
     {
+        localPlay = true;
         localSettings = settings;
         CurrentGameManager = settings.GameMode;
         saveData = settings.SaveData;
     }
     public void StartLocalGame() => LoadGame();
-    public void AddLocalPlayer() { }
-    public void AddLocalAI() { }
+    public void AddLocalPlayer() 
+    {
+        localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
+        IDCounter++;
+        menuUIManager.UpdateLobbyDisplay(localPlayerList);
+    }
+    public void AddLocalAI() 
+    {
+        localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
+        localAIPlayers.Add(IDCounter);
+        IDCounter++;
+        menuUIManager.UpdateLobbyDisplay(localPlayerList);
+    }
     public void RemoveLocalPlayer(int playerID)
     {
         if (localPlayerList.ContainsKey(playerID)) localPlayerList.Remove(playerID, out _);
@@ -175,6 +188,10 @@ public class ChessManager : MonoBehaviour
     {
         localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
         localAIPlayers = new List<int>();
+        IDCounter = 0;
+        saveData = new byte[0];
+        localSettings = default!;
+        localPlay = false;
     }
 
     #endregion
@@ -218,7 +235,7 @@ public class ChessManager : MonoBehaviour
         {
             int team_start = 0;
             int player_in_team_start = 0;
-            ClientPlayerData local_player = GetPlayerList()[networkManager.GetLocalPlayerID()];
+            ClientPlayerData local_player = GetPlayerList()[GetLocalPlayerID()];
             if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) MyTurn = true;
             else MyTurn = false;
             currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
