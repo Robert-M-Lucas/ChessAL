@@ -9,7 +9,6 @@ using MainMenu;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
-using UnityEditor.PackageManager;
 using System.Linq;
 
 #nullable enable
@@ -193,6 +192,35 @@ public class ChessManager : MonoBehaviour
         LocalAIPlayers.Add(IDCounter);
         IDCounter++;
         menuUIManager.UpdateLobbyDisplay(localPlayerList);
+    }
+    public void RemoveLocalPlayer()
+    {
+        List<ClientPlayerData> client_list = localPlayerList.Values.ToList();
+
+        for (int i = 0; i < client_list.Count(); i++)
+        {
+            if (!LocalAIPlayers.Contains(client_list[i].PlayerID))
+            {
+                localPlayerList.Remove(client_list[i].PlayerID, out _);
+                menuUIManager.UpdateLobbyDisplay(localPlayerList);
+                return;
+            }
+        }
+    }
+
+    public void RemoveLocalAI()
+    {
+        List<ClientPlayerData> client_list = localPlayerList.Values.ToList();
+
+        for (int i = 0; i < client_list.Count(); i++)
+        {
+            if (LocalAIPlayers.Contains(client_list[i].PlayerID))
+            {
+                localPlayerList.Remove(client_list[i].PlayerID, out _);
+                menuUIManager.UpdateLobbyDisplay(localPlayerList);
+                return;
+            }
+        }
     }
 
     public void RemoveLocalPlayer(int playerID)

@@ -34,6 +34,7 @@ ScriptsOnlyBuild:
     - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.ContentSizeFitter
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
@@ -101,7 +102,19 @@ ScriptsOnlyBuild:
     methodName: OnPlayerOnTeamClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: AddLocalPlayer
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelHost
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: OpenSaveFolder
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LocalPlay
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: Join
@@ -110,7 +123,19 @@ ScriptsOnlyBuild:
     methodName: HostConfigGamemodeHelp
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: AddLocalAI
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: FullLocal
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: RemoveLocalAI
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: HostStartGame
@@ -122,7 +147,19 @@ ScriptsOnlyBuild:
     methodName: CancelHost
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: LoadSaveAndFullLocal
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: FullHost
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: StartLocalGame
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: RemoveLocalPlayer
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LocalConfigGamemodeHelp
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: OpenSaveFolder
@@ -272,6 +309,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 3180}
     - Class: 114
       Script: {instanceID: 3214}
+    - Class: 114
+      Script: {instanceID: 3404}
     - Class: 114
       Script: {instanceID: 3888}
     - Class: 114
@@ -921,7 +960,7 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpAsButtonMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 2d4e787b850c6aa6938af9abbeacdda5
+      Hash: 049578d830eb11b14a73c7fb7553cc6f
     assemblyName: Assembly-CSharp.dll
     namespaceName: MainMenu
     className: MenuUIManager
@@ -1071,7 +1110,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: e3e87f041038a74dec42ed43e3afb3d2
+      Hash: fa7f80e447743302081acfa8c37877f0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ChessManager

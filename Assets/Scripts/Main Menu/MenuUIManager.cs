@@ -326,15 +326,10 @@ namespace MainMenu
             LocalScreenDescriptionText.text = host_settings.GameMode.GetDescription();
         }
 
-        public void AddLocalPlayer()
-        {
-            chessManager.AddLocalPlayer();
-        }
-
-        public void AddLocalAI()
-        {
-            chessManager.AddLocalAI();
-        }
+        public void AddLocalPlayer() =>  chessManager.AddLocalPlayer();
+        public void AddLocalAI() => chessManager.AddLocalAI();
+        public void RemoveLocalPlayer() => chessManager.RemoveLocalPlayer();
+        public void RemoveLocalAI() => chessManager.RemoveLocalAI();
 
         public void StartLocalGame() => chessManager.StartLocalGame();
 
