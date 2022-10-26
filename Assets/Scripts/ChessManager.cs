@@ -225,8 +225,13 @@ public class ChessManager : MonoBehaviour
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
 
-            if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
-            else MyTurn = false;
+            if (!localPlay)
+            {
+                if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
+                else MyTurn = false;
+            }
+            else MyTurn = true;
+
             GameManager.LoadData(data);
             currentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
             TimerOffset = data.EllapsedTime;
@@ -235,9 +240,14 @@ public class ChessManager : MonoBehaviour
         {
             int team_start = 0;
             int player_in_team_start = 0;
-            ClientPlayerData local_player = GetPlayerList()[GetLocalPlayerID()];
-            if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) MyTurn = true;
-            else MyTurn = false;
+            if (!localPlay)
+            {
+                ClientPlayerData local_player = GetPlayerList()[GetLocalPlayerID()];
+                if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) MyTurn = true;
+                else MyTurn = false;
+            }
+            else  MyTurn = true;
+
             currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
         }
         Timer.Start();

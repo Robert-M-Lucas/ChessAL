@@ -101,6 +101,8 @@ namespace MainMenu
             LocalScreen.SetActive(false);
         }
 
+        public void OpenSaveFolder() => SaveSystem.OpenSaveFolder();
+
         #region Host
         public void Host()
         {
