@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Gamemodes;
 using Game;
 using MainMenu;
+using System.Collections.Concurrent;
 
 #nullable enable
 
@@ -33,6 +34,10 @@ public class ChessManager : MonoBehaviour
     public bool MyTurn = false;
     private int currentPlayer = -1;
     private int prevPlayer = -1;
+
+    // EXPERIMENTAL
+    private bool localPlay = false;
+    private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
 
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
@@ -69,7 +74,7 @@ public class ChessManager : MonoBehaviour
             InGame = true;
             if (MyTurn) OnTurn();
 
-            VisualManager.OnTurn(networkManager.GetPlayerList()[currentPlayer].Team, networkManager.GetPlayerList()[currentPlayer].PlayerOnTeam, MyTurn);
+            VisualManager.OnTurn(GetPlayerList()[currentPlayer].Team, GetPlayerList()[currentPlayer].PlayerOnTeam, MyTurn);
         }
 
     }
@@ -140,7 +145,7 @@ public class ChessManager : MonoBehaviour
     public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
     public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUI.JoinFailed(reason); });
     public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUI.ClientKicked(reason); });
-    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(networkManager.GetPlayerList()); });
+    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(GetPlayerList()); });
     #endregion
 
     // Handles Scene Changes and Gamemode Loading
@@ -165,12 +170,12 @@ public class ChessManager : MonoBehaviour
             else MyTurn = false;
             GameManager.LoadData(data);
             currentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
-        } 
+        }
         else
         {
             int team_start = 0;
             int player_in_team_start = 0;
-            ClientPlayerData local_player = networkManager.GetPlayerList()[networkManager.GetLocalPlayerID()];
+            ClientPlayerData local_player = GetPlayerList()[networkManager.GetLocalPlayerID()];
             if (local_player.Team == team_start && local_player.PlayerOnTeam == player_in_team_start) MyTurn = true;
             else MyTurn = false;
             currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
@@ -193,9 +198,28 @@ public class ChessManager : MonoBehaviour
     // Fetches various data from the NetworkManager
     #region NetworkManager Encapsulations
     public bool IsHost() => networkManager.IsHost;
-    public int GetLocalPlayerID() => networkManager.GetLocalPlayerID();
-    public int GetLocalPlayerTeam() => networkManager.GetPlayerList()[GetLocalPlayerID()].Team;
+    public int GetLocalPlayerID()
+    {
+        if (!localPlay) return networkManager.GetLocalPlayerID();
+        else return currentPlayer;
+    }
+    public int GetLocalPlayerTeam()
+    {
+        if (!localPlay) return GetPlayerList()[GetLocalPlayerID()].Team;
+        else return localPlayerList[GetLocalPlayerID()].Team;
+    }
     public int GetPlayerByTeam(int team, int playerInTeam) => networkManager.GetPlayerByTeam(team, playerInTeam);
+    public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList()
+    {
+        if (!localPlay)
+        {
+            return networkManager.GetPlayerList();
+        }
+        else
+        {
+            return localPlayerList;
+        }
+    }
     #endregion
 
     // Handles local and foreign moves
@@ -236,7 +260,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
-        if (prevPlayer != GetLocalPlayerID()) GameManager.OnMove(from, to);
+        if (prevPlayer != GetLocalPlayerID() && !localPlay) GameManager.OnMove(from, to);
         
 
         VisualManager.OnMove(from, to);
@@ -251,14 +275,14 @@ public class ChessManager : MonoBehaviour
 
         currentPlayer = nextPlayer;
 
-        if (nextPlayer == GetLocalPlayerID())
+        if (nextPlayer == GetLocalPlayerID() || localPlay)
         {
-            VisualManager.OnTurn(networkManager.GetPlayerList()[nextPlayer].Team, networkManager.GetPlayerList()[nextPlayer].PlayerOnTeam, true);
+            VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerOnTeam, true);
             OnTurn();
         }
         else
         {
-            VisualManager.OnTurn(networkManager.GetPlayerList()[nextPlayer].Team, networkManager.GetPlayerList()[nextPlayer].PlayerOnTeam, false);
+            VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerOnTeam, false);
             prevPlayer = nextPlayer;
         }
     }
@@ -283,7 +307,14 @@ public class ChessManager : MonoBehaviour
     public void OnLocalMove(int nextPlayer, V2 from, V2 to)
     {
         MyTurn = false;
-        networkManager.OnLocalMove(nextPlayer, from, to);
+        if (!localPlay)
+        {
+            networkManager.OnLocalMove(nextPlayer, from, to);
+        }
+        else
+        {
+            OnForeignMove(nextPlayer, from, to);
+        }
     }
     #endregion
 
@@ -292,7 +323,7 @@ public class ChessManager : MonoBehaviour
     public string? Save(string fileName)
     {
         SerialisationData data = GameManager.GetData();
-        ClientPlayerData current_player = networkManager.GetPlayerList()[currentPlayer];
+        ClientPlayerData current_player = GetPlayerList()[currentPlayer];
         data.TeamTurn = current_player.Team;
         data.PlayerOnTeamTurn = current_player.PlayerOnTeam;
         Debug.Log(data.PieceData.Count);
