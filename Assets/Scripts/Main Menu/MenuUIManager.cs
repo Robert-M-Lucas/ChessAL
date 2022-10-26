@@ -18,8 +18,9 @@ namespace MainMenu
     public class MenuUIManager : MonoBehaviour
     {
         #region GameObject References
+        [Header("Host")]
         public GameObject HostConfig = default!;
-        private bool showingHostSettings;
+        private bool showingHostSettings = false;
         public TMP_InputField HostNameInput = default!;
         public TMP_Text HostNameDisallowedReason = default!;
         public TMP_InputField HostPasswordInput = default!;
@@ -29,34 +30,40 @@ namespace MainMenu
         public TMP_Text HostScreenDescriptionText = default!;
         public TMP_InputField HostSavePathInput = default!;
         public Button HostStartButton = default!;
-        /*
-        public TMP_InputField HostPlayerIDInput = default!;
-        public TMP_InputField HostTeamInput = default!;
-        public TMP_InputField HostPlayerInTeamInput = default!;
-        */
-
         public GameObject HostScreen = default!;
-        private bool showingHostScreen;
+        private bool showingHostScreen = false;
 
+        [Header("Join")]
         public GameObject JoinConfig = default!;
-        private bool showingJoinSettings;
+        private bool showingJoinSettings = false;
         public TMP_InputField JoinIpInput = default!;
         public TMP_InputField JoinNameInput = default!;
         public TMP_Text JoinNameDisallowedReason = default!;
         public TMP_InputField JoinPasswordInput = default!;
-
         public GameObject JoinScreen = default!;
-        private bool showingJoinScreen;
+        private bool showingJoinScreen = false;
         public TMP_Text JoinStatusText = default!;
         public TMP_Text JoinScreenDescriptionText = default!;
 
+        [Header("Local")]
+        public GameObject LocalConfig = default!;
+        private bool showingLocalSettings = false;
+        public TMP_Dropdown LocalGamemodeDropdown = default!;
+        public TMP_Text LocalConfigHelpText = default!;
+        public TMP_Text LocalScreenDescriptionText = default!;
+        public TMP_InputField LocalSavePathInput = default!;
+        public GameObject LocalScreen = default!;
+        private bool showingLocalScreen = false;
+
+        [Header("Other")]
         public GameObject LobbyDisplay = default!;
         public PlayerCardController PlayerCardPrefab = default!;
-        private List<PlayerCardController> playerCardControllers = new List<PlayerCardController>();
+
         #endregion
 
         private ChessManager chessManager = default!;
 
+        private List<PlayerCardController> playerCardControllers = new List<PlayerCardController>();
         private Dictionary<string, AbstractGameManagerData> gamemodes = new Dictionary<string, AbstractGameManagerData>();
 
         public MenuUIManager()
@@ -72,12 +79,33 @@ namespace MainMenu
             {
                 gamemodes.Add(game.GetName(), game);
                 HostGamemodeDropdown.options.Add(new TMP_Dropdown.OptionData(game.GetName()));
+                LocalGamemodeDropdown.options.Add(new TMP_Dropdown.OptionData(game.GetName()));
             }
         }
 
+        public void HideAllScreens()
+        {
+            showingHostScreen = false;
+            showingHostSettings = false;
+            showingJoinScreen = false;
+            showingJoinSettings = false;
+            showingLocalScreen = false;
+            showingLocalSettings = false;
+
+            HostConfig.SetActive(false);
+            JoinConfig.SetActive(false);
+            LocalConfig.SetActive(false);
+            HostScreen.SetActive(false);
+            JoinScreen.SetActive(false);
+            LocalScreen.SetActive(false);
+        }
+
+        #region Host
         public void Host()
         {
-            if (showingJoinSettings || showingJoinScreen || showingHostScreen) return;
+            if (showingJoinSettings || showingJoinScreen || showingHostScreen || showingLocalSettings || showingLocalScreen) return;
+
+            HideAllScreens();
             showingHostSettings = true;
             HostConfig.SetActive(true);
         }
@@ -87,11 +115,6 @@ namespace MainMenu
             if (HostGamemodeDropdown.value == 0) return;
 
             HostConfigHelpText.text = gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetDescription();
-        }
-
-        public void OpenSaveFolder()
-        {
-            SaveSystem.OpenSaveFolder();
         }
 
         public void LoadSaveAndFullHost()
@@ -148,9 +171,9 @@ namespace MainMenu
 
             chessManager.Host(host_settings);
 
+            HideAllScreens();
+
             HostStatusText.text = "Connecting to internal server...";
-            HostConfig.SetActive(false);
-            showingHostSettings = false;
             HostScreen.SetActive(true);
             showingHostScreen = true;
             LobbyDisplay.gameObject.SetActive(true);
@@ -170,26 +193,7 @@ namespace MainMenu
             HostStatusText.text += " FAILED\n" + reason;
         }
 
-        public void CancelHost()
-        {
-            HostConfig.SetActive(false);
-            showingHostSettings = false;
-            HostScreen.SetActive(false);
-            showingHostScreen = false;
-            LobbyDisplay.gameObject.SetActive(false);
-            HostStartButton.gameObject.SetActive(false);
-        }
-
-        /*
-        public void HostSetTeam()
-        {
-            try
-            {
-                chessManager.HostSetTeam(int.Parse(HostPlayerIDInput.text), int.Parse(HostTeamInput.text), int.Parse(HostPlayerInTeamInput.text));
-            }
-            catch (FormatException) { }
-        }
-        */
+        public void CancelHost() => HideAllScreens();
 
         public void HostStartGame() => chessManager.HostStartGame();
 
@@ -197,11 +201,14 @@ namespace MainMenu
         {
             Debug.Log(reason);
         }
+        #endregion
 
+        #region Join
         public void Join()
         {
-            if (showingHostSettings || showingHostScreen || showingJoinScreen) return;
+            if (showingHostSettings || showingHostScreen || showingJoinScreen || showingLocalSettings || showingLocalScreen) return;
 
+            HideAllScreens();
             showingJoinSettings = true;
             JoinConfig.SetActive(true);
         }
@@ -219,8 +226,9 @@ namespace MainMenu
 
             chessManager.Join(join_settings);
 
+            HideAllScreens();
+
             JoinStatusText.text = "Connecting to server...";
-            JoinConfig.SetActive(false);
             showingJoinSettings = false;
             JoinScreen.SetActive(true);
             showingJoinScreen = true;
@@ -250,14 +258,79 @@ namespace MainMenu
             JoinStatusText.text += "\nClient Kicked: " + reason;
         }
 
-        public void CancelJoin()
+        public void CancelJoin() =>  HideAllScreens();
+        #endregion
+
+        #region Local Play
+        public void LocalPlay()
         {
-            JoinConfig.SetActive(false);
-            showingJoinSettings = false;
-            JoinScreen.SetActive(false);
-            showingJoinScreen = false;
-            LobbyDisplay.gameObject.SetActive(false);
+            if (showingJoinSettings || showingJoinScreen || showingHostScreen || showingHostSettings || showingLocalScreen) return;
+
+            HideAllScreens();
+            showingLocalSettings = true;
+            LocalConfig.SetActive(true);
         }
+
+        public void LocalConfigGamemodeHelp()
+        {
+            if (LocalGamemodeDropdown.value == 0) return;
+
+            LocalConfigHelpText.text = gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text].GetDescription();
+        }
+
+        public void LoadSaveAndFullLocal()
+        {
+            byte[] save_data = chessManager.Load(LocalSavePathInput.text);
+            int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
+            FullLocal(save_data, gamemode);
+        }
+
+        public void FullLocal() => FullLocal(null, null);
+
+        public void FullLocal(byte[]? saveData, int? gameMode)
+        {
+            HostSettings host_settings;
+            if (saveData is null)
+            {
+                if (HostGamemodeDropdown.value == 0) return;
+
+                host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], "", "", null);
+            }
+            else
+            {
+                AbstractGameManagerData? game_data_selected = null;
+
+                foreach (AbstractGameManagerData game_data in chessManager.GameManagersData)
+                {
+                    if (game_data.GetUID() == gameMode) game_data_selected = game_data;
+                }
+
+                if (game_data_selected is null)
+                {
+                    return;
+                }
+
+                host_settings = new HostSettings(game_data_selected, "", "", saveData);
+            }
+
+            chessManager.PrepLocal(host_settings);
+
+            HideAllScreens();
+
+            showingLocalScreen = true;
+            LocalScreen.SetActive(true);
+            HostScreenDescriptionText.text = host_settings.GameMode.GetDescription();
+        }
+
+        public void StartLocalGame() => chessManager.StartLocalGame();
+
+        public void CancelLocalPlay()
+        {
+            chessManager.ResetLocalSetting();
+            HideAllScreens();
+        }
+
+        #endregion
 
         public void UpdateLobbyDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {

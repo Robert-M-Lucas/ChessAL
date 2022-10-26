@@ -9,6 +9,7 @@ using MainMenu;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using UnityEditor.PackageManager;
 
 #nullable enable
 
@@ -20,7 +21,7 @@ public class ChessManager : MonoBehaviour
     // Managers
     private NetworkManager networkManager = default!;
 
-    public MenuUIManager menuUI = default!;
+    public MenuUIManager menuUIManager = default!;
 
     public InputManager InputManager = default!;
     public VisualManager VisualManager = default!;
@@ -43,6 +44,8 @@ public class ChessManager : MonoBehaviour
     // EXPERIMENTAL
     private bool localPlay = false;
     private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
+    private List<int> localAIPlayers = new List<int>();
+    private HostSettings localSettings = default!;
 
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
@@ -70,7 +73,7 @@ public class ChessManager : MonoBehaviour
     {
         if (scene.buildIndex == BuildIndex.MainMenu)
         {
-            menuUI = FindObjectOfType<MenuUIManager>();
+            menuUIManager = FindObjectOfType<MenuUIManager>();
         }
         else // Main Scene
         {
@@ -121,7 +124,7 @@ public class ChessManager : MonoBehaviour
             }
         }
         this.saveData = saveData;
-        mainThreadActions.Enqueue(menuUI.GamemodeDataRecieve);
+        mainThreadActions.Enqueue(menuUIManager.GamemodeDataRecieve);
     }
 
     /// <summary>
@@ -130,7 +133,19 @@ public class ChessManager : MonoBehaviour
     /// <param name="playerID"></param>
     /// <param name="team"></param>
     /// <param name="playerOnTeam"></param>
-    public void HostSetTeam(int playerID, int team, int playerOnTeam) => networkManager.HostSetTeam(playerID, team, playerOnTeam);
+    public void HostSetTeam(int playerID, int team, int playerOnTeam)
+    {
+        if (!localPlay)
+        {
+            networkManager.HostSetTeam(playerID, team, playerOnTeam);
+        }
+        else
+        {
+            localPlayerList[playerID].Team = team;
+            localPlayerList[playerID].PlayerOnTeam = playerOnTeam;
+            menuUIManager.UpdateLobbyDisplay(localPlayerList);
+        }
+    }
 
     /// <summary>
     /// Starts the game
@@ -140,17 +155,39 @@ public class ChessManager : MonoBehaviour
         string? result = networkManager.HostStartGame();
         if (result is not null) HostStartGameFail(result);
     }
+
+    public void PrepLocal(HostSettings settings)
+    {
+        localSettings = settings;
+        CurrentGameManager = settings.GameMode;
+        saveData = settings.SaveData;
+    }
+    public void StartLocalGame() => LoadGame();
+    public void AddLocalPlayer() { }
+    public void AddLocalAI() { }
+    public void RemoveLocalPlayer(int playerID)
+    {
+        if (localPlayerList.ContainsKey(playerID)) localPlayerList.Remove(playerID, out _);
+        if (localAIPlayers.Contains(playerID)) localAIPlayers.Remove(playerID);
+    }
+
+    public void ResetLocalSetting()
+    {
+        localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
+        localAIPlayers = new List<int>();
+    }
+
     #endregion
 
     // UI updates called from outside the main thread
     #region UIUpdateOnInfo
-    private void HostStartGameFail(string reason) => mainThreadActions.Enqueue(() => { menuUI.HostStartGameFailed(reason); });
-    public void HostSucceed() => mainThreadActions.Enqueue(() => { menuUI.HostConnectionSuccessful(); });
-    public void HostFailed(string reason) => mainThreadActions.Enqueue(() => { menuUI.HostFailed(reason); });
-    public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUI.JoinConnectionSuccessful(); });
-    public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUI.JoinFailed(reason); });
-    public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUI.ClientKicked(reason); });
-    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUI.UpdateLobbyDisplay(GetPlayerList()); });
+    private void HostStartGameFail(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.HostStartGameFailed(reason); });
+    public void HostSucceed() => mainThreadActions.Enqueue(() => { menuUIManager.HostConnectionSuccessful(); });
+    public void HostFailed(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.HostFailed(reason); });
+    public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUIManager.JoinConnectionSuccessful(); });
+    public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.JoinFailed(reason); });
+    public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.ClientKicked(reason); });
+    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUIManager.UpdateLobbyDisplay(GetPlayerList()); });
     #endregion
 
     // Handles Scene Changes and Gamemode Loading
@@ -215,7 +252,18 @@ public class ChessManager : MonoBehaviour
         if (!localPlay) return GetPlayerList()[GetLocalPlayerID()].Team;
         else return localPlayerList[GetLocalPlayerID()].Team;
     }
-    public int GetPlayerByTeam(int team, int playerInTeam) => networkManager.GetPlayerByTeam(team, playerInTeam);
+    public int GetPlayerByTeam(int team, int playerInTeam)
+    {
+        var playerList = GetPlayerList();
+
+        foreach (ClientPlayerData player_data in playerList.Values)
+        {
+            if (player_data.Team == team && player_data.PlayerOnTeam == playerInTeam) return player_data.PlayerID;
+        }
+
+        throw new Exception("Player not found");
+    }
+
     public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList()
     {
         if (!localPlay)

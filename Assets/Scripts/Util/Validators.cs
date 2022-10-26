@@ -1,8 +1,10 @@
+using Networking.Server;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Playables;
 
 #nullable enable
 public static class Validators
@@ -72,6 +74,46 @@ public static class Validators
 
         if (fileName.Length > 16) return "File name must be shorter than 17 character";
         if (fileName.Length < 4) return "File name must be longer than 3 character";
+
+        return null;
+    }
+
+    /// <summary>
+    /// Ensures that the team compositions are correct for the game to start
+    /// </summary>
+    /// <returns>Null if successful or a string error</returns>
+    public static string? ValidateTeams(List<ServerPlayerData> playerData, ServerGameData gameData)
+    {
+
+        int max_team = 0;
+        Dictionary<int, int> team_dict = new Dictionary<int, int>();
+        Dictionary<int, List<int>> players_in_teams = new Dictionary<int, List<int>>();
+        foreach (ServerPlayerData player in playerData)
+        {
+            if (player.Team > max_team) max_team = player.Team;
+
+            if (!team_dict.ContainsKey(player.Team))
+            {
+                players_in_teams.Add(player.Team, new List<int>() { player.PlayerInTeam });
+                team_dict.Add(player.Team, 1);
+            }
+            else
+            {
+                team_dict[player.Team]++;
+                if (players_in_teams[player.Team].Contains(player.PlayerInTeam)) return "Duplicate player in team"; // Duplicate player in team
+                players_in_teams[player.Team].Add(player.PlayerInTeam);
+            }
+        }
+
+        if (max_team != gameData.TeamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
+
+        for (int i = 0; i < max_team; i++)
+        {
+            if (!team_dict.ContainsKey(i) && gameData.TeamSizes[i].Min > 0) return "Team missing"; // Team missing
+
+            if (team_dict[i] < gameData.TeamSizes[i].Min) return "Team too small"; // Team too small
+            if (team_dict[i] > gameData.TeamSizes[i].Max) return "Team too big"; // Team too big
+        }
 
         return null;
     }

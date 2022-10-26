@@ -306,7 +306,8 @@ namespace Game
         {
             // Check for resolution change
             if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
-
+            
+            // TODO: Make this not run every frame
             long time = chessManager.Timer.ElapsedMilliseconds + chessManager.TimerOffset;
             long hours = time / (60 * 60 * 1000);
             time -= hours * (60 * 60 * 1000);
