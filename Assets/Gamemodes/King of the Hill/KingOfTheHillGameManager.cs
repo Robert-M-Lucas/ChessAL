@@ -19,6 +19,9 @@ namespace Gamemodes.KingOfTheHill
         public override string GetDescription()
         {
             return @"King of the Hill
+
+Must have 2 teams of 1
+
 First king to the 2x2 square in the center of the board wins. Normal check and checkmate rules apply";
         }
 

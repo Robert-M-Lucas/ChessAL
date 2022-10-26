@@ -19,6 +19,9 @@ namespace Gamemodes.LastPieceStanding
         public override string GetDescription()
         {
             return @"Last Piece Standing
+
+Must have 2 teams of 1
+
 Chess played until one team has no pieces remaining";
         }
 

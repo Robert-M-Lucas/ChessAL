@@ -18,6 +18,9 @@ namespace Gamemodes.MegaChess
         public override string GetDescription()
         {
             return @"Mega Chess
+
+Must have 2 teams of 1
+
 Chess played on a 16x16 board with more pieces on each side";
         }
 

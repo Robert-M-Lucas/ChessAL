@@ -17,6 +17,9 @@ namespace Gamemodes.NormalChess
         public override string GetDescription()
         {
             return @"Normal Chess
+
+Must have 2 teams of 1
+
 Traditional chess played on an 8x8 board";
         }
 

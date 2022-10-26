@@ -18,6 +18,9 @@ namespace Gamemodes.HoleChess
         public override string GetDescription()
         {
             return @"Hole Chess
+
+Must have 2 teams of 1
+
 Chess with a 2x2 square taken out of the center";
         }
 

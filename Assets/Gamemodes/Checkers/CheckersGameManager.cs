@@ -17,6 +17,9 @@ namespace Gamemodes.Checkers
         public override string GetDescription()
         {
             return @"Checkers
+
+Must have 2 teams of 1
+
 Traditional checkers played on an 8x8 board";
         }
 
