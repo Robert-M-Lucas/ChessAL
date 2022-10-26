@@ -14,6 +14,7 @@ namespace Gamemodes
         public int GamemodeUID = -1;
         public int TeamTurn = -1;
         public int PlayerOnTeamTurn = -1;
+        public long EllapsedTime = -1;
         public byte[] GameManagerData = new byte[0];
         public byte[] BoardData = new byte[0];
         public List<PieceSerialisationData> PieceData = new List<PieceSerialisationData>();
@@ -39,7 +40,7 @@ namespace Gamemodes
         /// <returns></returns>
         public static byte[] Construct(SerialisationData data)
         {
-            int length = 12; // GamemodeUID, TeamTurn, PlayerOnTeamTurn
+            int length = 20; // GamemodeUID, TeamTurn, PlayerOnTeamTurn, EllapsedTime (long - 4 bytes)
             length += 4; // GameManagerData length
             length += data.GameManagerData.Length;
             length += 4; // BoardData Length
@@ -62,6 +63,9 @@ namespace Gamemodes
             cursor += 4;
             ArrayExtensions.Merge(output, BitConverter.GetBytes(data.PlayerOnTeamTurn), cursor);
             cursor += 4;
+
+            ArrayExtensions.Merge(output, BitConverter.GetBytes(data.EllapsedTime), cursor);
+            cursor += 8;
 
             ArrayExtensions.Merge(output, BitConverter.GetBytes(data.GameManagerData.Length), cursor);
             cursor += 4;
@@ -120,6 +124,9 @@ namespace Gamemodes
             cursor += 4;
             data.PlayerOnTeamTurn = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
             cursor += 4;
+
+            data.EllapsedTime = BitConverter.ToInt64(ArrayExtensions.Slice(saveData, cursor, cursor + 8));
+            cursor += 8;
 
             int game_manager_data_length = BitConverter.ToInt32(ArrayExtensions.Slice(saveData, cursor, cursor + 4));
             cursor += 4;

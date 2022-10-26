@@ -23,6 +23,7 @@ namespace Game
 
         public TMP_Text TurnText;
         public TMP_Text TeamWinText;
+        public TMP_Text TimerText;
 
         public AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
@@ -305,6 +306,23 @@ namespace Game
         {
             // Check for resolution change
             if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
+
+            long time = chessManager.Timer.ElapsedMilliseconds + chessManager.TimerOffset;
+            long hours = time / (60 * 60 * 1000);
+            time -= hours * (60 * 60 * 1000);
+            long minutes = time / (60 * 1000);
+            time -= minutes * (60 * 1000);
+            long seconds = time / (1000);
+
+            string time_string = $"{seconds}";
+            while (time_string.Length < 2) time_string = "0" + time_string;
+            time_string = ":" + time_string;
+            time_string = minutes + time_string;
+            while (time_string.Length < 5) time_string = "0" + time_string;
+            time_string = ":" + time_string;
+            time_string = hours + time_string;
+            while (time_string.Length < 8) time_string = "0" + time_string;
+            TimerText.text = time_string;
         }
     }
 }

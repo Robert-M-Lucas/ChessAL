@@ -7,6 +7,8 @@ using Gamemodes;
 using Game;
 using MainMenu;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 #nullable enable
 
@@ -34,6 +36,9 @@ public class ChessManager : MonoBehaviour
     public bool MyTurn = false;
     private int currentPlayer = -1;
     private int prevPlayer = -1;
+
+    public long TimerOffset = 0;
+    public Stopwatch Timer = new Stopwatch();
 
     // EXPERIMENTAL
     private bool localPlay = false;
@@ -170,6 +175,7 @@ public class ChessManager : MonoBehaviour
             else MyTurn = false;
             GameManager.LoadData(data);
             currentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
+            TimerOffset = data.EllapsedTime;
         }
         else
         {
@@ -180,6 +186,7 @@ public class ChessManager : MonoBehaviour
             else MyTurn = false;
             currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
         }
+        Timer.Start();
     }
 
     /// <summary>
@@ -326,6 +333,7 @@ public class ChessManager : MonoBehaviour
         ClientPlayerData current_player = GetPlayerList()[currentPlayer];
         data.TeamTurn = current_player.Team;
         data.PlayerOnTeamTurn = current_player.PlayerOnTeam;
+        data.EllapsedTime = Timer.ElapsedMilliseconds + TimerOffset;
         Debug.Log(data.PieceData.Count);
         return SaveSystem.Save(SerialisationUtil.Construct(data), fileName);
     }
