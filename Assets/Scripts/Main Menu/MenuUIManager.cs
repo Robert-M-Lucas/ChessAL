@@ -362,7 +362,7 @@ namespace MainMenu
                     ClientPlayerData player_data = playerData[player_card.PlayerID];
                     player_card.PlayerName = player_data.Name;
                     player_card.Team = player_data.Team;
-                    player_card.PlayerOnTeam = player_data.PlayerOnTeam;
+                    player_card.PlayerOnTeam = player_data.PlayerInTeam;
                     player_card.UpdateFields();
                 }
             }
@@ -393,7 +393,7 @@ namespace MainMenu
             card_controller.PlayerID = playerData.PlayerID;
             card_controller.PlayerName = playerData.Name;
             card_controller.Team = playerData.Team;
-            card_controller.PlayerOnTeam = playerData.PlayerOnTeam;
+            card_controller.PlayerOnTeam = playerData.PlayerInTeam;
             card_controller.ChessManager = chessManager;
             card_controller.MenuUIManager = this;
 
