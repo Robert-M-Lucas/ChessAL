@@ -341,7 +341,7 @@ namespace Networking.Server
                             ServerKickPacket.Build(
                                 "Wrong Version:\nServer: "
                                     + NetworkSettings.VERSION.ToString()
-                                    + "| Client (You): "
+                                    + " | Client (You): "
                                     + initPacket.Version
                             )
                         );
