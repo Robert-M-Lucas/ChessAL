@@ -41,10 +41,10 @@ public class ChessManager : MonoBehaviour
     public long TimerOffset = 0;
     public Stopwatch Timer = new Stopwatch();
 
-    // EXPERIMENTAL Local play
+    // Local play
     public bool localPlay = false;
     private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
-    private List<int> localAIPlayers = new List<int>();
+    public List<int> LocalAIPlayers = new List<int>();
     private HostSettings localSettings = default!;
     private int IDCounter = 0;
 
@@ -157,6 +157,10 @@ public class ChessManager : MonoBehaviour
         if (result is not null) HostStartGameFail(result);
     }
 
+    /// <summary>
+    /// Initialises settings for local play
+    /// </summary>
+    /// <param name="settings"></param>
     public void PrepLocal(HostSettings settings)
     {
         localPlay = true;
@@ -164,7 +168,16 @@ public class ChessManager : MonoBehaviour
         CurrentGameManager = settings.GameMode;
         saveData = settings.SaveData;
     }
-    public void StartLocalGame() => LoadGame();
+
+    /// <summary>
+    /// Starts a local game
+    /// </summary>
+    public void StartLocalGame()
+    {
+        Destroy(networkManager.gameObject);
+        LoadGame();
+    }
+
     public void AddLocalPlayer() 
     {
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
@@ -174,20 +187,21 @@ public class ChessManager : MonoBehaviour
     public void AddLocalAI() 
     {
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
-        localAIPlayers.Add(IDCounter);
+        LocalAIPlayers.Add(IDCounter);
         IDCounter++;
         menuUIManager.UpdateLobbyDisplay(localPlayerList);
     }
+
     public void RemoveLocalPlayer(int playerID)
     {
         if (localPlayerList.ContainsKey(playerID)) localPlayerList.Remove(playerID, out _);
-        if (localAIPlayers.Contains(playerID)) localAIPlayers.Remove(playerID);
+        if (LocalAIPlayers.Contains(playerID)) LocalAIPlayers.Remove(playerID);
     }
 
     public void ResetLocalSetting()
     {
         localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
-        localAIPlayers = new List<int>();
+        LocalAIPlayers = new List<int>();
         IDCounter = 0;
         saveData = new byte[0];
         localSettings = default!;
