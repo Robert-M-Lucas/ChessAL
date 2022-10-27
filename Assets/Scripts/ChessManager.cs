@@ -35,7 +35,7 @@ public class ChessManager : MonoBehaviour
     // Turn
     public bool InGame = false;
     public bool MyTurn = false;
-    private int currentPlayer = -1;
+    public int CurrentPlayer = -1;
     private int prevPlayer = -1;
 
     public long TimerOffset = 0;
@@ -83,7 +83,7 @@ public class ChessManager : MonoBehaviour
             InGame = true;
             if (MyTurn) OnTurn();
 
-            VisualManager.OnTurn(GetPlayerList()[currentPlayer].Team, GetPlayerList()[currentPlayer].PlayerInTeam, MyTurn);
+            VisualManager.OnTurn(GetPlayerList()[CurrentPlayer].Team, GetPlayerList()[CurrentPlayer].PlayerInTeam, MyTurn);
         }
 
     }
@@ -169,6 +169,16 @@ public class ChessManager : MonoBehaviour
         saveData = settings.SaveData;
     }
 
+    public void RestartNetworking()
+    {
+        networkManager.Shutdown();
+        GameObject new_network_manager = Instantiate(networkManager.gameObject);
+        Destroy(networkManager.gameObject);
+        networkManager = new_network_manager.GetComponent<NetworkManager>();
+    }
+
+    public void GetPing(Action<int> callback) => networkManager.GetPing(callback);
+
     /// <summary>
     /// Starts a local game
     /// </summary>
@@ -193,6 +203,7 @@ public class ChessManager : MonoBehaviour
         IDCounter++;
         menuUIManager.UpdateLobbyDisplay(localPlayerList);
     }
+
     public void RemoveLocalPlayer()
     {
         List<ClientPlayerData> client_list = localPlayerList.Values.ToList();
@@ -278,7 +289,7 @@ public class ChessManager : MonoBehaviour
             else MyTurn = true;
 
             GameManager.LoadData(data);
-            currentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
+            CurrentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
             TimerOffset = data.EllapsedTime;
         }
         else
@@ -293,7 +304,7 @@ public class ChessManager : MonoBehaviour
             }
             else  MyTurn = true;
 
-            currentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
+            CurrentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
         }
         Timer.Start();
     }
@@ -317,7 +328,7 @@ public class ChessManager : MonoBehaviour
     public int GetLocalPlayerID()
     {
         if (!localPlay) return networkManager.GetLocalPlayerID();
-        else return currentPlayer;
+        else return CurrentPlayer;
     }
     public int GetLocalPlayerTeam()
     {
@@ -400,7 +411,7 @@ public class ChessManager : MonoBehaviour
             return;
         }
 
-        currentPlayer = nextPlayer;
+        CurrentPlayer = nextPlayer;
 
         if (nextPlayer == GetLocalPlayerID() || localPlay)
         {
@@ -450,7 +461,7 @@ public class ChessManager : MonoBehaviour
     public string? Save(string fileName)
     {
         SerialisationData data = GameManager.GetData();
-        ClientPlayerData current_player = GetPlayerList()[currentPlayer];
+        ClientPlayerData current_player = GetPlayerList()[CurrentPlayer];
         data.TeamTurn = current_player.Team;
         data.PlayerOnTeamTurn = current_player.PlayerInTeam;
         data.EllapsedTime = Timer.ElapsedMilliseconds + TimerOffset;

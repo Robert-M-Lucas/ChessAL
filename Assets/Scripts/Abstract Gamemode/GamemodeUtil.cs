@@ -91,6 +91,15 @@ namespace Gamemodes
             return moves;
         }
 
+
+        /// <summary>
+        /// Returns a list of moves in the given direction. Stops before hitting a friendly or one move after hitting an enemy
+        /// </summary>
+        /// <param name="piece"></param>
+        /// <param name="direction"></param>
+        /// <param name="board"></param>
+        /// <param name="maxMoves"></param>
+        /// <returns></returns>
         public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
             List<Move> moves = new List<Move>();

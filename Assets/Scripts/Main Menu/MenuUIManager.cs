@@ -196,7 +196,11 @@ namespace MainMenu
             HostStatusText.text += " FAILED\n" + reason;
         }
 
-        public void CancelHost() => HideAllScreens();
+        public void CancelHost()
+        {
+            HideAllScreens();
+            chessManager.RestartNetworking();
+        }
 
         public void HostStartGame() => chessManager.HostStartGame();
 
@@ -261,7 +265,11 @@ namespace MainMenu
             JoinStatusText.text += "\nClient Kicked: " + reason;
         }
 
-        public void CancelJoin() =>  HideAllScreens();
+        public void CancelJoin()
+        {
+            HideAllScreens();
+            chessManager.RestartNetworking();
+        }
         #endregion
 
         #region Local Play

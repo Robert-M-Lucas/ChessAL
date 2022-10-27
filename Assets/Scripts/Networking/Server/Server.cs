@@ -197,7 +197,7 @@ namespace Networking.Server
         {
             string? validate = Validators.ValidateTeams(PlayerData.Values.ToList(), gameData);
             if (validate is not null) return validate;
-            Debug.Log("Starting game...");
+            Debug.Log("Starting game");
             SendToAll(StartGamePacket.Build());
             AcceptingClients = false;
             return null;

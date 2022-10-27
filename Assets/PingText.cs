@@ -8,7 +8,7 @@ namespace MainMenu
     public class PingText : MonoBehaviour
     {
         public TMP_Text Text;
-        public NetworkManager NetworkManager;
+        public ChessManager ChessManager;
 
         private float time = 0f;
 
@@ -26,7 +26,7 @@ namespace MainMenu
             {
                 time = Time.time;
                 Text.text = "Ping: _ms";
-                NetworkManager.GetPing(PingUpdate);
+                ChessManager.GetPing(PingUpdate);
             }
 
             if (ping != -1)
