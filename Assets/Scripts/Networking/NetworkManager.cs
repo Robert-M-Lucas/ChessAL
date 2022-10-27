@@ -79,6 +79,12 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     private void ConnectionFailed() => Shutdown();
 
+    public void GetPing(Action<int> callback)
+    {
+        if (client is null) return;
+        client.GetPing(callback);
+    }
+
     public void Shutdown()
     {
         server?.Shutdown();
@@ -98,8 +104,6 @@ public class NetworkManager : MonoBehaviour
             return;
         }
 
-        client?.GetPing(OnPing);
-
         chessManager.HostSucceed();
         OnPlayersChange();
     }
@@ -112,8 +116,6 @@ public class NetworkManager : MonoBehaviour
             return;
         }
 
-        client?.GetPing(OnPing);
-
         chessManager.JoinSucceed();
         OnPlayersChange();
     }
@@ -122,7 +124,6 @@ public class NetworkManager : MonoBehaviour
     public void OnGamemodeRecieve(int gameMode, byte[] saveData) => chessManager.GameDataRecived(gameMode, saveData);
     public void OnGameStart() => chessManager.OnGameStart();
     public void OnForeignMove(int nextPlayer, V2 from, V2 to) => chessManager.OnForeignMoveUpdate(nextPlayer, from, to);
-    private void OnPing(int ping) => Debug.Log($"Ping {ping}ms");
     public void HostSetTeam(int playerID, int team, int playerInTeam) => server?.SetTeam(playerID, team, playerInTeam);
     #endregion
 }

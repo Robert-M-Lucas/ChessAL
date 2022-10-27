@@ -58,10 +58,5 @@ namespace Game
             showingMoves = visualManager.ToggleShowMoves(position);
             if (showingMoves) selectedPiece = position;
         }
-
-        private void Update()
-        {
-
-        }
     }
 }

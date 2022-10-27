@@ -8,7 +8,9 @@ ScriptsOnlyBuild:
     - Game.RenderedCellData
     - Game.VisualManager
     - MainMenu.MenuUIManager
+    - MainMenu.PingText
     - MainMenu.PlayerCardController
+    - MainMenu.VersionTextDisplay
     - NetworkManager
     DualPlay.Editor.dll:
     - DualPlay.Editor.DualPlayEditor
@@ -347,6 +349,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 7496}
     - Class: 114
       Script: {instanceID: 7686}
+    - Class: 114
+      Script: {instanceID: 24302}
+    - Class: 114
+      Script: {instanceID: 49086}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -612,7 +618,7 @@ ScriptsOnlyBuild:
     className: UnityOnScrollMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 1f302490cdc054818b571083fd0b2438
+      Hash: b74eecd88e043695d44483337b7c75eb
     assemblyName: Assembly-CSharp.dll
     namespaceName: Game
     className: VisualManager
@@ -1204,6 +1210,18 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 46810c6a83d1fe2847c49b93d45b606b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: MainMenu
+    className: VersionTextDisplay
+  - hash:
+      serializedVersion: 2
+      Hash: 33858d8abf44c436335bfa557f7605b9
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: MainMenu
+    className: PingText
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main Menu.unity

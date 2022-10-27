@@ -10,9 +10,6 @@ namespace Game
 {
     public class VisualManager : MonoBehaviour
     {
-        public float HighlightedSquareOpacity = 0.2f;
-        public Color HighlightColor;
-        
         public RectTransform renderBox;
 
         public Image BlackSquare;
@@ -24,6 +21,9 @@ namespace Game
         public TMP_Text TurnText;
         public TMP_Text TeamWinText;
         public TMP_Text TimerText;
+
+        public float HighlightedSquareOpacity = 0.2f;
+        public Color HighlightColor;
 
         public AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
@@ -38,6 +38,7 @@ namespace Game
         private List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
         private List<GameObject> pieces = new List<GameObject>();
+
         private Image[,] Squares;
 
         private V2? currentlyShowing = null;
