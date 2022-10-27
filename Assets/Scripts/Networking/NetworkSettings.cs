@@ -6,6 +6,6 @@ namespace Networking
     public static class NetworkSettings
     {
         public static int PORT = 8108;
-        public static string VERSION = "0.0.2";
+        public static string VERSION = "0.2.1";
     }
 }
