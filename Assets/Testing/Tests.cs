@@ -187,6 +187,39 @@ public class Tests
         return true;
     }
 
+    /*
+    /// <summary>
+    /// Validates the team composition checker
+    /// </summary>
+    /// <returns></returns>
+    private static bool TestTeamValidators()
+    {
+        output_string += "Running team validator tests\n";
+        Func<TeamSize[], string?> validator = Validators.ValidateTeams;
+        Tuple<TeamSize[], bool>[] tests = new Tuple<TeamSize[], bool>[] {
+            new Tuple<TeamSize[], bool>("PlayerName", true),
+            new Tuple<TeamSize[], bool>("Player Name", false),
+            new Tuple<TeamSize[], bool>("1234", true),
+            new Tuple<TeamSize[], bool>("pls", false),
+            new Tuple<TeamSize[], bool>("", false),// Too short
+            new Tuple<TeamSize[], bool>("rjfnsmekfntismes", true),
+            new Tuple<TeamSize[], bool>("rjfnsmekfntismess", false),
+        };
+
+        foreach (Tuple<string, bool> test in tests)
+        {
+            if ((validator(test.Item1) is null) != test.Item2)
+            {
+                if (test.Item2) Debug.LogError($"Name '{test.Item1}' failed validation when it should have passed");
+                else Debug.LogError($"Name '{test.Item1}' passed validation when it should have failed");
+                return false;
+            }
+        }
+
+        return true;
+    }
+    */
+
     private static bool TestV2()
     {
         output_string += "Testing V2 functions\n";

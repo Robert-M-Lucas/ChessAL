@@ -198,6 +198,7 @@ namespace MainMenu
 
         public void CancelHost()
         {
+            UpdateLobbyDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             HideAllScreens();
             chessManager.RestartNetworking();
         }
@@ -268,6 +269,7 @@ namespace MainMenu
         public void CancelJoin()
         {
             HideAllScreens();
+            UpdateLobbyDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             chessManager.RestartNetworking();
         }
         #endregion
@@ -343,6 +345,7 @@ namespace MainMenu
 
         public void CancelLocalPlay()
         {
+            UpdateLobbyDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             chessManager.ResetLocalSetting();
             HideAllScreens();
         }

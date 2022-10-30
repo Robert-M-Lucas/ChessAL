@@ -375,11 +375,14 @@ namespace Networking.Client
         /// </summary>
         public void Shutdown()
         {
+            Debug.Log("Client shutdown");
             if (connectionThread.ThreadState == ThreadState.Running) connectionThread.Abort();
             receiveThread.Abort();
             sendThread.Abort();
+            handler?.Disconnect(false);
             handler?.Shutdown(SocketShutdown.Both);
-            handler?.Close();
+            handler?.Close(0);
+            handler?.Dispose();
         }
     }
 }

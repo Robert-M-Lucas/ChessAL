@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.Linq;
+using System.Threading;
 
 #nullable enable
 
@@ -172,6 +173,7 @@ public class ChessManager : MonoBehaviour
     public void RestartNetworking()
     {
         networkManager.Shutdown();
+        Thread.Sleep(500);
         GameObject new_network_manager = Instantiate(networkManager.gameObject);
         Destroy(networkManager.gameObject);
         networkManager = new_network_manager.GetComponent<NetworkManager>();

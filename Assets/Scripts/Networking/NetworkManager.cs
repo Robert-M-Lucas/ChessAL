@@ -46,11 +46,14 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     public void Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
     {
+        Debug.Log("Host");
         ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SaveData);
 
+        Debug.Log("Server");
         server = new Server(gameData, settings.Password);
         server.Start();
 
+        Debug.Log("Client");
         client = new Client("127.0.0.1", settings.Password, settings.PlayerName, this, OnHostSuccessOrFail);
         client.Connect();
     }
@@ -97,6 +100,7 @@ public class NetworkManager : MonoBehaviour
     #region Client Callbacks
     public void OnHostSuccessOrFail(string? status)
     {
+        Debug.Log(status);
         if (status is not null)
         {
             chessManager.HostFailed(status);

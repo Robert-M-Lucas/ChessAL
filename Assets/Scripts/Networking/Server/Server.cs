@@ -23,6 +23,8 @@ namespace Networking.Server
         public ServerGameData gameData;
         private string serverPassword;
 
+        private Socket? handler;
+
         #region Threads
 
         private Thread acceptClientThread;
@@ -50,6 +52,8 @@ namespace Networking.Server
         /// Time between trying to use dictionary
         /// </summary>
         private const int CONCURRENT_DICT_COOLDOWN = 1;
+
+        private const int CLIENT_ACCEPT_COOLDOWN = 5;
 
         #endregion Cooldowns
 
@@ -208,6 +212,8 @@ namespace Networking.Server
         /// </summary>
         private void AcceptClients()
         {
+            Debug.Log("Server starting");
+
             IPAddress ipAddress = IPAddress.Any;
 
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, NetworkSettings.PORT);
@@ -228,11 +234,32 @@ namespace Networking.Server
                 listener.Bind(localEndPoint);
 
                 listener.Listen(100);
+                listener.Blocking = false;
 
-                while (true)
+                while (running)
                 {
+                    Debug.Log("Accepting");
                     // Recieve connection data
-                    Socket handler = listener.Accept();
+                    while (running)
+                    {
+                        try
+                        {
+                            handler = listener.Accept();
+                            break;
+                        }
+                        catch (SocketException se)
+                        {
+                            // No connection available
+                            if (se.ErrorCode == 10035)
+                            {
+                                Thread.Sleep(CLIENT_ACCEPT_COOLDOWN);
+                                continue;
+                            }
+                            else throw se;
+                        }
+                    }
+                    if (!running) return;
+                    Debug.Log("Accepted");
 
                     byte[] rec_bytes = new byte[1024];
                     int total_rec = 0;
@@ -240,7 +267,7 @@ namespace Networking.Server
                     while (total_rec < 4)
                     {
                         byte[] partial_bytes = new byte[1024];
-                        int bytesRec = handler.Receive(rec_bytes);
+                        int bytesRec = handler!.Receive(rec_bytes);
 
                         total_rec += bytesRec;
 
@@ -262,7 +289,7 @@ namespace Networking.Server
                     while (total_rec < packet_len)
                     {
                         byte[] partial_bytes = new byte[1024];
-                        int bytesRec = handler.Receive(partial_bytes);
+                        int bytesRec = handler!.Receive(partial_bytes);
 
                         total_rec += bytesRec;
                         ArrayExtensions.Merge(
@@ -280,7 +307,7 @@ namespace Networking.Server
                     // Not accepting clients
                     if (!AcceptingClients)
                     {
-                        handler.Send(
+                        handler!.Send(
                             ServerKickPacket.Build("Server is not accepting clients at this time")
                         );
                         continue;
@@ -289,7 +316,7 @@ namespace Networking.Server
                     // Password incorrect
                     if (serverPassword != "" && initPacket.Password != serverPassword)
                     {
-                        handler.Send(
+                        handler!.Send(
                             ServerKickPacket.Build("Wrong Password: '" + initPacket.Password + "'")
                         );
                         continue;
@@ -298,7 +325,7 @@ namespace Networking.Server
                     // Version mismatch
                     if (initPacket.Version != NetworkSettings.VERSION)
                     {
-                        handler.Send(
+                        handler!.Send(
                             ServerKickPacket.Build(
                                 "Wrong Version:\nServer: "
                                     + NetworkSettings.VERSION.ToString()
@@ -312,7 +339,7 @@ namespace Networking.Server
                     string? validation_result = Validators.ValidatePlayerName(initPacket.Name);
                     if (validation_result is not null)
                     {
-                        handler.Send(
+                        handler!.Send(
                            ServerKickPacket.Build(
                                "Illeagal Name: "
                                    + validation_result
@@ -325,7 +352,7 @@ namespace Networking.Server
                     int playerID;
                     while (true)
                     {
-                        Tuple<bool, int> add_result = TryAddPlayer(handler, initPacket.Name, -1, -1);
+                        Tuple<bool, int> add_result = TryAddPlayer(handler!, initPacket.Name, -1, -1);
                         if (add_result.Item1) { playerID = add_result.Item2; break; }
                         Thread.Sleep(CONCURRENT_DICT_COOLDOWN);
                     }
@@ -339,8 +366,21 @@ namespace Networking.Server
             }
             catch (ThreadAbortException)
             {
-                try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception) { /* Debug.LogError(e); */ }
-                try { listener?.Close(); } catch (Exception e) { Debug.LogError(e); }
+                Debug.Log("Shutting down listener");
+                Debug.Log(listener);
+                try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
+                try { listener?.Disconnect(false); } catch (Exception e) { Debug.LogError(e); }
+                while (listener?.Receive(new byte[256]) > 0) { }
+                try { listener?.Close(0); } catch (Exception e) { Debug.LogError(e); }
+                try { listener?.Dispose(); } catch (Exception e) { Debug.LogError(e); }
+
+                try { handler?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
+                try { handler?.Disconnect(false); } catch (Exception e) { Debug.LogError(e); }
+                while (handler?.Receive(new byte[256]) > 0) { }
+                try { handler?.Close(0); } catch (Exception e) { Debug.LogError(e); }
+                try { handler?.Dispose(); } catch (Exception e) { Debug.LogError(e); }
+
+                return;
             }
             catch (Exception e)
             {
@@ -436,7 +476,7 @@ namespace Networking.Server
         {
             try
             {
-                while (true)
+                while (running)
                 {
                     if (recieveQueue.IsEmpty)
                     {
@@ -473,7 +513,7 @@ namespace Networking.Server
                     }
                 }
             }
-            catch (ThreadAbortException) { }
+            catch (ThreadAbortException) { return; }
             catch (Exception e)
             {
                 Debug.LogError(e);
@@ -509,7 +549,7 @@ namespace Networking.Server
         {
             try
             {
-                while (true)
+                while (running)
                 {
                     if (!sendQueue.IsEmpty)
                     {
@@ -519,7 +559,7 @@ namespace Networking.Server
                     Thread.Sleep(SEND_COOLDOWN);
                 }
             }
-            catch (ThreadAbortException) { }
+            catch (ThreadAbortException) { return; }
             catch (Exception e)
             {
                 Debug.LogError(e);
@@ -567,6 +607,12 @@ namespace Networking.Server
         public void Shutdown()
         {
             running = false;
+
+            foreach (ServerPlayerData player_data in PlayerData.Values)
+            {
+                player_data.ShutdownSocket();
+            }
+
             acceptClientThread.Abort();
             recieveThread.Abort();
             sendThread.Abort();
