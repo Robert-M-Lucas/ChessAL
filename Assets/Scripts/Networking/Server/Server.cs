@@ -244,7 +244,8 @@ namespace Networking.Server
                     {
                         try
                         {
-                            handler = listener.Accept();
+
+                            handler = listener.Accept(); // Throws socket exception code 10035 if none available
                             break;
                         }
                         catch (SocketException se)
@@ -366,19 +367,21 @@ namespace Networking.Server
             }
             catch (ThreadAbortException)
             {
+                // TODO: Figure out which of these are needed
+
                 Debug.Log("Shutting down listener");
                 Debug.Log(listener);
-                try { listener?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
-                try { listener?.Disconnect(false); } catch (Exception e) { Debug.LogError(e); }
+                try { listener?.Shutdown(SocketShutdown.Both); } catch (SocketException) {  }
+                try { listener?.Disconnect(false); } catch (SocketException) {  }
                 while (listener?.Receive(new byte[256]) > 0) { }
-                try { listener?.Close(0); } catch (Exception e) { Debug.LogError(e); }
-                try { listener?.Dispose(); } catch (Exception e) { Debug.LogError(e); }
+                try { listener?.Close(0); } catch (SocketException) {  }
+                try { listener?.Dispose(); } catch (SocketException) {  }
 
-                try { handler?.Shutdown(SocketShutdown.Both); } catch (Exception e) { Debug.LogError(e); }
-                try { handler?.Disconnect(false); } catch (Exception e) { Debug.LogError(e); }
+                try { handler?.Shutdown(SocketShutdown.Both); } catch (SocketException) {  }
+                try { handler?.Disconnect(false); } catch (SocketException) {  }
                 while (handler?.Receive(new byte[256]) > 0) { }
-                try { handler?.Close(0); } catch (Exception e) { Debug.LogError(e); }
-                try { handler?.Dispose(); } catch (Exception e) { Debug.LogError(e); }
+                try { handler?.Close(0); } catch (SocketException) {  }
+                try { handler?.Dispose(); } catch (SocketException) {  }
 
                 return;
             }
