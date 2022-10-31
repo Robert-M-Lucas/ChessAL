@@ -1494,7 +1494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014e743b57946e847a4b59d375b3a578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HostConfig: {fileID: 500877471}
+  HostConfigScreen: {fileID: 500877471}
   HostNameInput: {fileID: 554850838}
   HostNameDisallowedReason: {fileID: 370944178}
   HostPasswordInput: {fileID: 1193816603}
@@ -1505,7 +1505,7 @@ MonoBehaviour:
   HostSavePathInput: {fileID: 1486764302}
   HostStartButton: {fileID: 1141063035}
   HostScreen: {fileID: 585804235}
-  JoinConfig: {fileID: 916115819}
+  JoinConfigScreen: {fileID: 916115819}
   JoinIpInput: {fileID: 62617230}
   JoinNameInput: {fileID: 1224238529}
   JoinNameDisallowedReason: {fileID: 142676627}
@@ -1513,7 +1513,7 @@ MonoBehaviour:
   JoinScreen: {fileID: 976943192}
   JoinStatusText: {fileID: 802071265}
   JoinScreenDescriptionText: {fileID: 1358135607}
-  LocalConfig: {fileID: 1162815258}
+  LocalConfigScreen: {fileID: 1053029501}
   LocalGamemodeDropdown: {fileID: 616049424}
   LocalConfigHelpText: {fileID: 1164416056}
   LocalScreenDescriptionText: {fileID: 1966248341}
@@ -2973,7 +2973,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 153191914}
         m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
-        m_MethodName: LocalPlay
+        m_MethodName: LocalPlayConfig
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4071,8 +4071,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 153191914}
-        m_TargetAssemblyTypeName: MenuUIManager, Assembly-CSharp
-        m_MethodName: Join
+        m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
+        m_MethodName: JoinConfig
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4206,7 +4206,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 153191914}
         m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
-        m_MethodName: HostConfigGamemodeHelp
+        m_MethodName: HostShowGamemodeHelp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6537,7 +6537,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 153191914}
         m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
-        m_MethodName: FullLocal
+        m_MethodName: FullLocalPlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9868,7 +9868,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 153191914}
         m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
-        m_MethodName: LoadSaveAndFullLocal
+        m_MethodName: LoadSaveAndFullLocalPlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12126,7 +12126,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 153191914}
         m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
-        m_MethodName: LocalConfigGamemodeHelp
+        m_MethodName: LocalPlayShowGamemodeHelp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12284,6 +12284,7 @@ MonoBehaviour:
   VisualManager: {fileID: 0}
   InGame: 0
   MyTurn: 0
+  CurrentPlayer: -1
   TimerOffset: 0
   localPlay: 0
   LocalAIPlayers: 
@@ -13483,8 +13484,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 153191914}
-        m_TargetAssemblyTypeName: MenuUIManager, Assembly-CSharp
-        m_MethodName: Host
+        m_TargetAssemblyTypeName: MainMenu.MenuUIManager, Assembly-CSharp
+        m_MethodName: HostConfig
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -39,6 +39,7 @@ public class ChessManager : MonoBehaviour
     public int CurrentPlayer = -1;
     private int prevPlayer = -1;
 
+    // Keeps track of ellapsed game time
     public long TimerOffset = 0;
     public Stopwatch Timer = new Stopwatch();
 
@@ -77,7 +78,7 @@ public class ChessManager : MonoBehaviour
         {
             menuUIManager = FindObjectOfType<MenuUIManager>();
         }
-        else // Main Scene
+        else // Game Scene
         {
             InputManager = FindObjectOfType<InputManager>();
             VisualManager = FindObjectOfType<VisualManager>();
@@ -126,7 +127,7 @@ public class ChessManager : MonoBehaviour
             }
         }
         this.saveData = saveData;
-        mainThreadActions.Enqueue(menuUIManager.GamemodeDataRecieve);
+        mainThreadActions.Enqueue(menuUIManager.OnGamemodeDataRecieve);
     }
 
     /// <summary>
@@ -145,7 +146,7 @@ public class ChessManager : MonoBehaviour
         {
             localPlayerList[playerID].Team = team;
             localPlayerList[playerID].PlayerInTeam = playerOnTeam;
-            menuUIManager.UpdateLobbyDisplay(localPlayerList);
+            menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
         }
     }
 
@@ -170,10 +171,12 @@ public class ChessManager : MonoBehaviour
         saveData = settings.SaveData;
     }
 
+    /// <summary>
+    /// Restarts networking system
+    /// </summary>
     public void RestartNetworking()
     {
         networkManager.Shutdown();
-        Thread.Sleep(500);
         GameObject new_network_manager = Instantiate(networkManager.gameObject);
         Destroy(networkManager.gameObject);
         networkManager = new_network_manager.GetComponent<NetworkManager>();
@@ -196,14 +199,14 @@ public class ChessManager : MonoBehaviour
     {
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
         IDCounter++;
-        menuUIManager.UpdateLobbyDisplay(localPlayerList);
+        menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
     }
     public void AddLocalAI() 
     {
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
         LocalAIPlayers.Add(IDCounter);
         IDCounter++;
-        menuUIManager.UpdateLobbyDisplay(localPlayerList);
+        menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
     }
 
     public void RemoveLocalPlayer()
@@ -215,7 +218,7 @@ public class ChessManager : MonoBehaviour
             if (!LocalAIPlayers.Contains(client_list[i].PlayerID))
             {
                 localPlayerList.Remove(client_list[i].PlayerID, out _);
-                menuUIManager.UpdateLobbyDisplay(localPlayerList);
+                menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
                 return;
             }
         }
@@ -230,7 +233,7 @@ public class ChessManager : MonoBehaviour
             if (LocalAIPlayers.Contains(client_list[i].PlayerID))
             {
                 localPlayerList.Remove(client_list[i].PlayerID, out _);
-                menuUIManager.UpdateLobbyDisplay(localPlayerList);
+                menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
                 return;
             }
         }
@@ -242,7 +245,7 @@ public class ChessManager : MonoBehaviour
         if (LocalAIPlayers.Contains(playerID)) LocalAIPlayers.Remove(playerID);
     }
 
-    public void ResetLocalSetting()
+    public void ResetLocalSettings()
     {
         localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
         LocalAIPlayers = new List<int>();
@@ -262,7 +265,7 @@ public class ChessManager : MonoBehaviour
     public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUIManager.JoinConnectionSuccessful(); });
     public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.JoinFailed(reason); });
     public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.ClientKicked(reason); });
-    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUIManager.UpdateLobbyDisplay(GetPlayerList()); });
+    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUIManager.UpdateLobbyPlayerCardDisplay(GetPlayerList()); });
     #endregion
 
     // Handles Scene Changes and Gamemode Loading
@@ -460,6 +463,11 @@ public class ChessManager : MonoBehaviour
 
     // Handles game saves
     #region Save Systems
+    /// <summary>
+    /// Saves the current game under a specified file name
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns>Null if successful or a string error</returns>
     public string? Save(string fileName)
     {
         SerialisationData data = GameManager.GetData();
@@ -467,11 +475,15 @@ public class ChessManager : MonoBehaviour
         data.TeamTurn = current_player.Team;
         data.PlayerOnTeamTurn = current_player.PlayerInTeam;
         data.EllapsedTime = Timer.ElapsedMilliseconds + TimerOffset;
-        Debug.Log(data.PieceData.Count);
         return SaveSystem.Save(SerialisationUtil.Construct(data), fileName);
     }
 
-    public byte[] Load(string fileName)
+    /// <summary>
+    /// Loads the bytes of the specified save file
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public byte[] LoadSave(string fileName)
     {
         return SaveSystem.Load(fileName);
     }
@@ -481,7 +493,8 @@ public class ChessManager : MonoBehaviour
     {
         /* 
          * Most unity functions can only be called from the main thread so this 
-         * goes through queued functions to run them from the main thread on the next frame 
+         * goes through functions queued by other threads to run them 
+         * ont the main thread during the next frame 
          */
         while (mainThreadActions.Count > 0)
         {

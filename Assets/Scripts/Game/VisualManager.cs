@@ -48,6 +48,7 @@ namespace Game
 
         private void Awake()
         {
+            // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
             {
                 foreach (PieceSprite piece_sprite in appearance_table.Appearances)
@@ -58,6 +59,7 @@ namespace Game
                         throw new Exception("Duplicate appearance ID");
                     }
 #endif
+
                     internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
                 }
             }
@@ -66,10 +68,11 @@ namespace Game
         void Start()
         {
             chessManager = FindObjectOfType<ChessManager>();
-            OnResolutionChange();
-            // Render(new SampleBoard().GetBoardRenderInfo());
             boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
+
             Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
+
+            OnResolutionChange();
             RenderBoardBackground();
             UpdateAllPieces();
         }
@@ -292,6 +295,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Shows which piece moved on the last turn
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
         public void OnMove(V2 from, V2 to)
         {
             foreach (V2 grey in greyscaled) ResetSquareColor(grey);
@@ -303,6 +311,12 @@ namespace Game
             greyscaled.Add(to);
         }
 
+        /// <summary>
+        /// Updates the turn text on turn change
+        /// </summary>
+        /// <param name="team"></param>
+        /// <param name="playerOnTeam"></param>
+        /// <param name="you"></param>
         public void OnTurn(int team, int playerOnTeam, bool you)
         {
             string str = $"Turn: T{team}, P{playerOnTeam}";
@@ -315,6 +329,7 @@ namespace Game
             // Check for resolution change
             if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
             
+            // Timer
             // TODO: Make this not run every frame
             long time = chessManager.Timer.ElapsedMilliseconds + chessManager.TimerOffset;
             long hours = time / (60 * 60 * 1000);
