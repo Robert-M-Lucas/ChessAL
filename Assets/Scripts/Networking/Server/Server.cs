@@ -228,7 +228,7 @@ namespace Networking.Server
                     ProtocolType.Tcp
                 );
 
-                listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, false);
                 listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
                 listener.Bind(localEndPoint);
