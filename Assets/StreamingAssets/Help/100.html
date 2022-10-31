@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="static/base.css"/>
+
+    <script src="static/bootstrap/js/bootstrap.js"></script>
+
+	<title>Help</title>
+</head>
+
+<body>
+    <main class="d-flex flex-nowrap">
+        <nav class="d-flex flex-column flex-shrink-0 p-3 bg-white" style="width: 280px!important; display: inline-block; height: 100vh;" id="sidebar">
+            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+            <span class="fs-5 fw-semibold">Help</span>
+            </a>
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1">
+                    <a class="btn btn-toggle d-inline-flex align-items-center rounded border-0" href="index.html">
+                        Home
+                    </a>
+                </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                Starting a game
+                </button>
+                <div class="collapse" id="home-collapse">
+                <ul class="btn-toggle-nav fw-normal pb-1 small">
+                    <li><a href="hosting.html" class="link-dark d-inline-flex text-decoration-none rounded">Hosting</a></li>
+                    <li><a href="joining.html" class="link-dark d-inline-flex text-decoration-none rounded">Joining</a></li>
+                    <li><a href="localplay.html" class="link-dark d-inline-flex text-decoration-none rounded">Local Play</a></li>
+                </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                Game Modes
+                </button>
+                <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-navfw-normal pb-1 small">
+                    <li><a href="100.html" class="link-dark d-inline-flex text-decoration-none rounded">Normal Chess</a></li>
+                </ul>
+                </div>
+            </li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <div class="container" style="padding: 50px">
+                <h1>Normal Chess</h1>
+            </div>
+        </div>
+    </main>
+</body>

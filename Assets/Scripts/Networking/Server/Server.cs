@@ -238,7 +238,6 @@ namespace Networking.Server
 
                 while (running)
                 {
-                    Debug.Log("Accepting");
                     // Recieve connection data
                     while (running)
                     {
@@ -260,7 +259,6 @@ namespace Networking.Server
                         }
                     }
                     if (!running) return;
-                    Debug.Log("Accepted");
 
                     byte[] rec_bytes = new byte[1024];
                     int total_rec = 0;

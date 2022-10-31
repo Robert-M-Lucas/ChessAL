@@ -103,6 +103,11 @@ namespace MainMenu
 
         public void OpenSaveFolder() => SaveSystem.OpenSaveFolder();
 
+        public void ShowGamemodeHelp()
+        {
+            HelpSystem.OpenHelp(chessManager.CurrentGameManager.GetUID());
+        }
+
         #region Host
         public void HostConfig()
         {
@@ -117,6 +122,7 @@ namespace MainMenu
         {
             if (HostGamemodeDropdown.value == 0) return;
 
+            HelpSystem.OpenHelp(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetUID());
             HostConfigHelpText.text = gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetDescription();
         }
 
@@ -288,6 +294,7 @@ namespace MainMenu
         {
             if (LocalGamemodeDropdown.value == 0) return;
 
+            HelpSystem.OpenHelp(gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text].GetUID());
             LocalConfigHelpText.text = gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text].GetDescription();
         }
 
