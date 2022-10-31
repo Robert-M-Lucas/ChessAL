@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Gamemodes;
 using System.Net.NetworkInformation;
 using TMPro;
+using System;
 
 namespace Game
 {
@@ -51,6 +52,12 @@ namespace Game
             {
                 foreach (PieceSprite piece_sprite in appearance_table.Appearances)
                 {
+#if UNITY_EDITOR
+                    if (internalSpriteTable.ContainsKey(piece_sprite.ID))
+                    {
+                        throw new Exception("Duplicate appearance ID");
+                    }
+#endif
                     internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
                 }
             }

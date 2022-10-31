@@ -66,11 +66,6 @@ namespace MainMenu
         private List<PlayerCardController> playerCardControllers = new List<PlayerCardController>();
         private Dictionary<string, AbstractGameManagerData> gamemodes = new Dictionary<string, AbstractGameManagerData>();
 
-        public MenuUIManager()
-        {
-
-        }
-
         void Start()
         {
             chessManager = FindObjectOfType<ChessManager>();
