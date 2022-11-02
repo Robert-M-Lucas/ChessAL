@@ -27,7 +27,7 @@ public class NetworkManager : MonoBehaviour
 
     // Shuts down client and server correctly
     private void OnApplicationQuit() => Shutdown();
-    
+
     #region Client encapsulations
     public void OnLocalMove(int nextPlayer, V2 from, V2 to) => client?.OnLocalMove(nextPlayer, from, to);
 

@@ -9,6 +9,9 @@ using System.Threading;
 using UnityEngine;
 using Networking.Packets;
 using Networking.Packets.Generated;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
+using ThreadState = System.Threading.ThreadState;
 
 #nullable enable
 namespace Networking.Server
@@ -234,10 +237,10 @@ namespace Networking.Server
                 listener.Bind(localEndPoint);
 
                 listener.Listen(100);
-                listener.Blocking = false;
 
                 while (running)
                 {
+                    listener.Blocking = false;
                     // Recieve connection data
                     while (running)
                     {
@@ -259,6 +262,9 @@ namespace Networking.Server
                         }
                     }
                     if (!running) return;
+
+                    listener.Blocking = true;
+                    Thread.Sleep(200);
 
                     byte[] rec_bytes = new byte[1024];
                     int total_rec = 0;
@@ -385,6 +391,10 @@ namespace Networking.Server
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(SocketException))
+                {
+                    Debug.LogError((e as SocketException)!.ErrorCode);
+                }
                 Debug.LogError(e.ToString());
             }
         }
