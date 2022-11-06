@@ -281,6 +281,7 @@ public class ChessManager : MonoBehaviour
     private void LoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
+        Debug.Log(CurrentGameManager);
         GameManager = CurrentGameManager.Instantiate(this); // Instantiate GameManager
         if (saveData.Length > 0)
         {

@@ -15,7 +15,7 @@ namespace MainMenu
 
         void Start()
         {
-            VersionText.text = $"V{Application.version} - N{NetworkSettings.VERSION}";
+            VersionText.text = $"V_{Application.version} - N_{NetworkSettings.VERSION}";
         }
     }
 }

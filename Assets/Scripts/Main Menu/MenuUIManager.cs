@@ -25,7 +25,7 @@ namespace MainMenu
         public TMP_InputField HostNameInput = default!;
         public TMP_Text HostNameDisallowedReason = default!;
         public TMP_InputField HostPasswordInput = default!;
-        public TMP_Dropdown HostGamemodeDropdown = default!;
+        public Selector HostGamemodeSelector = default!;
         public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
         public TMP_Text HostScreenDescriptionText = default!;
@@ -49,7 +49,7 @@ namespace MainMenu
         [Header("Local")]
         public GameObject LocalConfigScreen = default!;
         private bool showingLocalSettings = false;
-        public TMP_Dropdown LocalGamemodeDropdown = default!;
+        public Selector LocalGamemodeSelector = default!;
         public TMP_Text LocalConfigHelpText = default!;
         public TMP_Text LocalScreenDescriptionText = default!;
         public TMP_InputField LocalSavePathInput = default!;
@@ -76,8 +76,8 @@ namespace MainMenu
             foreach (AbstractGameManagerData game in gamemode_data)
             {
                 gamemodes.Add(game.GetName(), game);
-                HostGamemodeDropdown.options.Add(new TMP_Dropdown.OptionData(game.GetName()));
-                LocalGamemodeDropdown.options.Add(new TMP_Dropdown.OptionData(game.GetName()));
+                HostGamemodeSelector.Options.Add(game.GetName());
+                LocalGamemodeSelector.Options.Add(game.GetName());
             }
         }
         
@@ -121,10 +121,10 @@ namespace MainMenu
 
         public void HostShowGamemodeHelp()
         {
-            if (HostGamemodeDropdown.value == 0) return;
+            if (HostGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-            HelpSystem.OpenHelp(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetUID());
-            HostConfigHelpText.text = gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text].GetDescription();
+            HelpSystem.OpenHelp(gamemodes[HostGamemodeSelector.CurrentlyShowing].GetUID());
+            HostConfigHelpText.text = gamemodes[HostGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LoadSaveAndFullHost()
@@ -155,9 +155,9 @@ namespace MainMenu
             HostSettings host_settings;
             if (saveData is null)
             {
-                if (HostGamemodeDropdown.value == 0) return;
+                if (HostGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-                host_settings = new HostSettings(gamemodes[HostGamemodeDropdown.options[HostGamemodeDropdown.value].text], HostPasswordInput.text, HostNameInput.text, null);
+                host_settings = new HostSettings(gamemodes[HostGamemodeSelector.CurrentlyShowing], HostPasswordInput.text, HostNameInput.text, null);
             }
             else
             {
@@ -293,10 +293,10 @@ namespace MainMenu
 
         public void LocalPlayShowGamemodeHelp()
         {
-            if (LocalGamemodeDropdown.value == 0) return;
+            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-            HelpSystem.OpenHelp(gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text].GetUID());
-            LocalConfigHelpText.text = gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text].GetDescription();
+            HelpSystem.OpenHelp(gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetUID());
+            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LoadSaveAndFullLocalPlay()
@@ -313,9 +313,9 @@ namespace MainMenu
             HostSettings host_settings;
             if (saveData is null)
             {
-                if (LocalGamemodeDropdown.value == 0) return;
+                if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-                host_settings = new HostSettings(gamemodes[LocalGamemodeDropdown.options[LocalGamemodeDropdown.value].text], "", "", null);
+                host_settings = new HostSettings(gamemodes[LocalGamemodeSelector.CurrentlyShowing], "", "", null);
             }
             else
             {
