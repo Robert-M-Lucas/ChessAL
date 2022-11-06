@@ -104,15 +104,22 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
                         if (!active) continue;
 
+                        // King is surrounded
                         if (king && neigbours.Count == 4)
                         {
                             Board.PieceBoard[x, y] = null;
                             continue;
                         }
 
+                        // Piece is surrounded on 2 sides
                         if (!king && neigbours.Count >= 2)
                         {
-                            if ((neigbours.Contains(new V2(0, 1)) && neigbours.Contains(new V2(0, -1))) || (neigbours.Contains(new V2(1, 0)) && neigbours.Contains(new V2(-1, 0))))  
+                            if (neigbours.Contains(new V2(0, 1)) && neigbours.Contains(new V2(0, -1)) && (to == current_pos + new V2(0, 1) || to == current_pos + new V2(0, -1)))  
+                            {
+                                Board.PieceBoard[x, y] = null;
+                                continue;
+                            }
+                            else if (neigbours.Contains(new V2(1, 0)) && neigbours.Contains(new V2(-1, 0)) && (to == current_pos + new V2(1, 0) || to == current_pos + new V2(-1, 0)))
                             {
                                 Board.PieceBoard[x, y] = null;
                                 continue;

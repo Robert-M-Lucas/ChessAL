@@ -9,8 +9,8 @@ namespace Gamemodes.VikingChess
     {
         public VikingPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            if (team == 0) AppearanceID = 104;
-            else AppearanceID = 110;
+            if (team == 0) AppearanceID = 110;
+            else AppearanceID = 104;
         }
 
         public override int GetUID() => 800;
