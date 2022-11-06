@@ -5,7 +5,8 @@ namespace Networking
     /// </summary>
     public static class NetworkSettings
     {
-        public static int PORT = 8108;
-        public static string VERSION = "0.2.1";
+        public const int PORT = 8108;
+        public const string VERSION = "0.2.1";
+        public const string PUBLIC_IP_SOURCE = "https://ipinfo.io/ip";
     }
 }

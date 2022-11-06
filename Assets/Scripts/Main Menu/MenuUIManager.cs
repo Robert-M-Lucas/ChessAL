@@ -79,6 +79,8 @@ namespace MainMenu
                 HostGamemodeSelector.Options.Add(game.GetName());
                 LocalGamemodeSelector.Options.Add(game.GetName());
             }
+
+            HideAllScreens();
         }
         
         /// <summary>
