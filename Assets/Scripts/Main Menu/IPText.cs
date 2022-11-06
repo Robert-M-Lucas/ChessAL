@@ -36,7 +36,7 @@ namespace MainMenu
                 }
             }
 
-            ipText = $"Public IP: {public_ip}\nPrivate IP: {private_ip}";
+            ipText = $"Public IP: {public_ip}\nLocal IP: {private_ip}";
         }
 
         private void Update()
