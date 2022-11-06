@@ -264,6 +264,7 @@ namespace Networking.Server
                     if (!running) return;
 
                     listener.Blocking = true;
+                    // TODO: Remove this
                     Thread.Sleep(200);
 
                     byte[] rec_bytes = new byte[1024];

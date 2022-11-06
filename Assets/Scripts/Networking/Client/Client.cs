@@ -140,6 +140,8 @@ namespace Networking.Client
                 sendThread = new Thread(SendLoop);
                 sendThread.Start();
 
+                // TODO: Remove this
+                Thread.Sleep(300);
                 SendMessage(GamemodeDataRequestPacket.Build());
             }
             catch (ThreadAbortException)
