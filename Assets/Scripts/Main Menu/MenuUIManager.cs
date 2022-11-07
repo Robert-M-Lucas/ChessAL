@@ -403,6 +403,7 @@ namespace MainMenu
         private void CreatePlayerCard(ClientPlayerData playerData)
         {
             GameObject new_card = Instantiate(PlayerCardPrefab.gameObject);
+            new_card.SetActive(true);
             PlayerCardController card_controller = new_card.GetComponent<PlayerCardController>();
             card_controller.PlayerID = playerData.PlayerID;
             card_controller.PlayerName = playerData.Name;
@@ -412,12 +413,13 @@ namespace MainMenu
             card_controller.MenuUIManager = this;
 
             new_card.transform.SetParent(PlayerCardPrefab.transform.parent);
+            RectTransform rectTransform = new_card.GetComponent<RectTransform>();
+            Debug.Log(Screen.height * 0.07f);
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Screen.height * 0.07f);
 
             card_controller.UpdateFields();
 
-            playerCardControllers.Add(card_controller);
-
-            new_card.SetActive(true);
+            playerCardControllers.Add(card_controller); 
         }
     }
 }

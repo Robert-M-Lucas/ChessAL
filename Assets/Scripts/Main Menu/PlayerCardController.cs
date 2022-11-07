@@ -20,6 +20,11 @@ namespace MainMenu
         public TMP_Text TeamText;
         public TMP_Text PlayerOnTeamText;
 
+        public void Start()
+        {
+            
+        }
+
         public void UpdateFields()
         {
             PlayerIDText.text = PlayerID.ToString();
