@@ -9,6 +9,7 @@ using Networking.Packets;
 using Networking.Packets.Generated;
 using Gamemodes;
 using System.IO;
+using Networking.Client;
 
 #nullable enable
 
@@ -238,5 +239,16 @@ public class Tests
 
         return true;
     }
+
+    // WIP
+    private static bool EndToEndNetworkTest()
+    {
+        return false;
+    }
+}
+
+public class TestNetworkManager: NetworkManager
+{
+
 }
 #endif

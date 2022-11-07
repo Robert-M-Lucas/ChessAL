@@ -30,7 +30,7 @@ namespace Networking.Client
             { 5, PingResponse },
             { 201, GamemodeDataRecieve},
             { 202, OnGameStart },
-            { 205, OnMoveUpdate }
+            { 205, OnMoveUpdate },
         };
         }
 

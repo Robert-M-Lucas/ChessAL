@@ -11,6 +11,7 @@ using System.Diagnostics;
 
 public static class SaveSystem
 {
+
     public static void Save(Gamemodes.SerialisationData data, string fileName)
     {
         Save(Gamemodes.SerialisationUtil.Construct(data), fileName);
@@ -24,9 +25,15 @@ public static class SaveSystem
     /// <returns>Null if successful or a string exception</returns>
     public static string? Save(byte[] data, string fileName)
     {
+        string save_location = Application.persistentDataPath + "\\Saves";
         try
         {
-            File.WriteAllBytes(Application.persistentDataPath + "\\" + fileName + ".sav", data);
+            if (!Directory.Exists(save_location))
+            {
+                Directory.CreateDirectory(save_location);
+            }
+
+            File.WriteAllBytes(save_location + "\\" + fileName + ".sav", data);
         }
         catch (IOException) { return "IO error when trying to write save data"; }
         catch (UnauthorizedAccessException) { return "Write permissions denied";  }
@@ -41,7 +48,8 @@ public static class SaveSystem
     /// <returns></returns>
     public static string[] ListAllSaveFiles()
     {
-        return Directory.GetFiles(Application.persistentDataPath, "*.sav");
+        string save_location = Application.persistentDataPath + "\\Saves";
+        return Directory.GetFiles(save_location, "*.sav");
     }
 
     /// <summary>
@@ -56,6 +64,9 @@ public static class SaveSystem
 
         if (Path.GetExtension(fileName) != ".sav") fileName += ".sav";
 
+        string save_location = Application.persistentDataPath + "\\Saves";
+        if (!fileName.Contains('\\') && !fileName.Contains('/')) fileName = save_location + "\\" + fileName;
+
         return File.ReadAllBytes(fileName);
     }
 
@@ -64,9 +75,10 @@ public static class SaveSystem
     /// </summary>
     public static void OpenSaveFolder()
     {
+        string save_location = Application.persistentDataPath + "\\Saves";
         Process.Start(new ProcessStartInfo()
         {
-            FileName = Application.persistentDataPath + "\\",
+            FileName = save_location + "\\",
             UseShellExecute = true,
             Verb = "open"
         });
