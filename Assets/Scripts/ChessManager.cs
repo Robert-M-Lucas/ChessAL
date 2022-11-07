@@ -176,7 +176,7 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void RestartNetworking()
     {
-        networkManager.Shutdown();
+        networkManager.Stop();
         GameObject new_network_manager = Instantiate(networkManager.gameObject);
         Destroy(networkManager.gameObject);
         networkManager = new_network_manager.GetComponent<NetworkManager>();
@@ -320,10 +320,13 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void ExitGame()
     {
-        InGame = false;
-        networkManager.Shutdown();
-        Destroy(networkManager.gameObject);
+        if (!localPlay)
+        {
+            Destroy(networkManager.gameObject);
+            networkManager.Stop();
+        }
         Destroy(this.gameObject);
+        InGame = false;
         SceneManager.LoadScene(0); // Load menu scene
     }
     #endregion

@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     // Shuts down client and server correctly
-    private void OnApplicationQuit() => Shutdown();
+    private void OnApplicationQuit() => Stop();
 
     #region Client encapsulations
     public void OnLocalMove(int nextPlayer, V2 from, V2 to) => client?.OnLocalMove(nextPlayer, from, to);
@@ -77,7 +77,7 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// Called on connection failure to correctly shut down server and client
     /// </summary>
-    private void ConnectionFailed() => Shutdown();
+    private void ConnectionFailed() => Stop();
 
     public void GetPing(Action<int> callback)
     {
@@ -85,7 +85,7 @@ public class NetworkManager : MonoBehaviour
         client.GetPing(callback);
     }
 
-    public void Shutdown()
+    public void Stop()
     {
         server?.Shutdown();
         server = null;

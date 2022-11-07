@@ -76,6 +76,10 @@ public static class SaveSystem
     public static void OpenSaveFolder()
     {
         string save_location = Application.persistentDataPath + "\\Saves";
+        if (!Directory.Exists(save_location))
+        {
+            Directory.CreateDirectory(save_location);
+        }
         Process.Start(new ProcessStartInfo()
         {
             FileName = save_location + "\\",
