@@ -106,10 +106,14 @@ namespace MainMenu
 
         public void OpenSaveFolder() => SaveSystem.OpenSaveFolder();
 
-        public void ShowGamemodeHelp()
-        {
-            HelpSystem.OpenHelp(chessManager.CurrentGameManager.GetUID());
-        }
+        public void ShowGamemodeHelp() => HelpSystem.OpenHelp(chessManager.CurrentGameManager.GetUID());
+        public void ShowHelp() => HelpSystem.OpenHelp();
+
+        /*
+         * [Type]Config - Opens configuration screen for type
+         * [Type]ShowGamemodeHelp - Shows gamemode help for the currently selected gamemode on that config screen
+         * Full[Type] - Puts player into lobby of that type
+         */
 
         #region Host
         public void HostConfig()
@@ -361,6 +365,10 @@ namespace MainMenu
 
         #endregion
 
+        /// <summary>
+        /// Updates player cards shown in a lobby
+        /// </summary>
+        /// <param name="playerData"></param>
         public void UpdateLobbyPlayerCardDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {
             List<PlayerCardController> to_remove = new List<PlayerCardController>();
@@ -400,6 +408,11 @@ namespace MainMenu
                 if (!shown) CreatePlayerCard(player_data);
             }
         }
+
+        /// <summary>
+        /// Creates a new player card
+        /// </summary>
+        /// <param name="playerData"></param>
         private void CreatePlayerCard(ClientPlayerData playerData)
         {
             GameObject new_card = Instantiate(PlayerCardPrefab.gameObject);
