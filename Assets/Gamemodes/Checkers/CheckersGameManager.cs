@@ -24,6 +24,8 @@ Traditional checkers played on an 8x8 board";
         }
 
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
+
+        public override string[] TeamAliases() => new string[] { "Black", "White" };
     }
 
     public class GameManager : AbstractGameManager

@@ -19,11 +19,15 @@ namespace Gamemodes
         /// <returns>Non-unique name of this GameMode</returns>
         public abstract string GetName();
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <returns>{ Team1Size, Team2Size, Team3Size, ... }</returns>
         public abstract TeamSize[] GetTeamSizes();
+
+        /// <summary>
+        /// Returns a list of aliases for teams e.g. { "White", "Black" }
+        /// </summary>
+        /// <returns></returns>
+        public virtual string[] TeamAliases() { return new string[0]; }
 
         public virtual string GetDescription() => "No description";
 

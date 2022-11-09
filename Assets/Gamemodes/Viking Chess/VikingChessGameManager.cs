@@ -25,6 +25,8 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
         }
 
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
+
+        public override string[] TeamAliases() => new string[] { "Black", "White" };
     }
 
     public class GameManager : AbstractGameManager

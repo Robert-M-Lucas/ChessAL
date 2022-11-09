@@ -12,8 +12,8 @@ namespace Gamemodes.Checkers
 
         public CheckersPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 700;
-            if (team != 0) AppearanceID += 1;
+            AppearanceID = 701;
+            if (team != 0) AppearanceID -= 1;
         }
 
         public override List<Move> GetMoves()

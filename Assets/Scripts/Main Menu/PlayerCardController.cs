@@ -30,7 +30,14 @@ namespace MainMenu
             PlayerIDText.text = PlayerID.ToString();
             PlayerNameText.text = PlayerName;
 
-            if (Team != -1) TeamText.text = $"Team: {(Team + 1)}";
+            if (Team != -1)
+            {
+                if (ChessManager.CurrentGameManager.TeamAliases().Length > 0)
+                {
+                    TeamText.text = ChessManager.CurrentGameManager.TeamAliases()[Team];
+                }
+                else TeamText.text = $"Team: {(Team + 1)}";
+            }
             else TeamText.text = "Spectator";
 
             if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";

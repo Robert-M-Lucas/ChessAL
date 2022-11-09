@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Gamemodes.MegaChess
 {
-    public class GameManagerData : AbstractGameManagerData
+    public class GameManagerData : NormalChess.GameManagerData
     {
         public override AbstractGameManager Instantiate(ChessManager chessManager)
         {

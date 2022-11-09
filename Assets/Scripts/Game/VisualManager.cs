@@ -48,6 +48,8 @@ namespace Game
 
         private void Awake()
         {
+            chessManager = FindObjectOfType<ChessManager>();
+
             // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
             {
@@ -66,8 +68,7 @@ namespace Game
         }
 
         void Start()
-        {
-            chessManager = FindObjectOfType<ChessManager>();
+        {            
             boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
 
             Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
@@ -83,7 +84,14 @@ namespace Game
         /// <param name="team"></param>
         public void OnTeamWin(int team)
         {
-            TeamWinText.text = $"Team {team + 1} won!";
+            string team_string;
+            if (chessManager.CurrentGameManager.TeamAliases().Length != 0)
+            {
+                team_string = chessManager.CurrentGameManager.TeamAliases()[team];
+            }
+            else team_string = $"Team {team + 1}";
+
+            TeamWinText.text = $"{team_string} won!";
             TeamWinText.gameObject.SetActive(true);
         }
 
@@ -319,7 +327,14 @@ namespace Game
         /// <param name="you"></param>
         public void OnTurn(int team, int playerOnTeam, bool you)
         {
-            string str = $"Turn: T{team}, P{playerOnTeam}";
+            string team_string;
+            if (chessManager.CurrentGameManager.TeamAliases().Length != 0)
+            {
+                team_string = chessManager.CurrentGameManager.TeamAliases()[team];
+            }
+            else team_string = $"T{team+1}";
+
+            string str = $"Turn: {team_string}, P{playerOnTeam+1}";
             if (you) str += " (You)";
             TurnText.text = str;
         }

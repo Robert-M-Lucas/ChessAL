@@ -24,6 +24,8 @@ Traditional chess played on an 8x8 board";
         }
 
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
+
+        public override string[] TeamAliases() => new string[] { "White", "Black" };
     }
 
     public class GameManager : AbstractGameManager
