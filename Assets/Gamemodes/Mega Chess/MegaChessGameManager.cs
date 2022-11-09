@@ -19,7 +19,7 @@ namespace Gamemodes.MegaChess
         {
             return @"Mega Chess
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Chess played on a 16x16 board with more pieces on each side";
         }

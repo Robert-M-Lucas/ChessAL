@@ -18,7 +18,7 @@ namespace Gamemodes.Checkers
         {
             return @"Checkers
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Traditional checkers played on an 8x8 board";
         }

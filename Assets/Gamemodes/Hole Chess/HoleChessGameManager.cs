@@ -19,7 +19,7 @@ namespace Gamemodes.HoleChess
         {
             return @"Hole Chess
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Chess with a 2x2 square taken out of the center";
         }

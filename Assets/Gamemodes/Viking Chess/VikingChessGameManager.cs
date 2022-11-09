@@ -19,7 +19,7 @@ namespace Gamemodes.VikingChess
         {
             return @"Viking Chess
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Get your king to a corner of the board. Surround a piece on two sides to take it or surround the king on all sides to win the game.";
         }

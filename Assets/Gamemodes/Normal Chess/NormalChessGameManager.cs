@@ -18,7 +18,7 @@ namespace Gamemodes.NormalChess
         {
             return @"Normal Chess
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Traditional chess played on an 8x8 board";
         }

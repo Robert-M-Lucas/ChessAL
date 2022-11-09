@@ -20,7 +20,7 @@ namespace Gamemodes.LastPieceStanding
         {
             return @"Last Piece Standing
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 Chess played until one team has no pieces remaining";
         }

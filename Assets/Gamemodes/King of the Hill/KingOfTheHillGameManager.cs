@@ -20,7 +20,7 @@ namespace Gamemodes.KingOfTheHill
         {
             return @"King of the Hill
 
-Must have 2 teams of 1
+Must have one player on both the black and white team
 
 First king to the 2x2 square in the center of the board wins. Normal check and checkmate rules apply";
         }
