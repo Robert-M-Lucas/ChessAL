@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.Linq;
 using System.Threading;
+using AI;
 
 #nullable enable
 
@@ -82,6 +83,7 @@ public class ChessManager : MonoBehaviour
         {
             InputManager = FindObjectOfType<InputManager>();
             VisualManager = FindObjectOfType<VisualManager>();
+            VisualManager.ChessManager = this;
             InGame = true;
             if (MyTurn) OnTurn();
 
@@ -387,8 +389,20 @@ public class ChessManager : MonoBehaviour
             return;
         }
 
-        VisualManager.SetPossibleMoves(possible_moves);
-        InputManager.SetPossibleMoves(possible_moves);
+        // AI turn
+        if (LocalAIPlayers.Contains(CurrentPlayer))
+        {
+            Move move = AIManager.GetMove(possible_moves);
+            int next_player = GameManager.OnMove(move.From, move.To);
+            mainThreadActions.Enqueue(() => OnLocalMove(next_player, move.From, move.To));
+            return;
+        }
+        else
+        {
+            VisualManager.SetPossibleMoves(possible_moves);
+            InputManager.SetPossibleMoves(possible_moves);
+        }
+
     }
 
     /// <summary>
@@ -425,6 +439,7 @@ public class ChessManager : MonoBehaviour
         if (nextPlayer == GetLocalPlayerID() || localPlay)
         {
             VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, true);
+
             OnTurn();
         }
         else

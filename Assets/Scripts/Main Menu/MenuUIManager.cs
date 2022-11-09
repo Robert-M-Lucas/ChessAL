@@ -427,7 +427,6 @@ namespace MainMenu
 
             new_card.transform.SetParent(PlayerCardPrefab.transform.parent);
             RectTransform rectTransform = new_card.GetComponent<RectTransform>();
-            Debug.Log(Screen.height * 0.07f);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Screen.height * 0.07f);
 
             card_controller.UpdateFields();

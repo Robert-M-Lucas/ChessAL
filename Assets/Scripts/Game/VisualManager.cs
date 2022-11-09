@@ -29,7 +29,7 @@ namespace Game
         public AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
-        private ChessManager chessManager;
+        public ChessManager ChessManager;
         private BoardRenderInfo boardRenderInfo;
 
         private Resolution resolution = new Resolution();
@@ -48,7 +48,6 @@ namespace Game
 
         private void Awake()
         {
-            chessManager = FindObjectOfType<ChessManager>();
 
             // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
@@ -69,7 +68,7 @@ namespace Game
 
         void Start()
         {            
-            boardRenderInfo = chessManager.GameManager.Board.GetBoardRenderInfo();
+            boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
 
             Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
@@ -85,9 +84,9 @@ namespace Game
         public void OnTeamWin(int team)
         {
             string team_string;
-            if (chessManager.CurrentGameManager.TeamAliases().Length != 0)
+            if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
             {
-                team_string = chessManager.CurrentGameManager.TeamAliases()[team];
+                team_string = ChessManager.CurrentGameManager.TeamAliases()[team];
             }
             else team_string = $"Team {team + 1}";
 
@@ -107,7 +106,7 @@ namespace Game
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    if (chessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(chessManager.GameManager.Board.PieceBoard[x, y]);
+                    if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
                 }
             }
         }
@@ -250,7 +249,7 @@ namespace Game
         {
             HideMoves();
 
-            if (chessManager.GameManager.Board.PieceBoard[clickPosition.X, clickPosition.Y] is null)
+            if (ChessManager.GameManager.Board.PieceBoard[clickPosition.X, clickPosition.Y] is null)
             {
                 currentlyShowing = null;
                 return false;
@@ -328,9 +327,9 @@ namespace Game
         public void OnTurn(int team, int playerOnTeam, bool you)
         {
             string team_string;
-            if (chessManager.CurrentGameManager.TeamAliases().Length != 0)
+            if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
             {
-                team_string = chessManager.CurrentGameManager.TeamAliases()[team];
+                team_string = ChessManager.CurrentGameManager.TeamAliases()[team];
             }
             else team_string = $"T{team+1}";
 
@@ -346,7 +345,7 @@ namespace Game
             
             // Timer
             // TODO: Make this not run every frame
-            long time = chessManager.Timer.ElapsedMilliseconds + chessManager.TimerOffset;
+            long time = ChessManager.Timer.ElapsedMilliseconds + ChessManager.TimerOffset;
             long hours = time / (60 * 60 * 1000);
             time -= hours * (60 * 60 * 1000);
             long minutes = time / (60 * 1000);
