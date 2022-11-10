@@ -88,5 +88,15 @@ namespace Gamemodes
             Board.OnMove(move);
             return GUtil.SwitchTeam(gameData);
         }
+
+        /// <summary>
+        /// Gets a score for the current board. Mostly used for AI
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
+        public virtual float GetScore(LiveGameData gameData)
+        {
+            return Board.GetScore(gameData);
+        }
     }
 }

@@ -89,5 +89,30 @@ namespace Gamemodes
 				}
 			}
 		}
+
+		public virtual float GetScore(LiveGameData gameData)
+		{
+			float total = 0;
+
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+					if (PieceBoard[x, y] is not null)
+					{
+						if (PieceBoard[x, y].Team == gameData.LocalPlayerTeam)
+						{
+							total += PieceBoard[x, y].GetValue();
+						}
+						else
+						{
+							total -= PieceBoard[x, y].GetValue();
+						}
+					}
+                }
+            }
+
+			return total;
+        }
 	}
 }
