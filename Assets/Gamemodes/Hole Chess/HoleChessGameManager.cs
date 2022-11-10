@@ -6,9 +6,9 @@ namespace Gamemodes.HoleChess
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 200;
@@ -29,7 +29,7 @@ Chess with a 2x2 square taken out of the center";
 
     public class GameManager : NormalChess.GameManager 
     {
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }

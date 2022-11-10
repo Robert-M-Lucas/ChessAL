@@ -29,7 +29,7 @@ namespace Gamemodes.NormalChess
         }
 
         
-        public override void OnMove(V2 from, V2 to)
+        public override void OnMove(Move move)
         {
             HasMoved = true;
         }

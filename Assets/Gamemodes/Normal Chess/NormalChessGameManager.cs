@@ -5,9 +5,9 @@ namespace Gamemodes.NormalChess
 {
     public class GameManagerData : AbstractGameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 100;
@@ -33,29 +33,29 @@ Traditional chess played on an 8x8 board";
         
         public bool CancelDefaultMove;
 
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }
 
-        public override List<Move> GetMoves()
+        public override List<Move> GetMoves(LiveGameData gameData)
         {
-            (Board as Board).VirtualTeam = chessManager.GetLocalPlayerTeam();
-            List<Move> possible_moves = Board.GetMoves();
+            (Board as Board).VirtualTeam = gameData.LocalPlayerTeam;
+            List<Move> possible_moves = Board.GetMoves(null);
             
             int i = 0;
             while (i < possible_moves.Count)
             {
                 Board temp_board = (Board as Board).Clone();
-                FalseOnMove(temp_board, possible_moves[i].From, possible_moves[i].To);
-                temp_board.VirtualTeam = GUtil.SwitchTeam(chessManager);
+                FalseOnMove(temp_board, possible_moves[i], gameData);
+                temp_board.VirtualTeam = GUtil.SwitchTeam(gameData);
 
                 bool failed = false;
-                List<Move> possible_enemy_moves = temp_board.GetMoves();
+                List<Move> possible_enemy_moves = temp_board.GetMoves(null);
                 foreach (Move move in possible_enemy_moves)
                 {
                     AbstractPiece piece = temp_board.GetPiece(move.To);
-                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == chessManager.GetLocalPlayerTeam())
+                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.LocalPlayerTeam)
                     {
                         failed = true;
                         break;
@@ -74,17 +74,17 @@ Traditional chess played on an 8x8 board";
             return possible_moves;
         }
 
-        protected int FalseOnMove(AbstractBoard board, V2 from, V2 to)
+        protected int FalseOnMove(AbstractBoard board, Move move, LiveGameData gameData)
         {
             CancelDefaultMove = false;
 
-            board.OnMove(from, to);
+            board.OnMove(move);
 
             if (!CancelDefaultMove)
             {
-                board.PieceBoard[to.X, to.Y] = board.PieceBoard[from.X, from.Y];
-                board.PieceBoard[to.X, to.Y].Position = to;
-                board.PieceBoard[from.X, from.Y] = null;
+                board.PieceBoard[move.To.X, move.To.Y] = board.PieceBoard[move.From.X, move.From.Y];
+                board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
+                board.PieceBoard[move.From.X, move.From.Y] = null;
             }
 
             (board as Board).MoveCounter++;
@@ -109,12 +109,12 @@ Traditional chess played on an 8x8 board";
             if (!white_king) return GUtil.TurnEncodeTeam(1);
             if (!black_king) return GUtil.TurnEncodeTeam(0);
 
-            return GUtil.SwitchTeam(chessManager);
+            return GUtil.SwitchTeam(gameData);
         }
 
-        public override int OnMove(V2 from, V2 to)
+        public override int OnMove(Move move, LiveGameData gameData)
         {
-            return FalseOnMove(Board, from, to);
+            return FalseOnMove(Board, move, gameData);
         }
     }
 }

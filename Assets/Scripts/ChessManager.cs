@@ -284,7 +284,7 @@ public class ChessManager : MonoBehaviour
     {
         SceneManager.LoadScene(1); // Load main scene
         Debug.Log(CurrentGameManager);
-        GameManager = CurrentGameManager.Instantiate(this); // Instantiate GameManager
+        GameManager = CurrentGameManager.Instantiate(); // Instantiate GameManager
         if (saveData.Length > 0)
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
@@ -376,16 +376,27 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Run when it's the local player's turn
     /// </summary>
+    public LiveGameData GetLiveGameData()
+    {
+        LiveGameData gameData = new LiveGameData(this);
+        gameData.LocalPlayerID = GetLocalPlayerID();
+        gameData.LocalPlayerTeam = GetLocalPlayerTeam();
+        gameData.CurrentPlayer = CurrentPlayer;
+        return gameData;
+    }
+    
     public void OnTurn()
     {
         prevPlayer = GetLocalPlayerID();
 
         MyTurn = true;
 
-        var possible_moves = GameManager.GetMoves();
+        LiveGameData gameData = GetLiveGameData();
+
+        var possible_moves = GameManager.GetMoves(gameData);
         if (possible_moves.Count == 0)
         {
-            OnLocalMove(GameManager.OnNoMoves(), new V2(0, 0), new V2(0, 0));
+            OnLocalMove(GameManager.OnNoMoves(gameData), new V2(0, 0), new V2(0, 0));
             return;
         }
 
@@ -393,7 +404,7 @@ public class ChessManager : MonoBehaviour
         if (LocalAIPlayers.Contains(CurrentPlayer))
         {
             Move move = AIManager.GetMove(possible_moves);
-            int next_player = GameManager.OnMove(move.From, move.To);
+            int next_player = GameManager.OnMove(move, gameData);
             mainThreadActions.Enqueue(() => OnLocalMove(next_player, move.From, move.To));
             return;
         }
@@ -421,7 +432,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void OnForeignMove(int nextPlayer, V2 from, V2 to)
     {
-        if (prevPlayer != GetLocalPlayerID() && !localPlay) GameManager.OnMove(from, to);
+        if (prevPlayer != GetLocalPlayerID() && !localPlay) GameManager.OnMove(new Move(from, to), GetLiveGameData());
         
 
         VisualManager.OnMove(from, to);
@@ -456,7 +467,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void GetLocalMove(V2 from, V2 to)
     {
-        int next_player = GameManager.OnMove(from, to);
+        int next_player = GameManager.OnMove(new Move(from, to), GetLiveGameData());
         OnLocalMove(next_player, from, to);
     }
 

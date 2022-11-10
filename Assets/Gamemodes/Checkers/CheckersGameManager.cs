@@ -5,9 +5,9 @@ namespace Gamemodes.Checkers
 {
     public class GameManagerData : AbstractGameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 700;
@@ -33,14 +33,14 @@ Traditional checkers played on an 8x8 board";
         
         public bool PieceTaken;
 
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }
 
         public List<Move> GetMoves(V2? enforce_from = null)
         {
-            List<Move> moves = Board.GetMoves();
+            List<Move> moves = Board.GetMoves(null);
             if (enforce_from is not null)
             {
                 int i = 0;
@@ -86,23 +86,23 @@ Traditional checkers played on an 8x8 board";
             return moves;
         }
 
-        public override List<Move> GetMoves()
+        public override List<Move> GetMoves(LiveGameData gameData)
         {
             return GetMoves(null);
         }
 
-        public override int OnMove(V2 from, V2 to)
+        public override int OnMove(Move move, LiveGameData gameData)
         {
             PieceTaken = false;
-            int base_return = base.OnMove(from, to);
+            int base_return = base.OnMove(move, gameData);
 
-            Board.PieceBoard[to.X, to.Y] = Board.PieceBoard[from.X, from.Y];
-            Board.PieceBoard[to.X, to.Y].Position = to;
-            Board.PieceBoard[from.X, from.Y] = null;
+            Board.PieceBoard[move.To.X, move.To.Y] = Board.GetPiece(move.From);
+            Board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
+            Board.PieceBoard[move.From.X, move.From.Y] = null;
 
             if (PieceTaken) {
-                List<Move> next_moves = GetMoves(to);
-                if (next_moves.Count > 0 && Mathf.Abs((next_moves[0].To - next_moves[0].From).X) == 2) return chessManager.GetLocalPlayerID();
+                List<Move> next_moves = GetMoves(move.To);
+                if (next_moves.Count > 0 && Mathf.Abs((next_moves[0].To - next_moves[0].From).X) == 2) return gameData.LocalPlayerID;
             }
 
             return base_return;

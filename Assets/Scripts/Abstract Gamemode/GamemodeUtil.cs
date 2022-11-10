@@ -9,8 +9,6 @@ namespace Gamemodes
     {
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)
         {
-            
-
             for (int i = 0; i < moves.Count; i++)
             {
                 if (!IsOnBoard(moves[i].To, board))
@@ -126,19 +124,19 @@ namespace Gamemodes
             return moves;
         }
 
-        public static int SwitchPlayerTeam(ChessManager chessManager)
+        public static int SwitchPlayerTeam(LiveGameData gameData)
         {
-            int team = chessManager.GetLocalPlayerTeam();
+            int team = gameData.LocalPlayerTeam;
             
             if (team == 0) team = 1;
             else team = 0;
 
-            return chessManager.GetPlayerByTeam(team, 0);
+            return gameData.GetPlayerByTeam(team, 0);
         }
 
-        public static int SwitchTeam(ChessManager chessManager)
+        public static int SwitchTeam(LiveGameData gameData)
         {
-            int team = chessManager.GetLocalPlayerTeam();
+            int team = gameData.LocalPlayerTeam;
 
             if (team == 0) team = 1;
             else team = 0;

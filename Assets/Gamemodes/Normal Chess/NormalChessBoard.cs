@@ -76,12 +76,12 @@ namespace Gamemodes.NormalChess
             base.LoadData(data);
         }
 
-        public override void OnMove(V2 from, V2 to)
+        public override void OnMove(Move move)
         {
-            PieceBoard[from.X, from.Y].OnMove(from, to);
+            PieceBoard[move.From.X, move.From.Y].OnMove(move);
         }
 
-        public override List<Move> GetMoves()
+        public override List<Move> GetMoves(LiveGameData gameData)
         {
             IEnumerable<Move> moves = new List<Move>();
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
