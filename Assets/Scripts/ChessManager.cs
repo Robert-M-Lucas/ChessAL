@@ -403,7 +403,7 @@ public class ChessManager : MonoBehaviour
         // AI turn
         if (LocalAIPlayers.Contains(CurrentPlayer))
         {
-            Move move = AIManager.GetMove(possible_moves);
+            Move move = AIManager.GetMove(possible_moves, gameData);
             int next_player = GameManager.OnMove(move, gameData);
             mainThreadActions.Enqueue(() => OnLocalMove(next_player, move.From, move.To));
             return;
