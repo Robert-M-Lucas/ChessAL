@@ -15,6 +15,15 @@ public class LiveGameData
 
     public LiveGameData(ChessManager chessManager) { this.chessManager = chessManager; }
 
+    public LiveGameData Clone()
+    {
+        LiveGameData gameData = new LiveGameData(chessManager);
+        gameData.LocalPlayerTeam = LocalPlayerTeam;
+        gameData.LocalPlayerID = LocalPlayerID;
+        gameData.CurrentPlayer = CurrentPlayer;
+        return gameData;
+    }
+
     public int GetPlayerByTeam(int team, int playerInTeam) => chessManager.GetPlayerByTeam(team, playerInTeam);
 
     public ConcurrentDictionary<int, Networking.Client.ClientPlayerData> GetPlayerList() => chessManager.GetPlayerList();
