@@ -42,5 +42,7 @@ namespace Gamemodes.NormalChess
         }
 
         public override int GetUID() => 104;
+
+        public override float GetValue() => 5f;
     }
 }

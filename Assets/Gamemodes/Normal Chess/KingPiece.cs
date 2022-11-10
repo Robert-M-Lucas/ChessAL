@@ -40,5 +40,7 @@ namespace Gamemodes.NormalChess
         public override NormalChessPiece Clone(AbstractBoard new_board) => new KingPiece(Position, Team, new_board);
 
         public override int GetUID() => 101;
+
+        public override float GetValue() => 2f;
     }
 }

@@ -98,5 +98,11 @@ namespace Gamemodes.Checkers
         }
 
         public override int GetUID() => 700;
+
+        public override float GetValue()
+        {
+            if (Queen) return 3f;
+            return 1f;
+        }
     }
 }
