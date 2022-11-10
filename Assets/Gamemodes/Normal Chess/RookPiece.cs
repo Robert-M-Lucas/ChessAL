@@ -29,7 +29,7 @@ namespace Gamemodes.NormalChess
         }
 
         
-        public override void OnMove(V2 from, V2 to)
+        public override void OnMove(Move move)
         {
             HasMoved = true;
         }
@@ -42,5 +42,7 @@ namespace Gamemodes.NormalChess
         }
 
         public override int GetUID() => 104;
+
+        public override float GetValue() => 5f;
     }
 }

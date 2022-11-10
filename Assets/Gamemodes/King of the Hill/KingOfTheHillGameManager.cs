@@ -7,9 +7,9 @@ namespace Gamemodes.KingOfTheHill
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 300;
@@ -30,14 +30,14 @@ First king to the 2x2 square in the center of the board wins. Normal check and c
 
     public class GameManager : NormalChess.GameManager
     {
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }
 
-        public override int OnMove(V2 from, V2 to)
+        public override int OnMove(Move move, LiveGameData gameData)
         {
-            int default_return = FalseOnMove(Board, from, to);
+            int default_return = FalseOnMove(Board, move, gameData);
 
             List<V2> centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };
 

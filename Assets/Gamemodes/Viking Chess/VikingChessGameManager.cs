@@ -6,9 +6,9 @@ namespace Gamemodes.VikingChess
 {
     public class GameManagerData : AbstractGameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 800;
@@ -31,7 +31,7 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
     public class GameManager : AbstractGameManager
     {
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }
@@ -64,9 +64,9 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
             return 0;
         }
 
-        private void CheckForTake(V2 to)
+        private void CheckForTake(V2 to, LiveGameData gameData)
         {
-            int turn = chessManager.GetPlayerList()[chessManager.CurrentPlayer].Team;
+            int turn = gameData.GetPlayerList()[gameData.CurrentPlayer].Team;
 
             for (int x = 0; x < 11; x++)
             {
@@ -133,18 +133,18 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
             }
         }
 
-        public override int OnMove(V2 from, V2 to)
+        public override int OnMove(Move move, LiveGameData gameData)
         {
-            Board.PieceBoard[to.X, to.Y] = Board.PieceBoard[from.X, from.Y];
-            Board.PieceBoard[to.X, to.Y].Position = to;
-            Board.PieceBoard[from.X, from.Y] = null;
+            Board.PieceBoard[move.To.X, move.To.Y] = Board.PieceBoard[move.From.X, move.From.Y];
+            Board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
+            Board.PieceBoard[move.From.X, move.From.Y] = null;
 
-            CheckForTake(to);
+            CheckForTake(move.To, gameData);
 
             int check_for_win = CheckForWin();
             if (check_for_win < 0) return check_for_win;
 
-            return GUtil.SwitchPlayerTeam(chessManager);
+            return GUtil.SwitchPlayerTeam(gameData);
         }
     }
 }

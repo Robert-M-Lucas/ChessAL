@@ -7,9 +7,9 @@ namespace Gamemodes.LastPieceStanding
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 600;
@@ -30,33 +30,33 @@ Chess played until one team has no pieces remaining";
 
     public class GameManager : NormalChess.GameManager
     {
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new NormalChess.Board(this);
         }
 
-        public override List<Move> GetMoves()
+        public override List<Move> GetMoves(LiveGameData gameData)
         {
-            (Board as Board).VirtualTeam = chessManager.GetLocalPlayerTeam();
-            return Board.GetMoves();
+            (Board as Board).VirtualTeam = gameData.LocalPlayerTeam;
+            return Board.GetMoves(gameData);
         }
 
-        public override int OnMove(V2 from, V2 to)
+        public override int OnMove(Move move, LiveGameData gameData)
         {
             CancelDefaultMove = false;
 
-            Board.OnMove(from, to);
+            Board.OnMove(move);
 
             if (!CancelDefaultMove)
             {
-                Board.PieceBoard[to.X, to.Y] = Board.PieceBoard[from.X, from.Y];
-                Board.PieceBoard[to.X, to.Y].Position = to;
-                Board.PieceBoard[from.X, from.Y] = null;
+                Board.PieceBoard[move.To.X, move.To.Y] = Board.GetPiece(move.From);
+                Board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
+                Board.PieceBoard[move.From.X, move.From.Y] = null;
             }
 
             (Board as Board).MoveCounter++;
 
-            return GUtil.SwitchTeam(chessManager);
+            return GUtil.SwitchTeam(gameData);
         }
     }
 }

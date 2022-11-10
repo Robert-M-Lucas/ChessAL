@@ -58,25 +58,25 @@ namespace Gamemodes.Checkers
             return normal_moves.Concat(jump_moves).ToList();
         }
 
-        public override void OnMove(V2 from, V2 to)
+        public override void OnMove(Move move)
         {
-            if (from != Position) return;
+            if (move.From != Position) return;
 
             // Jump
-            if (to.X - from.X != 1 && to.X - from.X != -1)
+            if (move.To.X - move.From.X != 1 && move.To.X - move.From.X != -1)
             {
-                V2 pos = from + ((to - from) / 2);
+                V2 pos = move.From + ((move.To - move.From) / 2);
                 Board.PieceBoard[pos.X, pos.Y] = null;
                 (Board.GameManager as GameManager).PieceTaken = true;
             }
 
-            if ((Team == 0 && to.Y == 7) || (Team == 1 && to.Y == 0))
+            if ((Team == 0 && move.To.Y == 7) || (Team == 1 && move.To.Y == 0))
             {
                 if (!Queen) AppearanceID += 2;
                 Queen = true;
             }
 
-            base.OnMove(from, to);
+            base.OnMove(move);
         }
 
         public override PieceSerialisationData GetData()
@@ -98,5 +98,11 @@ namespace Gamemodes.Checkers
         }
 
         public override int GetUID() => 700;
+
+        public override float GetValue()
+        {
+            if (Queen) return 3f;
+            return 1f;
+        }
     }
 }

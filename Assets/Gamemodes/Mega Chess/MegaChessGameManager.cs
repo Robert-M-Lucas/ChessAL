@@ -6,9 +6,9 @@ namespace Gamemodes.MegaChess
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate(ChessManager chessManager)
+        public override AbstractGameManager Instantiate()
         {
-            return new GameManager(this, chessManager);
+            return new GameManager(this);
         }
 
         public override int GetUID() => 500;
@@ -29,7 +29,7 @@ Chess played on a 16x16 board with more pieces on each side";
 
     public class GameManager : NormalChess.GameManager
     {
-        public GameManager(AbstractGameManagerData d, ChessManager chessManager) : base(d, chessManager)
+        public GameManager(AbstractGameManagerData d) : base(d)
         {
             Board = new Board(this);
         }

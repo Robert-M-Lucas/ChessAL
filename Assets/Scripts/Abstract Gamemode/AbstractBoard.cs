@@ -58,14 +58,14 @@ namespace Gamemodes
 			}
 		}
 
-		public virtual List<Move> GetMoves()
+		public virtual List<Move> GetMoves(LiveGameData gameData)
 		{
 			IEnumerable<Move> moves = new List<Move>();
 			for (int x = 0; x < PieceBoard.GetLength(0); x++)
 			{
 				for (int y = 0; y < PieceBoard.GetLength(1); y++)
 				{
-					if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == GameManager.chessManager.GetLocalPlayerTeam()) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+					if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == gameData.LocalPlayerTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
 				}
 			}
 			
@@ -79,15 +79,40 @@ namespace Gamemodes
 
 		public abstract BoardRenderInfo GetBoardRenderInfo();
 
-		public virtual void OnMove(V2 from, V2 to)
+		public virtual void OnMove(Move move)
 		{
 			for (int x = 0; x < PieceBoard.GetLength(0); x++)
 			{
 				for (int y = 0; y < PieceBoard.GetLength(1); y++)
 				{
-					if (PieceBoard[x, y] is not null) PieceBoard[x, y].OnMove(from, to);
+					if (PieceBoard[x, y] is not null) PieceBoard[x, y].OnMove(move);
 				}
 			}
 		}
+
+		public virtual float GetScore(LiveGameData gameData)
+		{
+			float total = 0;
+
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                {
+					if (PieceBoard[x, y] is not null)
+					{
+						if (PieceBoard[x, y].Team == gameData.LocalPlayerTeam)
+						{
+							total += PieceBoard[x, y].GetValue();
+						}
+						else
+						{
+							total -= PieceBoard[x, y].GetValue();
+						}
+					}
+                }
+            }
+
+			return total;
+        }
 	}
 }

@@ -72,30 +72,30 @@ namespace Gamemodes.NormalChess
             return forward_moves.Concat(attacking_moves).Concat(en_passant).ToList();
         }
 
-        public override void OnMove(V2 from, V2 to)
+        public override void OnMove(Move move)
         {
             HasMoved = true;
-            if (to - from == new V2(0, 2) || to - from == new V2(0, -2))
+            if (move.To - move.From == new V2(0, 2) || move.To - move.From == new V2(0, -2))
             {
                 DashMove = (Board as Board).MoveCounter;
             }
-            else if ((to - from).X != 0 && Board.GetPiece(to) is null)
+            else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null)
             {
                 if (Team == 0)
                 {
-                    Board.PieceBoard[to.X, to.Y - 1] = null;
+                    Board.PieceBoard[move.To.X, move.To.Y - 1] = null;
                 }
                 else
                 {
-                    Board.PieceBoard[to.X, to.Y + 1] = null;
+                    Board.PieceBoard[move.To.X, move.To.Y + 1] = null;
                 }
             }
 
-            if ((to.Y == Board.PieceBoard.GetLength(1)-1 && Team == 0) || (to.Y == 0 && Team == 1))
+            if ((move.To.Y == Board.PieceBoard.GetLength(1)-1 && Team == 0) || (move.To.Y == 0 && Team == 1))
             {
                 (Board.GameManager as GameManager).CancelDefaultMove = true;
-                Board.PieceBoard[to.X, to.Y] = new QueenPiece(to, Team, Board);
-                Board.PieceBoard[from.X, from.Y] = null;
+                Board.PieceBoard[move.To.X, move.To.Y] = new QueenPiece(move.To, Team, Board);
+                Board.PieceBoard[move.From.X, move.From.Y] = null;
             }
         }
 

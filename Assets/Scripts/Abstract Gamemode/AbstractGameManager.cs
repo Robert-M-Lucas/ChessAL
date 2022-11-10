@@ -31,7 +31,7 @@ namespace Gamemodes
 
         public virtual string GetDescription() => "No description";
 
-        public abstract AbstractGameManager Instantiate(ChessManager chessManager);
+        public abstract AbstractGameManager Instantiate();
     }
 
     /// <summary>
@@ -41,12 +41,10 @@ namespace Gamemodes
     {
         public AbstractGameManagerData GameManagerData;
         public AbstractBoard Board;
-        public ChessManager chessManager;
 
-        public AbstractGameManager(AbstractGameManagerData gameManagerData, ChessManager chessManager)
+        public AbstractGameManager(AbstractGameManagerData gameManagerData)
         {
             this.GameManagerData = gameManagerData;
-            this.chessManager = chessManager;
         }
 
         public virtual SerialisationData GetData()
@@ -65,18 +63,18 @@ namespace Gamemodes
         /// Returns a list of possible moves
         /// </summary>
         /// <returns></returns>
-        public virtual List<Move> GetMoves()
+        public virtual List<Move> GetMoves(LiveGameData gameData)
         {
-            return Board.GetMoves();
+            return Board.GetMoves(gameData);
         }
 
         /// <summary>
         /// Pass turn on if no moves are available
         /// </summary>
         /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
-        public virtual int OnNoMoves()
+        public virtual int OnNoMoves(LiveGameData gameData)
         {
-            return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(chessManager));
+            return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(gameData));
         }
 
         /// <summary>
@@ -85,10 +83,20 @@ namespace Gamemodes
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
-        public virtual int OnMove(V2 from, V2 to)
+        public virtual int OnMove(Move move, LiveGameData gameData)
         {
-            Board.OnMove(from, to);
-            return GUtil.SwitchTeam(chessManager);
+            Board.OnMove(move);
+            return GUtil.SwitchTeam(gameData);
+        }
+
+        /// <summary>
+        /// Gets a score for the current board. Mostly used for AI
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
+        public virtual float GetScore(LiveGameData gameData)
+        {
+            return Board.GetScore(gameData);
         }
     }
 }
