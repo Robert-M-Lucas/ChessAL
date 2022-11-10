@@ -2,6 +2,8 @@ using Gamemodes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = System.Random;
 
 namespace AI
 {
@@ -9,7 +11,8 @@ namespace AI
     {
         public static Move GetMove(List<Move> possible_moves)
         {
-            return possible_moves[0];
+            Random r = new Random();
+            return possible_moves[r.Next(0, possible_moves.Count)];
         }
     }
 }
