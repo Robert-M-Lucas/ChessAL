@@ -114,5 +114,7 @@ namespace Gamemodes
 
 			return total;
         }
+
+		public abstract AbstractBoard Clone(AbstractGameManager newGameManager);
 	}
 }

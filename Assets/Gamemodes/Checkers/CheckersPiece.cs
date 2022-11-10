@@ -99,6 +99,13 @@ namespace Gamemodes.Checkers
 
         public override int GetUID() => 700;
 
+        public override AbstractPiece Clone(AbstractBoard newBoard)
+        {
+            CheckersPiece piece = new CheckersPiece(Position, Team, newBoard);
+            piece.Queen = Queen;
+            return piece;
+        }
+
         public override float GetValue()
         {
             if (Queen) return 3f;

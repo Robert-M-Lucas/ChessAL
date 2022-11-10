@@ -98,5 +98,7 @@ namespace Gamemodes
         {
             return Board.GetScore(gameData);
         }
+
+        public abstract AbstractGameManager Clone();
     }
 }

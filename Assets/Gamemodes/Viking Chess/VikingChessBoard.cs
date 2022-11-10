@@ -6,7 +6,12 @@ namespace Gamemodes.VikingChess
 {
     public class Board : AbstractBoard
     {
-        public Board(AbstractGameManager gameManager) : base(gameManager)
+        public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
+        {
+            if (initialise) Initialise();
+        }
+
+        public void Initialise()
         {
             PieceBoard = new AbstractPiece[11, 11];
 
@@ -15,7 +20,7 @@ namespace Gamemodes.VikingChess
                 for (int x = 3; x < 8; x++)
                 {
                     PieceBoard[x, y] = new VikingPiece(new V2(x, y), 0, this);
-                } 
+                }
             }
 
             for (int x = 0; x < 11; x += 10)
@@ -26,7 +31,7 @@ namespace Gamemodes.VikingChess
                 }
             }
 
-            for (int x = 4; x < 7; x ++)
+            for (int x = 4; x < 7; x++)
             {
                 for (int y = 4; y < 7; y++)
                 {
@@ -47,5 +52,22 @@ namespace Gamemodes.VikingChess
         }
 
         public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10) });
+
+        public override AbstractBoard Clone(AbstractGameManager newGameManager)
+        {
+            Board board = new Board(newGameManager, false);
+            AbstractPiece[,] pieceBoard = new AbstractPiece[8, 8];
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(0); y++)
+                {
+                    if (pieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                }
+            }
+
+            board.PieceBoard = pieceBoard;
+
+            return board;
+        }
     }
 }

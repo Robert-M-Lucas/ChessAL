@@ -9,9 +9,10 @@ namespace Gamemodes.HoleChess
     {
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
-            InitialiseBoard();
+            Initialise();
         }
 
+        /*
         public override NormalChess.Board Clone()
         {
             Board new_board = new Board(GameManager);
@@ -32,6 +33,7 @@ namespace Gamemodes.HoleChess
             }
             return new_board;
         }
+        */
 
         public override BoardRenderInfo GetBoardRenderInfo()
         {

@@ -53,27 +53,6 @@ namespace Gamemodes.MegaChess
             for (int i = 9; i < 14; i++) PieceBoard[i, 15] = new BishopPiece(new V2(i, 15), 1, this);
         }
 
-        public override NormalChess.Board Clone()
-        {
-            Board new_board = new Board(GameManager);
-
-            new_board.MoveCounter = MoveCounter;
-            new_board.VirtualTeam = VirtualTeam;
-            new_board.PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
-
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
-            {
-                for (int y = 0; y < PieceBoard.GetLength(1); y++)
-                {
-                    if (PieceBoard[x, y] is not null)
-                    {
-                        new_board.PieceBoard[x, y] = (PieceBoard[x, y] as NormalChessPiece).Clone(new_board);
-                    }
-                }
-            }
-            return new_board;
-        }
-
         public override BoardRenderInfo GetBoardRenderInfo()
         {
             return new BoardRenderInfo(16, new List<V2>());

@@ -15,12 +15,12 @@ namespace Gamemodes.NormalChess
         public int MoveCounter;
         public int VirtualTeam;
 
-        public Board(AbstractGameManager gameManager) : base(gameManager)
+        public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
         {
-            InitialiseBoard();
+            if (initialise) Initialise();
         }
 
-        protected void InitialiseBoard()
+        protected void Initialise()
         {
             PieceBoard = new AbstractPiece[8, 8];
             PieceBoard[0, 1] = new PawnPiece(new V2(0, 1), 0, this);
@@ -95,9 +95,9 @@ namespace Gamemodes.NormalChess
             return GUtil.RemoveBlocked(moves.ToList(), this);
         }
 
-        public virtual Board Clone()
+        public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
-            Board new_board = new Board(GameManager);
+            Board new_board = new Board(newGameManager, false);
             
             new_board.MoveCounter = MoveCounter;
             new_board.VirtualTeam = VirtualTeam;
@@ -109,7 +109,7 @@ namespace Gamemodes.NormalChess
                 {
                     if (PieceBoard[x, y] is not null)
                     {
-                        new_board.PieceBoard[x, y] = (PieceBoard[x, y] as NormalChessPiece).Clone(new_board);
+                        new_board.PieceBoard[x, y] = PieceBoard[x, y].Clone(new_board);
                     }
                 }
             }

@@ -10,8 +10,6 @@ namespace Gamemodes.NormalChess
         {
 
         }
-
-        public abstract NormalChessPiece Clone(AbstractBoard new_board);
     }
 
 }

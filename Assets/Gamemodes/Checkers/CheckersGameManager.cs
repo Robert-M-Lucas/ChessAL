@@ -107,5 +107,12 @@ Traditional checkers played on an 8x8 board";
 
             return base_return;
         }
+
+        public override AbstractGameManager Clone()
+        {
+            GameManager gameManager = new GameManager(GameManagerData);
+            gameManager.Board = Board.Clone(gameManager);
+            return gameManager;
+        }
     }
 }

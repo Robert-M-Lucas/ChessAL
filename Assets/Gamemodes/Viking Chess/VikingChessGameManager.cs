@@ -146,5 +146,12 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
             return GUtil.SwitchPlayerTeam(gameData);
         }
+
+        public override AbstractGameManager Clone()
+        {
+            GameManager gameManager = new GameManager(GameManagerData);
+            gameManager.Board = Board.Clone(gameManager);
+            return gameManager;
+        }
     }
 }

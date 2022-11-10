@@ -46,7 +46,7 @@ Traditional chess played on an 8x8 board";
             int i = 0;
             while (i < possible_moves.Count)
             {
-                Board temp_board = (Board as Board).Clone();
+                Board temp_board = (Board as Board).Clone(this) as Board;
                 FalseOnMove(temp_board, possible_moves[i], gameData);
                 temp_board.VirtualTeam = GUtil.SwitchTeam(gameData);
 
@@ -115,6 +115,13 @@ Traditional chess played on an 8x8 board";
         public override int OnMove(Move move, LiveGameData gameData)
         {
             return FalseOnMove(Board, move, gameData);
+        }
+
+        public override AbstractGameManager Clone()
+        {
+            GameManager gameManager = new GameManager(GameManagerData);
+            gameManager.Board = Board.Clone(this);
+            return gameManager;
         }
     }
 }

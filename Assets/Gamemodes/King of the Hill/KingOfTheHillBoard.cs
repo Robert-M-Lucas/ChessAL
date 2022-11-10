@@ -8,7 +8,7 @@ namespace Gamemodes.KingOfTheHill
     {
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
-            InitialiseBoard();
+            Initialise();
         }
 
         public override BoardRenderInfo GetBoardRenderInfo()

@@ -33,7 +33,7 @@ namespace Gamemodes.NormalChess
         }
         */
 
-        public override NormalChessPiece Clone(AbstractBoard new_board) => new QueenPiece(Position, Team, new_board);
+        public override AbstractPiece Clone(AbstractBoard newBoard) => new QueenPiece(Position, Team, newBoard);
 
         public override int GetUID() => 105;
 

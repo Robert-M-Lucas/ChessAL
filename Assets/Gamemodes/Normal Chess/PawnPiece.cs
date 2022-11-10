@@ -99,9 +99,9 @@ namespace Gamemodes.NormalChess
             }
         }
 
-        public override NormalChessPiece Clone(AbstractBoard new_board)
+        public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            PawnPiece new_piece = new PawnPiece(Position, Team, new_board);
+            PawnPiece new_piece = new PawnPiece(Position, Team, newBoard);
             new_piece.DashMove = DashMove;
             new_piece.HasMoved = HasMoved;
             return new_piece;

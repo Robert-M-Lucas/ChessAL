@@ -26,6 +26,8 @@ namespace Gamemodes.VikingChess
             moves = GUtil.RemoveNonEmpty(moves, Board);
             return moves;
         }
+
+        public override AbstractPiece Clone(AbstractBoard newBoard) => new VikingPiece(Position, Team, newBoard);
     }
 
 }

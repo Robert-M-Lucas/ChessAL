@@ -34,9 +34,9 @@ namespace Gamemodes.NormalChess
             HasMoved = true;
         }
 
-        public override NormalChessPiece Clone(AbstractBoard new_board)
+        public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            RookPiece new_piece = new RookPiece(Position, Team, new_board);
+            RookPiece new_piece = new RookPiece(Position, Team, newBoard);
             new_piece.HasMoved = HasMoved;
             return new_piece;
         }

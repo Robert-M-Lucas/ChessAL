@@ -48,5 +48,7 @@ namespace Gamemodes
         public virtual void OnMove(Move move) { }
 
         public virtual float GetValue() => 1f;
+
+        public abstract AbstractPiece Clone(AbstractBoard newBoard);
     }
 }

@@ -12,9 +12,9 @@ namespace Gamemodes.Checkers
     /// </summary>
     public class Board : AbstractBoard
     {
-        public Board(AbstractGameManager gameManager) : base(gameManager)
+        public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
         {
-            InitialiseBoard();
+            if(initialise) InitialiseBoard();
         }
 
         protected void InitialiseBoard()
@@ -33,6 +33,23 @@ namespace Gamemodes.Checkers
         public override BoardRenderInfo GetBoardRenderInfo()
         {
             return new BoardRenderInfo(8, new List<V2>());
+        }
+
+        public override AbstractBoard Clone(AbstractGameManager newGameManager)
+        {
+            Board board = new Board(newGameManager, false);
+            AbstractPiece[,] pieceBoard = new AbstractPiece[8, 8];
+            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < PieceBoard.GetLength(0); y++)
+                {
+                    if (pieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                }
+            }
+
+            board.PieceBoard = pieceBoard;
+
+            return board;
         }
     }
 }
