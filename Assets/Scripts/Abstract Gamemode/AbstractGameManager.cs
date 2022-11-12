@@ -74,7 +74,7 @@ namespace Gamemodes
         /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
         public virtual int OnNoMoves(LiveGameData gameData)
         {
-            return GUtil.TurnEncodeTeam(GUtil.SwitchPlayerTeam(gameData));
+            return GUtil.TurnEncodeTeam(GUtil.SwitchTeam(gameData)); ;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Gamemodes
         public virtual int OnMove(Move move, LiveGameData gameData)
         {
             Board.OnMove(move);
-            return GUtil.SwitchTeam(gameData);
+            return GUtil.SwitchPlayerTeam(gameData);
         }
 
         /// <summary>

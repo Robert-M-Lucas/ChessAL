@@ -109,7 +109,7 @@ Traditional chess played on an 8x8 board";
             if (!white_king) return GUtil.TurnEncodeTeam(1);
             if (!black_king) return GUtil.TurnEncodeTeam(0);
 
-            return GUtil.SwitchTeam(gameData);
+            return GUtil.SwitchPlayerTeam(gameData);
         }
 
         public override int OnMove(Move move, LiveGameData gameData)

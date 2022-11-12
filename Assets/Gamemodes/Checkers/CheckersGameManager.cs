@@ -38,9 +38,9 @@ Traditional checkers played on an 8x8 board";
             Board = new Board(this);
         }
 
-        public List<Move> GetMoves(V2? enforce_from = null)
+        public List<Move> GetMoves(LiveGameData gameData, V2? enforce_from = null)
         {
-            List<Move> moves = Board.GetMoves(null);
+            List<Move> moves = Board.GetMoves(gameData);
             if (enforce_from is not null)
             {
                 int i = 0;
@@ -88,7 +88,7 @@ Traditional checkers played on an 8x8 board";
 
         public override List<Move> GetMoves(LiveGameData gameData)
         {
-            return GetMoves(null);
+            return GetMoves(gameData);
         }
 
         public override int OnMove(Move move, LiveGameData gameData)
@@ -101,7 +101,7 @@ Traditional checkers played on an 8x8 board";
             Board.PieceBoard[move.From.X, move.From.Y] = null;
 
             if (PieceTaken) {
-                List<Move> next_moves = GetMoves(move.To);
+                List<Move> next_moves = GetMoves(gameData, move.To);
                 if (next_moves.Count > 0 && Mathf.Abs((next_moves[0].To - next_moves[0].From).X) == 2) return gameData.LocalPlayerID;
             }
 
