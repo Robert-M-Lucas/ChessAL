@@ -22,6 +22,7 @@ namespace Game
         public TMP_Text TurnText;
         public TMP_Text TeamWinText;
         public TMP_Text TimerText;
+        public TMP_Text AIText;
 
         public float HighlightedSquareOpacity = 0.2f;
         public Color HighlightColor;
@@ -336,6 +337,19 @@ namespace Game
             string str = $"Turn: {team_string}, P{playerOnTeam+1}";
             if (you) str += " (You)";
             TurnText.text = str;
+        }
+
+        public void ShowAIInfo(bool waiting, float progress)
+        {
+            if (!waiting)
+            {
+                AIText.gameObject.SetActive(false);
+            }
+            else
+            {
+                AIText.gameObject.SetActive(true);
+                AIText.text = $"AI: {Mathf.Round(progress)}%";
+            }
         }
 
         void Update()

@@ -61,7 +61,7 @@ namespace Gamemodes.VikingChess
             {
                 for (int y = 0; y < PieceBoard.GetLength(0); y++)
                 {
-                    if (pieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                    if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
                 }
             }
 

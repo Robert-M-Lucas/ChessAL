@@ -120,7 +120,7 @@ Traditional chess played on an 8x8 board";
         public override AbstractGameManager Clone()
         {
             GameManager gameManager = new GameManager(GameManagerData);
-            gameManager.Board = Board.Clone(this);
+            gameManager.Board = (Board as Board).Clone(this);
             return gameManager;
         }
     }
