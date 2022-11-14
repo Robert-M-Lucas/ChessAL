@@ -97,6 +97,44 @@ namespace AI
             }
         }
 
+        /*
+        private static float RecursivelySearch(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int depth, int max_depth)
+        {
+            if (depth == max_depth)
+            {
+                return gameManager.GetScore(gameData);
+            }
+
+            float best_score;
+            bool maximising;
+            if (gameData.CurrentPlayer == gameData.LocalPlayerID || gameData.GetPlayerList()[gameData.LocalPlayerID] == gameData.GetPlayerList()[gameData.CurrentPlayer])
+            {
+                best_score = float.NegativeInfinity;
+                maximising = true;
+            }
+            else
+            {
+                best_score = float.PositiveInfinity;
+                maximising = false;
+            }
+            
+            Move best_move = moves[0];
+
+            foreach (Move m in moves)
+            {
+                AbstractGameManager new_manager = gameManager.Clone();
+                int next_player = new_manager.OnMove(m, gameData);
+                LiveGameData new_game_data = gameData.Clone();
+                new_game_data.CurrentPlayer = next_player;
+                List<Move> new_moves = new_manager.GetMoves(new_game_data);
+                float score = RecursivelySearch(new_manager, new_game_data, new_moves, depth + 1, max_depth);
+
+            }
+
+            return best_score;
+        }
+        */
+        
         public static Move? GetMove()
         {
             if (foundMove is not null)
