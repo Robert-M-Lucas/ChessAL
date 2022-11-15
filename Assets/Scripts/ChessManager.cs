@@ -397,6 +397,8 @@ public class ChessManager : MonoBehaviour
 
         LiveGameData gameData = GetLiveGameData();
 
+        Debug.Log($"Board Score: {GameManager.GetScore(gameData)}");
+
         var possible_moves = GameManager.GetMoves(gameData);
         if (possible_moves.Count == 0)
         {

@@ -149,9 +149,9 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
         public override AbstractGameManager Clone()
         {
-            GameManager gameManager = new GameManager(GameManagerData);
-            gameManager.Board = (Board as Board).Clone(gameManager);
-            return gameManager;
+            GameManager new_game_manager = new GameManager(GameManagerData);
+            new_game_manager.Board = (Board as Board).Clone(new_game_manager);
+            return new_game_manager;
         }
     }
 }

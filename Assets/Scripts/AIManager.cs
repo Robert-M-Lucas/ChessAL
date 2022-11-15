@@ -50,8 +50,6 @@ namespace AI
 
             int depth = 0;
 
-            Debug.Log(initialGameData.LocalPlayerTeam);
-
             while (true)
             {
                 if (IsOverTime())
@@ -73,6 +71,8 @@ namespace AI
 
                     if (next_turn < 0)
                     {
+                        Debug.Log(next_turn);
+
                         if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
                         {
                             score = float.NegativeInfinity;
@@ -85,6 +85,7 @@ namespace AI
 
                     if (score > best_score)
                     {
+                        best_score = score;
                         best_move = move;
                     }
                 }
@@ -97,7 +98,7 @@ namespace AI
             }
         }
 
-        /*
+        
         private static float RecursivelySearch(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int depth, int max_depth)
         {
             if (depth == max_depth)
@@ -129,11 +130,13 @@ namespace AI
                 List<Move> new_moves = new_manager.GetMoves(new_game_data);
                 float score = RecursivelySearch(new_manager, new_game_data, new_moves, depth + 1, max_depth);
 
+                if (maximising && score > best_score) best_score = score;
+                else if (!maximising && score < best_score) best_score = score;
             }
 
             return best_score;
         }
-        */
+        
         
         public static Move? GetMove()
         {
