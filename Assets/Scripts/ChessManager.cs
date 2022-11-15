@@ -397,8 +397,6 @@ public class ChessManager : MonoBehaviour
 
         LiveGameData gameData = GetLiveGameData();
 
-        Debug.Log($"Board Score: {GameManager.GetScore(gameData)}");
-
         var possible_moves = GameManager.GetMoves(gameData);
         if (possible_moves.Count == 0)
         {
@@ -409,6 +407,9 @@ public class ChessManager : MonoBehaviour
         // AI turn
         if (LocalAIPlayers.Contains(CurrentPlayer))
         {
+            VisualManager.SetPossibleMoves(new List<Move>());
+            InputManager.SetPossibleMoves(new List<Move>());
+
             AIManager.SearchMove(possible_moves, gameData, GameManager);
             mainThreadActions.Enqueue(() => MCheckAIDone());
             WaitingForAI = true;

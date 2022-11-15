@@ -21,7 +21,7 @@ namespace AI
 
         private static Stopwatch Timer = new Stopwatch();
 
-        public const int MAX_SEARCH_TIME = 25;
+        public const int MAX_SEARCH_TIME = 10;
 
         /// <summary>
         /// Finds the best move for the AI to play next
@@ -42,18 +42,33 @@ namespace AI
             return Timer.Elapsed.Seconds > MAX_SEARCH_TIME;
         }
 
+        private static void UpdateProgress()
+        {
+            Progress = Mathf.Clamp((float) (Timer.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
+        }
+
         private static void StartMoveSearch(List<Move> possible_moves, LiveGameData initialGameData, AbstractGameManager gameManager)
         {
             Timer.Restart();
 
             Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
 
+            if (possible_moves.Count == 1)
+            {
+                foundMove = current_best_move;
+                Progress = -1f;
+                return;
+            }
+
             int depth = 0;
 
             while (true)
             {
+                Debug.Log($"AI Depth: {depth}");
+
                 if (IsOverTime())
                 {
+                    Debug.Log("Over time");
                     foundMove = current_best_move;
                     Progress = -1f;
                     return;
@@ -61,18 +76,18 @@ namespace AI
 
                 float best_score = float.NegativeInfinity;
                 Move best_move = possible_moves[0];
-
                 
                 foreach (Move move in possible_moves)
                 {
+                    UpdateProgress();
+
                     AbstractGameManager cloned_game_manager = gameManager.Clone();
                     int next_turn = cloned_game_manager.OnMove(move, initialGameData);
-                    float score = cloned_game_manager.GetScore(initialGameData);
+                    // float score = cloned_game_manager.GetScore(initialGameData);
+                    float score;
 
                     if (next_turn < 0)
                     {
-                        Debug.Log(next_turn);
-
                         if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
                         {
                             score = float.NegativeInfinity;
@@ -82,6 +97,10 @@ namespace AI
                             score = float.PositiveInfinity;
                         }
                     }
+                    else
+                    {
+                        score = RecursivelySearch(cloned_game_manager, initialGameData, cloned_game_manager.GetMoves(initialGameData), 0, depth);
+                    }
 
                     if (score > best_score)
                     {
@@ -90,11 +109,11 @@ namespace AI
                     }
                 }
 
-                foundMove = best_move;
-                Progress = -1f;
-                return;
-
-                depth++;
+                if (!IsOverTime())
+                {
+                    current_best_move = best_move;
+                    depth++;
+                }
             }
         }
 
@@ -118,13 +137,28 @@ namespace AI
                 best_score = float.PositiveInfinity;
                 maximising = false;
             }
-            
-            Move best_move = moves[0];
 
             foreach (Move m in moves)
             {
+                if (IsOverTime()) return 0;
+
                 AbstractGameManager new_manager = gameManager.Clone();
                 int next_player = new_manager.OnMove(m, gameData);
+
+                if (next_player < 0)
+                {
+                    if (GUtil.TurnDecodeTeam(next_player) != gameData.LocalPlayerTeam)
+                    {
+                        if (maximising) return float.NegativeInfinity;
+                        else return float.PositiveInfinity;
+                    }
+                    else
+                    {
+                        if (maximising) return float.PositiveInfinity;
+                        else return float.NegativeInfinity;
+                    }
+                }
+
                 LiveGameData new_game_data = gameData.Clone();
                 new_game_data.CurrentPlayer = next_player;
                 List<Move> new_moves = new_manager.GetMoves(new_game_data);
