@@ -381,10 +381,10 @@ namespace Networking.Client
             if (connectionThread.ThreadState == ThreadState.Running) connectionThread.Abort();
             receiveThread.Abort();
             sendThread.Abort();
-            handler?.Disconnect(false);
-            handler?.Shutdown(SocketShutdown.Both);
-            handler?.Close(0);
-            handler?.Dispose();
+            try { handler?.Disconnect(false); } catch (SocketException) { }
+            try { handler?.Shutdown(SocketShutdown.Both); } catch (SocketException) { }
+            try { handler?.Close(0); } catch (SocketException) { }
+            try { handler?.Dispose(); } catch (SocketException) { }
         }
     }
 }

@@ -100,7 +100,7 @@ namespace Gamemodes
                 {
 					if (PieceBoard[x, y] is not null)
 					{
-						if (PieceBoard[x, y].Team == gameData.LocalPlayerTeam)
+						if (PieceBoard[x, y].Team == gameData.CurrentPlayer)
 						{
 							total += PieceBoard[x, y].GetValue();
 						}

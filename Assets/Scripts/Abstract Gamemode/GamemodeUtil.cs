@@ -126,7 +126,7 @@ namespace Gamemodes
 
         public static int SwitchPlayerTeam(LiveGameData gameData)
         {
-            int team = gameData.LocalPlayerTeam;
+            int team = gameData.CurrentPlayer;
             
             if (team == 0) team = 1;
             else team = 0;
@@ -136,7 +136,7 @@ namespace Gamemodes
 
         public static int SwitchTeam(LiveGameData gameData)
         {
-            int team = gameData.LocalPlayerTeam;
+            int team = gameData.CurrentPlayer;
 
             if (team == 0) team = 1;
             else team = 0;

@@ -21,7 +21,7 @@ namespace AI
 
         private static Stopwatch Timer = new Stopwatch();
 
-        public const int MAX_SEARCH_TIME = 10;
+        public const int MAX_SEARCH_TIME = 20;
 
         /// <summary>
         /// Finds the best move for the AI to play next
@@ -60,11 +60,11 @@ namespace AI
                 return;
             }
 
-            int depth = 0;
+            int max_depth = 0;
 
             while (true)
             {
-                Debug.Log($"AI Depth: {depth}");
+                Debug.Log($"AI Depth: {max_depth + 1}");
 
                 if (IsOverTime())
                 {
@@ -83,7 +83,6 @@ namespace AI
 
                     AbstractGameManager cloned_game_manager = gameManager.Clone();
                     int next_turn = cloned_game_manager.OnMove(move, initialGameData);
-                    // float score = cloned_game_manager.GetScore(initialGameData);
                     float score;
 
                     if (next_turn < 0)
@@ -99,7 +98,10 @@ namespace AI
                     }
                     else
                     {
-                        score = RecursivelySearch(cloned_game_manager, initialGameData, cloned_game_manager.GetMoves(initialGameData), 0, depth);
+                        LiveGameData new_game_data = initialGameData.Clone();
+                        new_game_data.CurrentPlayer = next_turn;
+                        score = MiniMax(cloned_game_manager, new_game_data, cloned_game_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
+                        if (score == float.NaN) break;
                     }
 
                     if (score > best_score)
@@ -108,26 +110,27 @@ namespace AI
                         best_move = move;
                     }
                 }
+                
 
                 if (!IsOverTime())
                 {
                     current_best_move = best_move;
-                    depth++;
+                    max_depth++;
                 }
             }
         }
 
         
-        private static float RecursivelySearch(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int depth, int max_depth)
+        private static float MiniMax(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int current_depth, int max_depth, float prev_best, bool prev_maximising)
         {
-            if (depth == max_depth)
+            if (current_depth == max_depth)
             {
                 return gameManager.GetScore(gameData);
             }
 
             float best_score;
             bool maximising;
-            if (gameData.CurrentPlayer == gameData.LocalPlayerID || gameData.GetPlayerList()[gameData.LocalPlayerID] == gameData.GetPlayerList()[gameData.CurrentPlayer])
+            if (gameData.CurrentPlayer == gameData.LocalPlayerID)
             {
                 best_score = float.NegativeInfinity;
                 maximising = true;
@@ -140,7 +143,7 @@ namespace AI
 
             foreach (Move m in moves)
             {
-                if (IsOverTime()) return 0;
+                if (current_depth == max_depth - 1 && IsOverTime()) return float.NaN;
 
                 AbstractGameManager new_manager = gameManager.Clone();
                 int next_player = new_manager.OnMove(m, gameData);
@@ -161,11 +164,20 @@ namespace AI
 
                 LiveGameData new_game_data = gameData.Clone();
                 new_game_data.CurrentPlayer = next_player;
+
                 List<Move> new_moves = new_manager.GetMoves(new_game_data);
-                float score = RecursivelySearch(new_manager, new_game_data, new_moves, depth + 1, max_depth);
+                float score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+                if (score == float.NaN) return float.NaN;
 
                 if (maximising && score > best_score) best_score = score;
                 else if (!maximising && score < best_score) best_score = score;
+
+                // AB Pruning
+                if ((best_score > prev_best && !prev_maximising && maximising) || (best_score <  prev_best && prev_maximising && !maximising))
+                {
+                    // Debug.Log("AB pruned");
+                    return best_score;
+                }
             }
 
             return best_score;

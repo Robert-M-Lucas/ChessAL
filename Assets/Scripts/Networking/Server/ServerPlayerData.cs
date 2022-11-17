@@ -60,10 +60,10 @@ namespace Networking.Server
         /// </summary>
         public void ShutdownSocket()
         {
-            Handler.Disconnect(false);
-            Handler.Shutdown(SocketShutdown.Both);
-            Handler.Close(0);
-            Handler.Dispose();
+            try { Handler.Disconnect(false); } catch (SocketException) { }
+            try { Handler.Shutdown(SocketShutdown.Both); } catch (SocketException) { }
+            try { Handler.Close(0); } catch (SocketException) { }
+            try { Handler.Dispose(); } catch (SocketException) { }
         }
     }
 }
