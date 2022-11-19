@@ -36,9 +36,16 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
-    public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList() => client?.PlayerData ?? throw new NullReferenceException();
-    public int GetLocalPlayerID() => client!.PlayerID;
-
+    public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList()
+    {
+        Debug.LogWarning(GetHashCode());
+        return client!.PlayerData;
+    }
+    public int GetLocalPlayerID()
+    {
+        Debug.LogWarning(GetHashCode());
+        return client!.PlayerID;
+    }
     #endregion
 
     /// <summary>
@@ -72,6 +79,8 @@ public class NetworkManager : MonoBehaviour
     {
         client = new Client(settings.IP, settings.Password, settings.PlayerName, this, OnJoinSuccessOrFail);
         client.Connect();
+
+        Debug.Log(client);
     }
 
     /// <summary>
@@ -87,10 +96,13 @@ public class NetworkManager : MonoBehaviour
 
     public void Stop()
     {
+        Debug.LogWarning("Stop");
         server?.Shutdown();
         server = null;
         client?.Shutdown();
         client = null;
+        Debug.Log(client);
+        Debug.LogWarning("Stop finished");
     }
 
     // Encapsulated methods the client calls

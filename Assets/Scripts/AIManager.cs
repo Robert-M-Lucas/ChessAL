@@ -23,6 +23,8 @@ namespace AI
 
         public const int MAX_SEARCH_TIME = 20;
 
+        private static Thread searchThread = null;
+
         /// <summary>
         /// Finds the best move for the AI to play next
         /// </summary>
@@ -34,7 +36,20 @@ namespace AI
 
             Progress = 0;
 
-            new Thread(() => StartMoveSearch(possible_moves, initialGameData, gameManager)).Start();
+            searchThread = new Thread(() => StartMoveSearch(possible_moves, initialGameData, gameManager));
+            searchThread.Start();
+        }
+
+        public static void Reset()
+        {
+            Progress = -1f;
+            foundMove = null;
+            Timer.Reset();
+            if (searchThread is not null && searchThread.IsAlive)
+            {
+                searchThread.Abort();
+            }
+            searchThread = null;
         }
 
         private static bool IsOverTime()

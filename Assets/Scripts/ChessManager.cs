@@ -69,8 +69,12 @@ public class ChessManager : MonoBehaviour
         // Loads all game managers
         GameManagersData = Util.GetAllGameManagers();
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
+    private void Awake()
+    {
         networkManager = FindObjectOfType<NetworkManager>();
+        Debug.LogWarning(networkManager.GetHashCode());
     }
 
     /// <summary>
@@ -326,12 +330,15 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void ExitGame()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        AIManager.Reset();
         if (!localPlay)
         {
-            Destroy(networkManager.gameObject);
+            DestroyImmediate(networkManager.gameObject);
             networkManager.Stop();
         }
-        Destroy(this.gameObject);
+        DestroyImmediate(this.gameObject);
+        DestroyImmediate(this);
         InGame = false;
         SceneManager.LoadScene(0); // Load menu scene
     }
@@ -548,7 +555,7 @@ public class ChessManager : MonoBehaviour
         /* 
          * Most unity functions can only be called from the main thread so this 
          * goes through functions queued by other threads to run them 
-         * ont the main thread during the next frame 
+         * on the main thread during the next frame 
          */
 
         Queue<Action> temp_main_thread_actions = mainThreadActions;
