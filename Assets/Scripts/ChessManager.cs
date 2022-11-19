@@ -74,7 +74,6 @@ public class ChessManager : MonoBehaviour
     private void Awake()
     {
         networkManager = FindObjectOfType<NetworkManager>();
-        Debug.LogWarning(networkManager.GetHashCode());
     }
 
     /// <summary>
@@ -198,9 +197,11 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Starts a local game
     /// </summary>
-    public void StartLocalGame()
+    public void StartLocalGame(int AI_turn_time)
     {
         if (Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings) is not null) return;
+
+        AIManager.MAX_SEARCH_TIME = AI_turn_time;
 
         Destroy(networkManager.gameObject);
         MLoadGame();
@@ -325,6 +326,8 @@ public class ChessManager : MonoBehaviour
         Timer.Start();
     }
 
+    public void OnApplicationQuit() => ExitGame();
+
     /// <summary>
     /// Exits the game
     /// </summary>
@@ -393,6 +396,7 @@ public class ChessManager : MonoBehaviour
         gameData.LocalPlayerID = GetLocalPlayerID();
         gameData.LocalPlayerTeam = GetLocalPlayerTeam();
         gameData.CurrentPlayer = CurrentPlayer;
+
         return gameData;
     }
     

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -122,6 +123,62 @@ Traditional chess played on an 8x8 board";
             GameManager new_game_manager = new GameManager(GameManagerData);
             new_game_manager.Board = (Board as Board).Clone(new_game_manager);
             return new_game_manager;
+        }
+
+        public override float GetScore(LiveGameData gameData)
+        {
+            float score = base.GetScore(gameData);
+            if (Board.PieceBoard.GetLength(0) == 8)
+            {
+                score += GetHeatmapScore(gameData);
+            }
+            return score;
+        }
+
+        public float GetHeatmapScore(LiveGameData gameData)
+        {
+            float total = 0;
+
+            Dictionary<Type, float[,]> heatmaps = new Dictionary<Type, float[,]>
+            {
+                {
+                    typeof(PawnPiece),
+                    new float[,]
+                    {
+                        { 0, 0, 0, 0, 0, 0, 0, 0 },
+                        { 0, 0, 0, 0, 0, 0, 0, 0 },
+                        { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f },
+                        { 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f },
+                        { 0.3f, 0.3f, 0.3f, 0.35f, 0.35f, 0.3f, 0.3f, 0.3f },
+                        { 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f },
+                        { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f },
+                        { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f },
+                    }
+                }
+            };
+
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    if (Board.PieceBoard[x, y] is null) continue;
+
+                    if (heatmaps.ContainsKey(Board.PieceBoard[x, y].GetType()))
+                    {
+                        int true_x = x;
+                        int multiplier = 1;
+                        if (Board.PieceBoard[x, y].Team != gameData.CurrentTeam)
+                        {
+                            true_x = 7 - x;
+                            multiplier = -1;
+                        }
+
+                        total += heatmaps[Board.PieceBoard[x, y].GetType()][y, true_x] * multiplier;
+                    }
+                }
+            }
+            
+            return total;
         }
     }
 }

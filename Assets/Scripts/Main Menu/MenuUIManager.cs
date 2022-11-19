@@ -55,6 +55,7 @@ namespace MainMenu
         public TMP_InputField LocalSavePathInput = default!;
         public GameObject LocalScreen = default!;
         private bool showingLocalScreen = false;
+        public TMP_InputField AITurnTime = default!;
 
         [Header("Other")]
         public GameObject LobbyDisplay = default!;
@@ -354,7 +355,12 @@ namespace MainMenu
         public void AddLocalAI() => chessManager.AddLocalAI();
         public void RemoveLocalPlayer() => chessManager.RemoveLocalPlayer();
         public void RemoveLocalAI() => chessManager.RemoveLocalAI();
-        public void StartLocalGame() => chessManager.StartLocalGame();
+        public void StartLocalGame()
+        {
+            int AI_turn_time = 20;
+            int.TryParse(AITurnTime.text, out AI_turn_time);
+            chessManager.StartLocalGame(AI_turn_time);
+        }
 
         public void CancelLocalPlay()
         {

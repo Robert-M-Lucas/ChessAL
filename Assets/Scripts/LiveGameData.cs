@@ -11,7 +11,10 @@ public class LiveGameData
 
     public int LocalPlayerID;
 
-    public int CurrentPlayer;
+    private int _CurrentPlayer;
+    public int CurrentPlayer { get { return _CurrentPlayer; } set { _CurrentPlayer = value; UpdateCurrentTeam(); } }
+
+    public int CurrentTeam;
 
     public LiveGameData(ChessManager chessManager) { this.chessManager = chessManager; }
 
@@ -22,6 +25,11 @@ public class LiveGameData
         gameData.LocalPlayerID = LocalPlayerID;
         gameData.CurrentPlayer = CurrentPlayer;
         return gameData;
+    }
+
+    private void UpdateCurrentTeam()
+    {
+        CurrentTeam = GetPlayerList()[CurrentPlayer].Team;
     }
 
     public int GetPlayerByTeam(int team, int playerInTeam) => chessManager.GetPlayerByTeam(team, playerInTeam);

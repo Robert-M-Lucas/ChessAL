@@ -21,7 +21,7 @@ namespace AI
 
         private static Stopwatch Timer = new Stopwatch();
 
-        public const int MAX_SEARCH_TIME = 20;
+        public static int MAX_SEARCH_TIME = 15;
 
         private static Thread searchThread = null;
 
@@ -115,6 +115,7 @@ namespace AI
                     {
                         LiveGameData new_game_data = initialGameData.Clone();
                         new_game_data.CurrentPlayer = next_turn;
+
                         score = MiniMax(cloned_game_manager, new_game_data, cloned_game_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
                         if (score == float.NaN) break;
                     }
@@ -145,7 +146,7 @@ namespace AI
 
             float best_score;
             bool maximising;
-            if (gameData.CurrentPlayer == gameData.LocalPlayerID)
+            if (gameData.CurrentTeam == gameData.LocalPlayerTeam)
             {
                 best_score = float.NegativeInfinity;
                 maximising = true;
