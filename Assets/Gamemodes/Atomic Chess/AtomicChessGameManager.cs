@@ -47,7 +47,7 @@ When a piece is taken a 3x3 area around it is destroyed";
                 {
                     for (int y = -1; y <= 1; y++)
                     {
-                        if (x == 0 && y == 0) continue;
+                        // if (x == 0 && y == 0) continue;
                         V2 new_pos = new V2(x, y) + move.To;
                         if (GUtil.IsOnBoard(new_pos, Board)) Board.PieceBoard[new_pos.X, new_pos.Y] = null;
                     }
@@ -55,6 +55,11 @@ When a piece is taken a 3x3 area around it is destroyed";
             }
 
             Tuple<bool, bool> kings = CheckForKings(Board);
+
+            if (!kings.Item1 && !kings.Item2)
+            {
+                return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
+            }
 
             if (!kings.Item1) return GUtil.TurnEncodeTeam(1);
             if (!kings.Item2) return GUtil.TurnEncodeTeam(0);
