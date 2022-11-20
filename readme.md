@@ -1,6 +1,5 @@
 # Readme
+
 A Level CS project
 
-
-Hosting a multiplayer game requires port 
-8108 to be forwarded
+To run this download the code as a zip and then run the `.exe` in the `Build` folder
