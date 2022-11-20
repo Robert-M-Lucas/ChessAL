@@ -402,7 +402,7 @@ namespace Networking.Client
         public void Shutdown()
         {
             Debug.Log("Sending disconnect");
-            SendMessage(ClientDisconnectPacket.Build());
+            // SendMessage(ClientDisconnectPacket.Build());
             Debug.Log("Client shutdown");
 
             if (connectionThread.ThreadState == ThreadState.Running) connectionThread.Abort();

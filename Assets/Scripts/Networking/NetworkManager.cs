@@ -38,11 +38,7 @@ public class NetworkManager : MonoBehaviour
     /// <exception cref="NullReferenceException"></exception>
     public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList() => client!.PlayerData;
 
-    public int GetLocalPlayerID()
-    {
-        Debug.LogWarning(GetHashCode());
-        return client!.PlayerID;
-    }
+    public int GetLocalPlayerID() => client!.PlayerID;
     #endregion
 
     /// <summary>
