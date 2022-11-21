@@ -29,7 +29,7 @@ namespace MainMenu
         public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
         public TMP_Text HostScreenDescriptionText = default!;
-        public TMP_InputField HostSavePathInput = default!;
+        public SaveSelector HostSaveInput = default!;
         public Button HostStartButton = default!;
         public GameObject HostScreen = default!;
         private bool showingHostScreen = false;
@@ -52,7 +52,7 @@ namespace MainMenu
         public Selector LocalGamemodeSelector = default!;
         public TMP_Text LocalConfigHelpText = default!;
         public TMP_Text LocalScreenDescriptionText = default!;
-        public TMP_InputField LocalSavePathInput = default!;
+        public SaveSelector LocalSaveInput = default!;
         public GameObject LocalScreen = default!;
         private bool showingLocalScreen = false;
         public TMP_InputField AITurnTime = default!;
@@ -136,7 +136,9 @@ namespace MainMenu
 
         public void LoadSaveAndFullHost()
         {
-            byte[] save_data = chessManager.LoadSave(HostSavePathInput.text);
+            if (HostSaveInput.SelectedFile == string.Empty) return;
+
+            byte[] save_data = chessManager.LoadSave(HostSaveInput.SelectedFile);
             int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
             FullHost(save_data, gamemode);
         }
@@ -308,7 +310,9 @@ namespace MainMenu
 
         public void LoadSaveAndFullLocalPlay()
         {
-            byte[] save_data = chessManager.LoadSave(LocalSavePathInput.text);
+            if (LocalSaveInput.SelectedFile == string.Empty) return;
+
+            byte[] save_data = chessManager.LoadSave(LocalSaveInput.SelectedFile);
             int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
             FullLocalPlay(save_data, gamemode);
         }
