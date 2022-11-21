@@ -6,8 +6,12 @@ using System.IO;
 
 namespace MainMenu
 {
+    /// <summary>
+    /// Creates a dropdown for selecting save files
+    /// </summary>
     public class SaveSelector : MonoBehaviour
     {
+        // Filenames over this length will be truncated
         const int MAX_FILENAME_LENGTH = 20;
 
         public Canvas Canvas;
@@ -23,7 +27,10 @@ namespace MainMenu
         public string SelectedFile { get; private set; } = string.Empty;
 
         private bool showingSelector = false;
-    
+        
+        /// <summary>
+        /// Resizes the list items to the current screen size
+        /// </summary>
         public void UpdateItemScale()
         {
             float height = RectTransformUtility.PixelAdjustRect(SelectButton.GetComponent<RectTransform>(), Canvas).height;
@@ -31,14 +38,21 @@ namespace MainMenu
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         }
 
+        /// <summary>
+        /// Shows and hides the list of saves
+        /// </summary>
         public void ExpandOrCollapse()
         {
             showingSelector = !showingSelector;
             Selector.SetActive(showingSelector);
 
-            if (showingSelector) UpdateSaveList();
+            if (showingSelector) UpdateSavesList();
         }
 
+        /// <summary>
+        /// Called when a file is selected
+        /// </summary>
+        /// <param name="file"></param>
         public void SelectFile(string file)
         {
             string shortened_filename = Path.GetFileNameWithoutExtension(file); ;
@@ -53,7 +67,10 @@ namespace MainMenu
             ExpandOrCollapse();
         }
 
-        public void UpdateSaveList()
+        /// <summary>
+        /// Updates the list of saves
+        /// </summary>
+        public void UpdateSavesList()
         {
             string[] save_files = SaveSystem.ListAllSaveFiles();
             string[] save_file_names = new string[save_files.Length];
