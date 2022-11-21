@@ -481,6 +481,8 @@ namespace Networking.Server
                 );
         }
 
+        private int nextToPoll = 0;
+
         /// <summary>
         /// Processes recieved messages
         /// </summary>
@@ -490,11 +492,27 @@ namespace Networking.Server
             {
                 while (running)
                 {
+                    // Nothing recieved
                     if (recieveQueue.IsEmpty)
                     {
+                        while (!PlayerData.ContainsKey(nextToPoll))
+                        {
+                            nextToPoll++;
+                            if (nextToPoll > PlayerIDCounter) nextToPoll = 0;
+                        }
+
+                        bool alive = NetworkingUtils.SocketConnected(PlayerData[nextToPoll].Handler);
+
+                        if (!alive)
+                        {
+                            TryRemovePlayer(nextToPoll, "Socket poll failed");
+                            Debug.Log($"Player {nextToPoll} kicked due to socket poll fail");
+                        }
+
                         Thread.Sleep(RECEIVE_COOLDOWN);
+
                         continue;
-                    } // Nothing recieved
+                    }
 
                     Tuple<int, byte[]> content;
                     if (!recieveQueue.TryDequeue(out content))

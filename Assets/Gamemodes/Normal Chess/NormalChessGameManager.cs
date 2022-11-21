@@ -75,21 +75,8 @@ Traditional chess played on an 8x8 board";
             return possible_moves;
         }
 
-        protected int FalseOnMove(AbstractBoard board, Move move, LiveGameData gameData)
+        protected Tuple<bool, bool> CheckForKings(AbstractBoard board)
         {
-            CancelDefaultMove = false;
-
-            board.OnMove(move);
-
-            if (!CancelDefaultMove)
-            {
-                board.PieceBoard[move.To.X, move.To.Y] = board.PieceBoard[move.From.X, move.From.Y];
-                board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
-                board.PieceBoard[move.From.X, move.From.Y] = null;
-            }
-
-            (board as Board).MoveCounter++;
-
             bool white_king = false;
             bool black_king = false;
             for (int x = 0; x < board.PieceBoard.GetLength(0); x++)
@@ -107,8 +94,28 @@ Traditional chess played on an 8x8 board";
                 }
             }
 
-            if (!white_king) return GUtil.TurnEncodeTeam(1);
-            if (!black_king) return GUtil.TurnEncodeTeam(0);
+            return new Tuple<bool, bool>(white_king, black_king);
+        }
+
+        protected int FalseOnMove(AbstractBoard board, Move move, LiveGameData gameData)
+        {
+            CancelDefaultMove = false;
+
+            board.OnMove(move);
+
+            if (!CancelDefaultMove)
+            {
+                board.PieceBoard[move.To.X, move.To.Y] = board.PieceBoard[move.From.X, move.From.Y];
+                board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
+                board.PieceBoard[move.From.X, move.From.Y] = null;
+            }
+
+            (board as Board).MoveCounter++;
+
+            Tuple<bool, bool> kings = CheckForKings(board);
+
+            if (!kings.Item1) return GUtil.TurnEncodeTeam(1);
+            if (!kings.Item2) return GUtil.TurnEncodeTeam(0);
 
             return GUtil.SwitchPlayerTeam(gameData);
         }

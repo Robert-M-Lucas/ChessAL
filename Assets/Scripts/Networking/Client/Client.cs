@@ -41,7 +41,7 @@ namespace Networking.Client
         #endregion
 
         private ConcurrentQueue<byte[]> ContentQueue = new ConcurrentQueue<byte[]>();
-        private ConcurrentQueue<byte[]> SendQueue = new ConcurrentQueue<byte[]>();
+        private ConcurrentQueue<byte[]> sendQueue = new ConcurrentQueue<byte[]>();
 
         #region Cooldowns
 
@@ -329,7 +329,7 @@ namespace Networking.Client
         /// <param name="payload">Data to send</param>
         public void SendMessage(byte[] payload)
         {
-            SendQueue.Enqueue(payload);
+            sendQueue.Enqueue(payload);
         }
 
         /// <summary>
@@ -337,29 +337,53 @@ namespace Networking.Client
         /// </summary>
         private void SendLoop()
         {
-            if (handler is null) throw new NullReferenceException();
-
             try
             {
                 while (true)
                 {
-                    if (!SendQueue.IsEmpty)
+                    if (!sendQueue.IsEmpty)
                     {
-                        byte[] to_send;
-                        if (SendQueue.TryDequeue(out to_send))
-                        {
-                            handler.Send(to_send);
-                        }
+                        SendMessageFromSendQueue();
                     }
 
                     Thread.Sleep(SEND_COOLDOWN);
                 }
             }
-            catch (ThreadAbortException) { }
+            catch (ThreadAbortException) { return; }
             catch (Exception e)
             {
                 Debug.LogError(e);
             }
+        }
+
+        /// <summary>
+        /// Sends the first message from the send queue
+        /// </summary>
+        private void SendMessageFromSendQueue()
+        {
+            byte[] to_send;
+            if (sendQueue.TryDequeue(out to_send))
+            {
+                try
+                {
+                    handler!.Send(to_send);
+                }
+                catch (SocketException se)
+                {
+                    Debug.LogError(se);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends all remaining messages from the send queue.
+        /// </summary>
+        /// <exception cref="ThreadStateException">Throws ThreadStateException if send loop is running</exception>
+        private void FlushSendQueue()
+        {
+            if (sendThread.ThreadState == ThreadState.Running) throw new ThreadStateException("Send queue cannot be flushed while send loop is running!");
+
+            while (!sendQueue.IsEmpty) SendMessageFromSendQueue();
         }
 
         /// <summary>
@@ -377,10 +401,19 @@ namespace Networking.Client
         /// </summary>
         public void Shutdown()
         {
+            Debug.Log("Sending disconnect");
+            // SendMessage(ClientDisconnectPacket.Build());
             Debug.Log("Client shutdown");
+
             if (connectionThread.ThreadState == ThreadState.Running) connectionThread.Abort();
             receiveThread.Abort();
             sendThread.Abort();
+
+            Debug.Log("Flushing send queue");
+            FlushSendQueue();
+
+            Debug.Log("Disconnecting sockets");
+
             try { handler?.Disconnect(false); } catch (SocketException) { }
             try { handler?.Shutdown(SocketShutdown.Both); } catch (SocketException) { }
             try { handler?.Close(0); } catch (SocketException) { }
