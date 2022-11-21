@@ -27,7 +27,7 @@ namespace MainMenu
         public string SelectedFile { get; private set; } = string.Empty;
 
         private bool showingSelector = false;
-        
+
         /// <summary>
         /// Resizes the list items to the current screen size
         /// </summary>
