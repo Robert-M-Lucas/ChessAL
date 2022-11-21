@@ -123,6 +123,7 @@ namespace HierarchyDecorator
                 }
                 catch 
                 {
+                    // Robert Lucas added error handling
                     Debug.LogError($"Invalid name: {name}");
                     name = style.FormatString(name);
                 }

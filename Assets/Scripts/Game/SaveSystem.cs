@@ -11,6 +11,7 @@ using System.Diagnostics;
 
 public static class SaveSystem
 {
+    public static string GetSaveFolder() => Application.persistentDataPath + "\\Saves";
 
     public static void Save(Gamemodes.SerialisationData data, string fileName)
     {
@@ -25,7 +26,7 @@ public static class SaveSystem
     /// <returns>Null if successful or a string exception</returns>
     public static string? Save(byte[] data, string fileName)
     {
-        string save_location = Application.persistentDataPath + "\\Saves";
+        string save_location = GetSaveFolder();
         try
         {
             if (!Directory.Exists(save_location))
@@ -48,7 +49,7 @@ public static class SaveSystem
     /// <returns></returns>
     public static string[] ListAllSaveFiles()
     {
-        string save_location = Application.persistentDataPath + "\\Saves";
+        string save_location = GetSaveFolder();
         return Directory.GetFiles(save_location, "*.sav");
     }
 
@@ -64,7 +65,7 @@ public static class SaveSystem
 
         if (Path.GetExtension(fileName) != ".sav") fileName += ".sav";
 
-        string save_location = Application.persistentDataPath + "\\Saves";
+        string save_location = GetSaveFolder();
         if (!fileName.Contains('\\') && !fileName.Contains('/')) fileName = save_location + "\\" + fileName;
 
         return File.ReadAllBytes(fileName);
@@ -75,16 +76,21 @@ public static class SaveSystem
     /// </summary>
     public static void OpenSaveFolder()
     {
-        string save_location = Application.persistentDataPath + "\\Saves";
+        string save_location = GetSaveFolder();
         if (!Directory.Exists(save_location))
         {
             Directory.CreateDirectory(save_location);
         }
+
+#if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+
         Process.Start(new ProcessStartInfo()
         {
             FileName = save_location + "\\",
             UseShellExecute = true,
             Verb = "open"
         });
+
+#endif
     }
 }
