@@ -181,12 +181,14 @@ public class ChessManager : MonoBehaviour
         saveData = settings.SaveData;
     }
 
+    public void StopNetworking() => networkManager.Stop();
+
     /// <summary>
     /// Restarts networking system
     /// </summary>
     public void RestartNetworking()
     {
-        networkManager.Stop();
+        StopNetworking();
         GameObject new_network_manager = Instantiate(networkManager.gameObject);
         Destroy(networkManager.gameObject);
         networkManager = new_network_manager.GetComponent<NetworkManager>();

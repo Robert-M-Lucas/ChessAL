@@ -110,6 +110,15 @@ namespace MainMenu
         public void ShowGamemodeHelp() => HelpSystem.OpenHelp(chessManager.CurrentGameManager.GetUID());
         public void ShowHelp() => HelpSystem.OpenHelp();
 
+        public void Quit()
+        {
+            chessManager.StopNetworking();
+            Application.Quit(0);
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
+
         /*
          * [Type]Config - Opens configuration screen for type
          * [Type]ShowGamemodeHelp - Shows gamemode help for the currently selected gamemode on that config screen
