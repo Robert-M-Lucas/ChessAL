@@ -105,11 +105,21 @@ namespace MainMenu
             LocalScreen.SetActive(false);
         }
 
-        public void OpenSaveFolder() => SaveSystem.OpenSaveFolder();
+        public void OpenSavesFolder() => SaveSystem.OpenSavesFolder();
 
+        /// <summary>
+        /// Shows help for the current gamemode
+        /// </summary>
         public void ShowGamemodeHelp() => HelpSystem.OpenHelp(chessManager.CurrentGameManager.GetUID());
+
+        /// <summary>
+        /// Shows general help (not for specific gamemode)
+        /// </summary>
         public void ShowHelp() => HelpSystem.OpenHelp();
 
+        /// <summary>
+        /// Fully exits the game
+        /// </summary>
         public void Quit()
         {
             chessManager.StopNetworking();

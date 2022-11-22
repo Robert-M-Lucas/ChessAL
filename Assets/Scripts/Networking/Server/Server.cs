@@ -72,14 +72,14 @@ namespace Networking.Server
         {
             serverPassword = Util.RemoveInvisibleChars(serverPassword);
 
-            acceptClientThread = new Thread(AcceptClients);
-            recieveThread = new Thread(ReceiveLoop);
-            sendThread = new Thread(SendLoop);
-
             this.gameData = gameData;
             this.serverPassword = serverPassword;
 
             internalPackerHandler = new InternalServerPacketHandler(this);
+
+            acceptClientThread = new Thread(AcceptClients);
+            recieveThread = new Thread(ReceiveLoop);
+            sendThread = new Thread(SendLoop);
         }
 
         /// <summary>
@@ -495,6 +495,8 @@ namespace Networking.Server
                     // Nothing recieved
                     if (recieveQueue.IsEmpty)
                     {
+                        // Poll player to see if they are still connected
+
                         while (!PlayerData.ContainsKey(nextToPoll))
                         {
                             nextToPoll++;
@@ -520,6 +522,7 @@ namespace Networking.Server
                         // Dequeue failed
                         continue;
                     }
+
                     if (!PlayerData.ContainsKey(content.Item1))
                     {
                         // Player no longer exists

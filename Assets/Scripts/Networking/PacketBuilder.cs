@@ -53,8 +53,6 @@ namespace Networking.Packets
     }
     */
 
-    //UIDLEN 32 bit
-    //UID, Data
     /// <summary>
     /// Creates and decodes packets
     /// </summary>

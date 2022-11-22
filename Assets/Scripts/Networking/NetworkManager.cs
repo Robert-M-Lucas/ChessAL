@@ -19,6 +19,7 @@ public class NetworkManager : MonoBehaviour
 
     public bool IsHost { get { return server is not null; } }
 
+    // Runs once
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -81,12 +82,15 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     private void ConnectionFailed() => Stop();
 
-    public void GetPing(Action<int> callback)
-    {
-        if (client is null) return;
-        client.GetPing(callback);
-    }
+    /// <summary>
+    /// Calls the callback with the ping as the parameter
+    /// </summary>
+    /// <param name="callback"></param>
+    public void GetPing(Action<int> callback) => client?.GetPing(callback);
 
+    /// <summary>
+    /// Shuts down networking
+    /// </summary>
     public void Stop()
     {
         Debug.LogWarning("Stop");

@@ -31,29 +31,21 @@ namespace Networking.Server
         /// Returns a unique string that represents the player
         /// </summary>
         /// <returns></returns>
-        public string GetUniqueString()
-        {
-            return "[" + PlayerID + "] " + Name + "";
-        }
-
+        public string GetUniqueString() => $"[{PlayerID} {Name}";
+        
         // Networking
-
         public Socket Handler;
 
+        // Buffers
         public byte[] Buffer = new byte[1024];
         public byte[] LongBuffer = new byte[1024];
         public int CurrentPacketLength = -1;
         public int LongBufferSize = 0;
-        public StringBuilder SB = new StringBuilder();
 
         /// <summary>
         /// Resets buffers
         /// </summary>
-        public void Reset()
-        {
-            Buffer = new byte[1024];
-            SB = new StringBuilder();
-        }
+        public void Reset() => Buffer = new byte[1024];
 
         /// <summary>
         /// Shuts down the connection between the client and the server

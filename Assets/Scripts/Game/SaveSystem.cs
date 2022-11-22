@@ -74,7 +74,7 @@ public static class SaveSystem
     /// <summary>
     /// Opens the windows file explorer in the saves folder
     /// </summary>
-    public static void OpenSaveFolder()
+    public static void OpenSavesFolder()
     {
         string save_location = GetSaveFolder();
         if (!Directory.Exists(save_location))

@@ -59,6 +59,7 @@ namespace Networking.Server
             server.SendMessage(packet.From, GamemodeDataPacket.Build(server.gameData.GameModeID, server.gameData.SaveData));
         }
         
+        // Broadcasts a move sent in by a player to all players
         public void OnMoveUpdate(Packet packet)
         {
             MoveUpdatePacket p = new MoveUpdatePacket(packet);

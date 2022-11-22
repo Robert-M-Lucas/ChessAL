@@ -61,6 +61,8 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     private Queue<Action> mainThreadActions = new Queue<Action>();
 
+    #region Unity Methods
+
     // Called once
     private void OnEnable()
     {
@@ -71,10 +73,33 @@ public class ChessManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    // Called once
     private void Awake()
     {
         networkManager = FindObjectOfType<NetworkManager>();
     }
+
+    public void OnApplicationQuit() => StopNetworking();
+
+    // Called every frame
+    public void Update()
+    {
+        /* 
+         * Most unity functions can only be called from the main thread so this 
+         * goes through functions queued by other threads to run them 
+         * on the main thread during the next frame 
+         */
+
+        Queue<Action> temp_main_thread_actions = mainThreadActions;
+        mainThreadActions = new Queue<Action>();
+
+        while (temp_main_thread_actions.Count > 0)
+        {
+            temp_main_thread_actions.Dequeue().Invoke();
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// Called every scene change
@@ -194,6 +219,10 @@ public class ChessManager : MonoBehaviour
         networkManager = new_network_manager.GetComponent<NetworkManager>();
     }
 
+    /// <summary>
+    /// Calls the callback with ping as the parameter
+    /// </summary>
+    /// <param name="callback"></param>
     public void GetPing(Action<int> callback) => networkManager.GetPing(callback);
 
     /// <summary>
@@ -215,6 +244,7 @@ public class ChessManager : MonoBehaviour
         IDCounter++;
         menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
     }
+
     public void AddLocalAI() 
     {
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
@@ -253,12 +283,17 @@ public class ChessManager : MonoBehaviour
         }
     }
 
+    /*
     public void RemoveLocalPlayer(int playerID)
     {
         if (localPlayerList.ContainsKey(playerID)) localPlayerList.Remove(playerID, out _);
         if (LocalAIPlayers.Contains(playerID)) LocalAIPlayers.Remove(playerID);
     }
+    */
 
+    /// <summary>
+    /// Resets local play settings
+    /// </summary>
     public void ResetLocalSettings()
     {
         localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
@@ -327,8 +362,6 @@ public class ChessManager : MonoBehaviour
         }
         Timer.Start();
     }
-
-    public void OnApplicationQuit() => ExitGame();
 
     /// <summary>
     /// Exits the game
@@ -402,6 +435,9 @@ public class ChessManager : MonoBehaviour
         return gameData;
     }
     
+    /// <summary>
+    /// Called when it's the local players turn
+    /// </summary>
     public void OnTurn()
     {
         prevPlayer = GetLocalPlayerID();
@@ -436,6 +472,9 @@ public class ChessManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Checks if the AI is completed and updates progress counter if not
+    /// </summary>
     public void MCheckAIDone()
     {
         Move? move = AIManager.GetMove();
@@ -550,26 +589,7 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public byte[] LoadSave(string fileName)
-    {
-        return SaveSystem.Load(fileName);
-    }
+    public byte[] LoadSave(string fileName) => SaveSystem.Load(fileName);
+
     #endregion
-
-    public void Update()
-    {
-        /* 
-         * Most unity functions can only be called from the main thread so this 
-         * goes through functions queued by other threads to run them 
-         * on the main thread during the next frame 
-         */
-
-        Queue<Action> temp_main_thread_actions = mainThreadActions;
-        mainThreadActions = new Queue<Action>();
-
-        while (temp_main_thread_actions.Count > 0)
-        {
-            temp_main_thread_actions.Dequeue().Invoke();
-        }
-    }
 }
