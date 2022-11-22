@@ -7,6 +7,10 @@ using System;
 
 namespace MainMenu
 {
+    /// <summary>
+    /// Script attatched to every item in the save selector dropdown
+    /// Stores the item's save path
+    /// </summary>
     public class SaveSelectorItem : MonoBehaviour
     {
         public SaveSelector SaveSelector;

@@ -67,6 +67,7 @@ namespace Networking.Client
 
         #endregion Cooldowns
 
+        // Dictionary of all clients
         public ConcurrentDictionary<int, ClientPlayerData> PlayerData = new ConcurrentDictionary<int, ClientPlayerData>();
 
         private InternalClientPacketHandler internalPacketHandler;
@@ -94,24 +95,25 @@ namespace Networking.Client
             IP = Util.RemoveInvisibleChars(IP);
             password = Util.RemoveInvisibleChars(password);
             playerName = Util.RemoveInvisibleChars(playerName);
+
             this.IP = IP;
             Password = password;
             PlayerName = playerName;
-
-            connectionThread = new Thread(StartConnecting);
-            receiveThread = new Thread(ReceiveLoop);
-            sendThread = new Thread(SendLoop);
 
             this.networkManager = networkManager;
 
             internalPacketHandler = new InternalClientPacketHandler(this);
             this.onConnection = onConnection;
+
+            connectionThread = new Thread(StartConnecting);
+            receiveThread = new Thread(ReceiveLoop);
+            sendThread = new Thread(SendLoop);
         }
 
         /// <summary>
         /// Start connecting to the server
         /// </summary>
-        public void Connect() { connectionThread.Start(); }
+        public void Connect() => connectionThread.Start();
 
         /// <summary>
         /// Starts connecting (threaded)
@@ -135,6 +137,7 @@ namespace Networking.Client
                 // Successful connection
                 onConnection(null);
 
+                // Start threads
                 receiveThread = new Thread(ReceiveLoop);
                 receiveThread.Start();
                 sendThread = new Thread(SendLoop);
@@ -142,12 +145,11 @@ namespace Networking.Client
 
                 // TODO: Remove this
                 Thread.Sleep(300);
+
+                // Request gamemode data
                 SendMessage(GamemodeDataRequestPacket.Build());
             }
-            catch (ThreadAbortException)
-            {
-
-            }
+            catch (ThreadAbortException) { }
             catch (Exception e)
             {
                 onConnection(e.ToString());
@@ -231,8 +233,6 @@ namespace Networking.Client
         {
             if (handler is null) throw new NullReferenceException();
 
-            string content = string.Empty;
-
             int bytesRead = handler.EndReceive(ar);
 
             if (bytesRead > 0)
@@ -241,7 +241,6 @@ namespace Networking.Client
                 serverLongBufferSize += bytesRead;
 
             ReprocessBuffer:
-
                 if (
                     serverCurrentPacketLength == -1
                     && serverLongBufferSize >= PacketBuilder.PacketLenLen
@@ -271,6 +270,7 @@ namespace Networking.Client
                     serverCurrentPacketLength = -1;
                     if (serverLongBufferSize > 0)
                     {
+                        // TODO: Don't use goto as it is bad practice
                         goto ReprocessBuffer;
                     }
                 }
@@ -288,13 +288,15 @@ namespace Networking.Client
             {
                 while (true)
                 {
+                    // Nothing recieved
                     if (ContentQueue.IsEmpty)
                     {
                         Thread.Sleep(RECEIVE_COOLDOWN);
                         continue;
-                    } // Nothing recieved
+                    } 
 
                     byte[] content;
+                    // Dequeue failed
                     if (!ContentQueue.TryDequeue(out content))
                     {
                         continue;

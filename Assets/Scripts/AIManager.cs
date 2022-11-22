@@ -40,6 +40,9 @@ namespace AI
             searchThread.Start();
         }
 
+        /// <summary>
+        /// Resets the AI Manager
+        /// </summary>
         public static void Reset()
         {
             Progress = -1f;
@@ -52,16 +55,29 @@ namespace AI
             searchThread = null;
         }
 
+        /// <summary>
+        /// Returns true if the AI has exceeded the MAX_SEARCH_TIME
+        /// </summary>
+        /// <returns></returns>
         private static bool IsOverTime()
         {
             return Timer.Elapsed.Seconds > MAX_SEARCH_TIME;
         }
 
+        /// <summary>
+        /// Updates the progress tracker
+        /// </summary>
         private static void UpdateProgress()
         {
             Progress = Mathf.Clamp((float) (Timer.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
         }
 
+        /// <summary>
+        /// Starts looking for a move
+        /// </summary>
+        /// <param name="possible_moves"></param>
+        /// <param name="initialGameData"></param>
+        /// <param name="gameManager"></param>
         private static void StartMoveSearch(List<Move> possible_moves, LiveGameData initialGameData, AbstractGameManager gameManager)
         {
             Timer.Restart();
@@ -136,16 +152,26 @@ namespace AI
             }
         }
 
-        
+        /// <summary>
+        /// Implementation of the MiniMax algorithm with AB pruning
+        /// </summary>
+        /// <param name="gameManager"></param>
+        /// <param name="gameData"></param>
+        /// <param name="moves"></param>
+        /// <param name="current_depth"></param>
+        /// <param name="max_depth"></param>
+        /// <param name="prev_best"></param>
+        /// <param name="prev_maximising"></param>
+        /// <returns></returns>
         private static float MiniMax(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int current_depth, int max_depth, float prev_best, bool prev_maximising)
         {
-            if (current_depth == max_depth)
-            {
-                return gameManager.GetScore(gameData);
-            }
+            // Return if at max depth
+            if (current_depth == max_depth) return gameManager.GetScore(gameData);
 
             float best_score;
             bool maximising;
+
+            // Set maximising or minimising
             if (gameData.CurrentTeam == gameData.LocalPlayerTeam)
             {
                 best_score = float.NegativeInfinity;
@@ -159,6 +185,7 @@ namespace AI
 
             foreach (Move m in moves)
             {
+                // Exit if over time
                 if (current_depth == max_depth - 1 && IsOverTime()) return float.NaN;
 
                 AbstractGameManager new_manager = gameManager.Clone();
@@ -182,7 +209,11 @@ namespace AI
                 new_game_data.CurrentPlayer = next_player;
 
                 List<Move> new_moves = new_manager.GetMoves(new_game_data);
+
+                // Recursion
                 float score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+
+                // Return if algorithm is terminating
                 if (score == float.NaN) return float.NaN;
 
                 if (maximising && score > best_score) best_score = score;
@@ -199,7 +230,10 @@ namespace AI
             return best_score;
         }
         
-        
+        /// <summary>
+        /// Returns a move if one has been found or null if the search is ongoing
+        /// </summary>
+        /// <returns></returns>
         public static Move? GetMove()
         {
             if (foundMove is not null)

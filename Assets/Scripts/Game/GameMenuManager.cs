@@ -52,7 +52,7 @@ namespace Game
 
         public void OpenSaveLocation()
         {
-            SaveSystem.OpenSaveFolder();
+            SaveSystem.OpenSavesFolder();
         }
 
         // Update is called once per frame
