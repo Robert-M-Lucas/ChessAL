@@ -9,9 +9,16 @@ using System;
 
 namespace Game
 {
+    /// <summary>
+    /// Stores theme data
+    /// </summary>
     [System.Serializable]
     public class Theme
     {
+        public string Name;
+
+        [Space(7)]
+
         public Color WhiteColor;
         public Color BlackColor;
 
@@ -197,6 +204,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Returns whether the given position is white or black in the checkerboard
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         private bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
 
         /// <summary>
@@ -299,18 +311,30 @@ namespace Game
             return true;
         }
 
+        /// <summary>
+        /// Makes a square appear selected
+        /// </summary>
+        /// <param name="position"></param>
         public void SelectSquare(V2 position)
         {
             if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
             else Squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
         }
 
+        /// <summary>
+        /// Marks a square as having had a piece move there last turn
+        /// </summary>
+        /// <param name="position"></param>
         public void ShowMove(V2 position)
         {
             if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
             else Squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
         }
 
+        /// <summary>
+        /// Resets a square back to its default colour
+        /// </summary>
+        /// <param name="position"></param>
         public void ResetSquareColor(V2 position)
         {
             if (IsWhite(position))

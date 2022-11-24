@@ -50,10 +50,9 @@ namespace Game
             SaveStatusText.text = "Save successful";
         }
 
-        public void OpenSaveLocation()
-        {
-            SaveSystem.OpenSavesFolder();
-        }
+        public void OpenSaveLocation() => SaveSystem.OpenSavesFolder();
+
+        public void ShowHelp() => HelpSystem.OpenHelp(HelpSystem.IN_GAME_PAGE_NAME);
 
         // Update is called once per frame
         void Update()
