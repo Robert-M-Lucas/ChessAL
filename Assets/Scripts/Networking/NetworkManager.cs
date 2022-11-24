@@ -98,7 +98,6 @@ public class NetworkManager : MonoBehaviour
         server = null;
         client?.Shutdown();
         client = null;
-        Debug.Log(client);
         Debug.LogWarning("Stop finished");
     }
 

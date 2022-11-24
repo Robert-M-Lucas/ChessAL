@@ -9,6 +9,7 @@ namespace Game
         public V2 Position;
         public InputManager inputManager;
 
+        // Called when clicked on
         public void ActivateInputManager()
         {
             inputManager.OnCellClick(Position);

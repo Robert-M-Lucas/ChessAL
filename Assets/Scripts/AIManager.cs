@@ -186,7 +186,7 @@ namespace AI
             foreach (Move m in moves)
             {
                 // Exit if over time
-                if (current_depth == max_depth - 1 && IsOverTime()) return float.NaN;
+                if (current_depth == max_depth - 1 || current_depth == max_depth && IsOverTime()) return float.NaN;
 
                 AbstractGameManager new_manager = gameManager.Clone();
                 int next_player = new_manager.OnMove(m, gameData);
@@ -238,6 +238,8 @@ namespace AI
         {
             if (foundMove is not null)
             {
+                Debug.Log("Found move returned");
+
                 Move new_move = new Move(((Move)foundMove).From, ((Move)foundMove).To);
                 foundMove = null;
                 return new_move;

@@ -9,13 +9,48 @@ using System;
 
 namespace Game
 {
+    /// <summary>
+    /// Stores theme data
+    /// </summary>
+    [System.Serializable]
+    public class Theme
+    {
+        public string Name;
+
+        [Space(7)]
+
+        public Color WhiteColor;
+        public Color BlackColor;
+
+        [Space(7)]
+
+        public Color WhiteHighlightColor;
+        public Color BlackHighlightColor;
+
+        [Space(7)]
+
+        public Color WhiteSelectColor;
+        public Color BlackSelectColor;
+
+        [Space(7)]
+
+        public Color WhiteBlockedColor;
+        public Color BlackBlockedColor;
+
+        [Space(7)]
+
+        public Color WhiteMoveColor;
+        public Color BlackMoveColor;
+    }
+
     public class VisualManager : MonoBehaviour
     {
+        public Theme[] Themes;
+        private int currentTheme = 0;
+
         public RectTransform renderBox;
 
-        public Image BlackSquare;
-        public Image WhiteSquare;
-        public GameObject BlockedSquare;
+        public GameObject SquarePrefab;
         public GameObject PiecePrefab;
         public GameObject MoveOptionPrefab;
 
@@ -24,13 +59,14 @@ namespace Game
         public TMP_Text TimerText;
         public TMP_Text AIText;
 
-        public float HighlightedSquareOpacity = 0.2f;
-        public Color HighlightColor;
-
         public AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
         public ChessManager ChessManager;
+
+
+        private const string PLAYER_PREFS_THEME_KEY = "Theme";
+
         private BoardRenderInfo boardRenderInfo;
 
         private Resolution resolution = new Resolution();
@@ -47,9 +83,9 @@ namespace Game
 
         private List<V2> greyscaled = new List<V2>();
 
+        // Run once
         private void Awake()
         {
-
             // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
             {
@@ -65,8 +101,15 @@ namespace Game
                     internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
                 }
             }
+
+            if (PlayerPrefs.HasKey(PLAYER_PREFS_THEME_KEY))
+            {
+                currentTheme = PlayerPrefs.GetInt(PLAYER_PREFS_THEME_KEY);
+                if (currentTheme >= Themes.Length) currentTheme = 0;
+            }
         }
 
+        // Run once
         void Start()
         {            
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
@@ -162,6 +205,13 @@ namespace Game
         }
 
         /// <summary>
+        /// Returns whether the given position is white or black in the checkerboard
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
+
+        /// <summary>
         /// Renders the board's cells
         /// </summary>
         private void RenderBoardBackground()
@@ -170,35 +220,17 @@ namespace Game
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    GameObject square = null;
+                    GameObject new_square = Instantiate(SquarePrefab);
 
-                    foreach (V2 blocked_square in boardRenderInfo.RemovedSquares)
-                    {
-                        if (x == blocked_square.X && y == blocked_square.Y)
-                        {
-                            square = BlockedSquare;
-                            break;
-                        }
-                    }
-
-                    if (square is null)
-                    {
-                        if ((x + y) % 2 == 0) square = WhiteSquare.gameObject;
-                        else square = BlackSquare.gameObject;
-                    }
-
-                    GameObject new_square = Instantiate(square);
                     SizeGameObject(new_square, new V2(x, y));
+
                     RenderedCellData rendered_piece_data = new_square.GetComponent<RenderedCellData>();
                     rendered_piece_data.Position = new V2(x, y);
 
                     Image image = new_square.GetComponent<Image>();
                     Squares[x, y] = image;
-                    if (boardRenderInfo.HighlightedSquares.Contains(new V2(x, y))) 
-                    {
-                        Color old_color = new_square.GetComponent<Image>().color;
-                        image.color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
-                    }
+
+                    ResetSquareColor(new V2(x, y));
 
                     new_square.SetActive(true);
                 }
@@ -263,7 +295,7 @@ namespace Game
             }
 
             currentlyShowing = clickPosition;
-            HighlightSquare((V2)currentlyShowing);
+            SelectSquare((V2)currentlyShowing);
 
             foreach (Move move in possibleMoves)
             {
@@ -279,27 +311,61 @@ namespace Game
             return true;
         }
 
-        public void HighlightSquare(V2 position)
+        /// <summary>
+        /// Makes a square appear selected
+        /// </summary>
+        /// <param name="position"></param>
+        public void SelectSquare(V2 position)
         {
-            Squares[position.X, position.Y].color += HighlightColor;
+            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
+            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
         }
 
-        public void GreyscaleSquare(V2 position)
-        { 
-            Color base_color = Squares[position.X, position.Y].color;
-            float color = ((base_color.r + base_color.g + base_color.b) / 3) * 0.75f;
-            Squares[position.X, position.Y].color = new Color(color, color, color);
+        /// <summary>
+        /// Marks a square as having had a piece move there last turn
+        /// </summary>
+        /// <param name="position"></param>
+        public void ShowMove(V2 position)
+        {
+            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
+            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
         }
 
+        /// <summary>
+        /// Resets a square back to its default colour
+        /// </summary>
+        /// <param name="position"></param>
         public void ResetSquareColor(V2 position)
         {
-            if ((position.X + position.Y) % 2 == 0) Squares[position.X, position.Y].color = WhiteSquare.color;
-            else Squares[position.X, position.Y].color = BlackSquare.color;
-
-            if (boardRenderInfo.HighlightedSquares.Contains(position))
+            if (IsWhite(position))
             {
-                Color old_color = Squares[position.X, position.Y].color;
-                Squares[position.X, position.Y].color = new Color(old_color.r, old_color.g, old_color.b, HighlightedSquareOpacity);
+                if (boardRenderInfo.RemovedSquares.Contains(position))
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteBlockedColor;
+                }
+                else if (boardRenderInfo.HighlightedSquares.Contains(position))
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteHighlightColor;
+                }
+                else
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteColor;
+                }
+            }
+            else
+            {
+                if (boardRenderInfo.RemovedSquares.Contains(position))
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackBlockedColor;
+                }
+                else if (boardRenderInfo.HighlightedSquares.Contains(position))
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackHighlightColor;
+                }
+                else
+                {
+                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackColor;
+                }
             }
         }
 
@@ -313,8 +379,8 @@ namespace Game
             foreach (V2 grey in greyscaled) ResetSquareColor(grey);
             greyscaled.Clear();
 
-            GreyscaleSquare(from);
-            GreyscaleSquare(to);
+            ShowMove(from);
+            ShowMove(to);
             greyscaled.Add(from);
             greyscaled.Add(to);
         }
@@ -339,12 +405,14 @@ namespace Game
             TurnText.text = str;
         }
 
+        /// <summary>
+        /// Updates AI progress text
+        /// </summary>
+        /// <param name="waiting"></param>
+        /// <param name="progress"></param>
         public void ShowAIInfo(bool waiting, float progress)
         {
-            if (!waiting)
-            {
-                AIText.gameObject.SetActive(false);
-            }
+            if (!waiting) AIText.gameObject.SetActive(false);
             else
             {
                 AIText.gameObject.SetActive(true);
@@ -352,8 +420,29 @@ namespace Game
             }
         }
 
+        private void UpdateTheme() 
+        {
+            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            {
+                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                {
+                    ResetSquareColor(new V2(x, y));
+                }
+            }
+        }
+
         void Update()
         {
+            // Check for theme change input
+            if (I.GetKeyDown(K.ChangeThemeKey))
+            {
+                Debug.Log("Change");
+                currentTheme++;
+                if (currentTheme >= Themes.Length) currentTheme = 0;
+                UpdateTheme();
+                PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme);
+            }
+
             // Check for resolution change
             if (resolution.height != Screen.height || resolution.width != Screen.width) OnResolutionChange();
             
