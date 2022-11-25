@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -20,6 +22,25 @@ namespace Networking
                 return false;
             else
                 return true;
+        }
+
+        public static bool PortInUse(int port)
+        {
+            bool in_use = false;
+
+            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] ipEndPoints = ipProperties.GetActiveTcpListeners();
+
+
+            foreach (IPEndPoint endPoint in ipEndPoints)
+            {
+                if (endPoint.Port == port)
+                {
+                    in_use = true;
+                    break;
+                }
+            }
+            return in_use;
         }
     }
 }

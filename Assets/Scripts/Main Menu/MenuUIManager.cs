@@ -60,6 +60,7 @@ namespace MainMenu
         [Header("Other")]
         public GameObject LobbyDisplay = default!;
         public PlayerCardController PlayerCardPrefab = default!;
+        public GameObject ShuttingDownServerScreen = default!;
 
         #endregion
 
@@ -207,7 +208,12 @@ namespace MainMenu
 
             
 
-            chessManager.Host(host_settings);
+            bool half_success = chessManager.Host(host_settings);
+            if (!half_success)
+            {
+                HostNameDisallowedReason.text = "Host failed. This can be caused by trying to resart a host too quickly - try waiting a couple of minutes";
+                return;
+            }
 
             HideAllScreens();
 
@@ -236,6 +242,18 @@ namespace MainMenu
             UpdateLobbyPlayerCardDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             HideAllScreens();
             chessManager.RestartNetworking();
+            ShuttingDownServerScreen.SetActive(true);
+            StartCoroutine(WaitForServerShutdown());
+        }
+
+        /// <summary>
+        /// Shows a screen while waiting for the server port to be freed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator WaitForServerShutdown()
+        {
+            yield return new WaitForSecondsRealtime(10);
+            ShuttingDownServerScreen.SetActive(false);
         }
 
         public void HostStartGame() => chessManager.HostStartGame();

@@ -102,10 +102,22 @@ ScriptsOnlyBuild:
   methodsToPreserve:
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelLocalPlay
+    methodName: ShowHelp
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: FullHost
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelLocalPlay
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelectorItem
+    methodName: OnClickCall
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelector
+    methodName: ExpandOrCollapse
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
@@ -117,16 +129,13 @@ ScriptsOnlyBuild:
     methodName: AddLocalPlayer
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: ShowGamemodeHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
     methodName: LoadSaveAndFullHost
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: HostConfig
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelHost
+    methodName: ShowGamemodeHelp
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.Selector
     methodName: Next
@@ -135,7 +144,7 @@ ScriptsOnlyBuild:
     methodName: Prev
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: RemoveLocalAI
+    methodName: CancelHost
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: LoadSaveAndFullLocalPlay
@@ -150,22 +159,22 @@ ScriptsOnlyBuild:
     methodName: LocalPlayConfig
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: HostShowGamemodeHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: ShowHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: JoinConfig
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: FullJoin
+    methodName: RemoveLocalAI
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: AddLocalAI
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: JoinConfig
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: CancelHost
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: HostShowGamemodeHelp
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: FullJoin
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.SaveSelectorItem
     methodName: OnClickCall
@@ -180,19 +189,10 @@ ScriptsOnlyBuild:
     methodName: Prev
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelLocalPlay
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
     methodName: Quit
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: LocalPlayShowGamemodeHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelectorItem
-    methodName: OnClickCall
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelector
-    methodName: ExpandOrCollapse
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: CancelJoin
@@ -210,10 +210,10 @@ ScriptsOnlyBuild:
     methodName: Resume
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
-    methodName: Save
+    methodName: ShowHelp
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
-    methodName: ShowHelp
+    methodName: Save
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
     methodName: OpenSaveLocation

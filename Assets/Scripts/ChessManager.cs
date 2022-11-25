@@ -131,10 +131,11 @@ public class ChessManager : MonoBehaviour
     /// Hosts a game
     /// </summary>
     /// <param name="hostSettings"></param>
-    public void Host(HostSettings hostSettings)
+    public bool Host(HostSettings hostSettings)
     {
         CurrentGameManager = hostSettings.GameMode;
-        networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
+        bool half_success = networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
+        return half_success;
     }
 
     /// <summary>
