@@ -252,7 +252,7 @@ namespace MainMenu
         /// <returns></returns>
         IEnumerator WaitForServerShutdown()
         {
-            yield return new WaitForSecondsRealtime(10);
+            yield return new WaitForSecondsRealtime(5);
             ShuttingDownServerScreen.SetActive(false);
         }
 

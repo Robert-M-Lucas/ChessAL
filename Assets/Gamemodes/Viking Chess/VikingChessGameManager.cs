@@ -42,7 +42,7 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
             foreach (V2 square in winning_squares)
             {
-                if (Board.GetPiece(square) is not null && Board.GetPiece(square).GetUID() == PieceUIDs.King) return GUtil.TurnEncodeTeam(0);
+                if (Board.GetPiece(square) is not null && Board.GetPiece(square).GetUID() == PieceUIDs.King) return GUtil.TurnEncodeTeam(1);
             }
 
             bool found_king = false;
@@ -59,7 +59,7 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                 if (found_king) break;
             }
 
-            if (!found_king) return GUtil.TurnEncodeTeam(1);
+            if (!found_king) return GUtil.TurnEncodeTeam(0);
 
             return 0;
         }
