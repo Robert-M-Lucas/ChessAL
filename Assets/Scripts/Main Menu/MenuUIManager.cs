@@ -242,7 +242,8 @@ namespace MainMenu
             UpdateLobbyPlayerCardDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             HideAllScreens();
             chessManager.RestartNetworking();
-            ShuttingDownServerScreen.SetActive(true);
+
+            // ShuttingDownServerScreen.SetActive(true);
             // StartCoroutine(WaitForServerShutdown());
         }
 
