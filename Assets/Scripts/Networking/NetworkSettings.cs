@@ -1,3 +1,5 @@
+using System.Net.Sockets;
+
 namespace Networking
 {
     /// <summary>
@@ -6,7 +8,13 @@ namespace Networking
     public static class NetworkSettings
     {
         public const int PORT = 8108;
-        public const string VERSION = "0.2.4";
+        public const string VERSION = "0.2.5";
         public const string PUBLIC_IP_SOURCE = "https://ipinfo.io/ip";
+
+        public static void ConfigureSocket(Socket s)
+        {
+            s.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+            s.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+        }
     }
 }

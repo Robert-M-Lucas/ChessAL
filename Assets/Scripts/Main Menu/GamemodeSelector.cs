@@ -9,7 +9,7 @@ namespace MainMenu
     /// A replacement for Unity's built-in dropdown
     /// Gives the functionality of a dropdown while being easier to scale with screen sizes
     /// </summary>
-    public class Selector : MonoBehaviour
+    public class GamemodeSelector : MonoBehaviour
     {
         public List<string> Options;
         public TMP_Text OptionText;
@@ -36,14 +36,14 @@ namespace MainMenu
         public void Next()
         {
             CurrentlyShowingPos++;
-            if (CurrentlyShowingPos >= Options.Count) CurrentlyShowingPos = Options.Count - 1;
+            if (CurrentlyShowingPos >= Options.Count) CurrentlyShowingPos = 0;
             OptionText.text = Options[CurrentlyShowingPos];
         }
 
         public void Prev()
         {
             CurrentlyShowingPos--;
-            if (CurrentlyShowingPos < 0) CurrentlyShowingPos = 0;
+            if (CurrentlyShowingPos < 0) CurrentlyShowingPos = Options.Count - 1;
             OptionText.text = Options[CurrentlyShowingPos];
         }
     }

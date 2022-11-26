@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Networking.Server;
 using Networking.Client;
+using System.Net.NetworkInformation;
+using System.Net;
+using Networking;
 
 #nullable enable
 
@@ -45,8 +48,10 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// Hosts a game
     /// </summary>
-    public void Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
+    public bool Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
     {
+        if (NetworkingUtils.PortInUse(NetworkSettings.PORT)) return false;
+
         ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SaveData);
 
         server = new Server(gameData, settings.Password);
@@ -54,6 +59,7 @@ public class NetworkManager : MonoBehaviour
 
         client = new Client("127.0.0.1", settings.Password, settings.PlayerName, this, OnHostSuccessOrFail);
         client.Connect();
+        return true;
     }
 
     /// <summary>
@@ -73,8 +79,6 @@ public class NetworkManager : MonoBehaviour
     {
         client = new Client(settings.IP, settings.Password, settings.PlayerName, this, OnJoinSuccessOrFail);
         client.Connect();
-
-        Debug.Log(client);
     }
 
     /// <summary>

@@ -25,7 +25,7 @@ namespace MainMenu
         public TMP_InputField HostNameInput = default!;
         public TMP_Text HostNameDisallowedReason = default!;
         public TMP_InputField HostPasswordInput = default!;
-        public Selector HostGamemodeSelector = default!;
+        public GamemodeSelector HostGamemodeSelector = default!;
         public TMP_Text HostConfigHelpText = default!;
         public TMP_Text HostStatusText = default!;
         public TMP_Text HostScreenDescriptionText = default!;
@@ -49,7 +49,7 @@ namespace MainMenu
         [Header("Local")]
         public GameObject LocalConfigScreen = default!;
         private bool showingLocalSettings = false;
-        public Selector LocalGamemodeSelector = default!;
+        public GamemodeSelector LocalGamemodeSelector = default!;
         public TMP_Text LocalConfigHelpText = default!;
         public TMP_Text LocalScreenDescriptionText = default!;
         public SaveSelector LocalSaveInput = default!;
@@ -60,6 +60,7 @@ namespace MainMenu
         [Header("Other")]
         public GameObject LobbyDisplay = default!;
         public PlayerCardController PlayerCardPrefab = default!;
+        public GameObject ShuttingDownServerScreen = default!;
 
         #endregion
 
@@ -207,7 +208,12 @@ namespace MainMenu
 
             
 
-            chessManager.Host(host_settings);
+            bool half_success = chessManager.Host(host_settings);
+            if (!half_success)
+            {
+                HostNameDisallowedReason.text = "Host failed. This can be caused by trying to resart a host too quickly - try waiting a couple of minutes";
+                return;
+            }
 
             HideAllScreens();
 
@@ -236,7 +242,21 @@ namespace MainMenu
             UpdateLobbyPlayerCardDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
             HideAllScreens();
             chessManager.RestartNetworking();
+            ShuttingDownServerScreen.SetActive(true);
+            // StartCoroutine(WaitForServerShutdown());
         }
+
+        /*
+        /// <summary>
+        /// Shows a screen while waiting for the server port to be freed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator WaitForServerShutdown()
+        {
+            yield return new WaitForSecondsRealtime(5);
+            ShuttingDownServerScreen.SetActive(false);
+        }
+        */
 
         public void HostStartGame() => chessManager.HostStartGame();
 

@@ -225,18 +225,20 @@ namespace Networking.Server
 
             try
             {
+                Debug.Log("before");
                 listener = new Socket(
                     ipAddress.AddressFamily,
                     SocketType.Stream,
                     ProtocolType.Tcp
                 );
 
-                listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, false);
-                listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+                NetworkSettings.ConfigureSocket(listener);
 
                 listener.Bind(localEndPoint);
 
                 listener.Listen(100);
+
+                Debug.Log("After");
 
                 while (running)
                 {
@@ -396,7 +398,7 @@ namespace Networking.Server
                 {
                     Debug.LogError((e as SocketException)!.ErrorCode);
                 }
-                Debug.LogError(e.ToString());
+                Debug.LogError(e);
             }
         }
 

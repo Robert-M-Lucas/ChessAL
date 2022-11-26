@@ -24,6 +24,19 @@ namespace Gamemodes.VikingChess
                 .ToList();
 
             moves = GUtil.RemoveNonEmpty(moves, Board);
+
+            if (GetUID() == 800)
+            {
+                for (int i = 0; i < moves.Count; i++)
+                {
+                    if ((moves[i].To.X == 0 || moves[i].To.X == 10) && (moves[i].To.Y == 0 || moves[i].To.Y == 10))
+                    {
+                        moves.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
             return moves;
         }
 
