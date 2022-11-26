@@ -55,7 +55,7 @@ namespace MainMenu
         /// <param name="file"></param>
         public void SelectFile(string file)
         {
-            string shortened_filename = Path.GetFileNameWithoutExtension(file); ;
+            string shortened_filename = Path.GetFileNameWithoutExtension(file);
             if (shortened_filename.Length > MAX_FILENAME_LENGTH)
             {
                 shortened_filename = shortened_filename[..(MAX_FILENAME_LENGTH - 3)] + "...";
