@@ -16,16 +16,27 @@ namespace MainMenu
         public string CurrentlyShowing { get { return Options[CurrentlyShowingPos]; } }
         public int CurrentlyShowingPos { get; private set; } = 0;
 
-    private void OnEnable()
-        {
-            OnValidate();
-        }
 
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                OnValidate();
+            }
+#endif
+            Start();
+        }
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            if (Options.Count == 0) Options.Add("Select Option");
-            OptionText.text = Options[0];
+            if (Options.Count == 0)
+            {
+                Options.Add("Select Option");
+                OptionText.text = Options[0];
+            }
         }
+#endif
 
         void Start()
         {
