@@ -102,6 +102,12 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                                 neigbours.Add(pos);
                                 continue;
                             }
+
+                            if (!king && (current_pos + pos) == VikingChess.Board.CENTRE) 
+                            {
+                                neigbours.Add(pos);
+                                continue;
+                            }
                         }
 
                         if (!active) continue;

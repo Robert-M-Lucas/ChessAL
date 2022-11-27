@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Gamemodes
 {
+    /// <summary>
+    /// Utility class for the gamemode system
+    /// </summary>
     public static class GUtil
     {
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)

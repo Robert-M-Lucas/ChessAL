@@ -6,6 +6,8 @@ namespace Gamemodes.VikingChess
 {
     public class Board : AbstractBoard
     {
+        public static V2 CENTRE { get; private set; } = new V2(5, 5);
+
         public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
         {
             if (initialise) Initialise();
@@ -51,7 +53,7 @@ namespace Gamemodes.VikingChess
             PieceBoard[5, 7] = new VikingPiece(new V2(5, 7), 1, this);
         }
 
-        public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10) });
+        public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10), CENTRE });
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {

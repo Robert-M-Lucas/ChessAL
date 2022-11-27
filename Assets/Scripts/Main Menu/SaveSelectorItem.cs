@@ -13,14 +13,16 @@ namespace MainMenu
     /// </summary>
     public class SaveSelectorItem : MonoBehaviour
     {
-        public SaveSelector SaveSelector;
+        [SerializeField] private SaveSelector SaveSelector;
 
-        public string Filename;
+         public string Filename;
 
-        public Button Button;
+        [SerializeField] private Button Button;
         public TMP_Text Text;
 
+        /*
         public Action OnClick = () => Debug.LogWarning("No action set");
+        */
 
         public void OnClickCall() => SaveSelector.SelectFile(Filename);
     }
