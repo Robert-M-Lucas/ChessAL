@@ -20,47 +20,47 @@ namespace MainMenu
     {
         #region GameObject References
         [Header("Host")]
-        public GameObject HostConfigScreen = default!;
+        [SerializeField] private GameObject HostConfigScreen = default!;
         private bool showingHostSettings = false;
-        public TMP_InputField HostNameInput = default!;
-        public TMP_Text HostNameDisallowedReason = default!;
-        public TMP_InputField HostPasswordInput = default!;
-        public GamemodeSelector HostGamemodeSelector = default!;
-        public TMP_Text HostConfigHelpText = default!;
-        public TMP_Text HostStatusText = default!;
-        public TMP_Text HostScreenDescriptionText = default!;
-        public SaveSelector HostSaveInput = default!;
-        public Button HostStartButton = default!;
-        public GameObject HostScreen = default!;
+        [SerializeField] private TMP_InputField HostNameInput = default!;
+        [SerializeField] private TMP_Text HostNameDisallowedReason = default!;
+        [SerializeField] private TMP_InputField HostPasswordInput = default!;
+        [SerializeField] private GamemodeSelector HostGamemodeSelector = default!;
+        [SerializeField] private TMP_Text HostConfigHelpText = default!;
+        [SerializeField] private TMP_Text HostStatusText = default!;
+        [SerializeField] private TMP_Text HostScreenDescriptionText = default!;
+        [SerializeField] private SaveSelector HostSaveInput = default!;
+        [SerializeField] private Button HostStartButton = default!;
+        [SerializeField] private GameObject HostScreen = default!;
         private bool showingHostScreen = false;
 
         [Header("Join")]
-        public GameObject JoinConfigScreen = default!;
+        [SerializeField] private GameObject JoinConfigScreen = default!;
         private bool showingJoinSettings = false;
-        public TMP_InputField JoinIpInput = default!;
-        public TMP_InputField JoinNameInput = default!;
-        public TMP_Text JoinNameDisallowedReason = default!;
-        public TMP_InputField JoinPasswordInput = default!;
-        public GameObject JoinScreen = default!;
+        [SerializeField] private TMP_InputField JoinIpInput = default!;
+        [SerializeField] private TMP_InputField JoinNameInput = default!;
+        [SerializeField] private TMP_Text JoinNameDisallowedReason = default!;
+        [SerializeField] private TMP_InputField JoinPasswordInput = default!;
+        [SerializeField] private GameObject JoinScreen = default!;
         private bool showingJoinScreen = false;
-        public TMP_Text JoinStatusText = default!;
-        public TMP_Text JoinScreenDescriptionText = default!;
+        [SerializeField] private TMP_Text JoinStatusText = default!;
+        [SerializeField] private TMP_Text JoinScreenDescriptionText = default!;
 
         [Header("Local")]
-        public GameObject LocalConfigScreen = default!;
+        [SerializeField] private GameObject LocalConfigScreen = default!;
         private bool showingLocalSettings = false;
-        public GamemodeSelector LocalGamemodeSelector = default!;
-        public TMP_Text LocalConfigHelpText = default!;
-        public TMP_Text LocalScreenDescriptionText = default!;
-        public SaveSelector LocalSaveInput = default!;
-        public GameObject LocalScreen = default!;
+        [SerializeField] private GamemodeSelector LocalGamemodeSelector = default!;
+        [SerializeField] private TMP_Text LocalConfigHelpText = default!;
+        [SerializeField] private TMP_Text LocalScreenDescriptionText = default!;
+        [SerializeField] private SaveSelector LocalSaveInput = default!;
+        [SerializeField] private GameObject LocalScreen = default!;
         private bool showingLocalScreen = false;
-        public TMP_InputField AITurnTime = default!;
+        [SerializeField] private TMP_InputField AITurnTime = default!;
 
         [Header("Other")]
-        public GameObject LobbyDisplay = default!;
-        public PlayerCardController PlayerCardPrefab = default!;
-        public GameObject ShuttingDownServerScreen = default!;
+        [SerializeField] private GameObject LobbyDisplay = default!;
+        [SerializeField] private PlayerCardController PlayerCardPrefab = default!;
+        [SerializeField] private GameObject ShuttingDownServerScreen = default!;
 
         #endregion
 

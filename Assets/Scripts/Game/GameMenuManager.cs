@@ -7,9 +7,9 @@ namespace Game
 {
     public class GameMenuManager : MonoBehaviour
     {
-        public GameObject EscapeMenu;
-        public TMP_InputField FileNameInput;
-        public TMP_Text SaveStatusText;
+        [SerializeField] private GameObject EscapeMenu;
+        [SerializeField] private TMP_InputField FileNameInput;
+        [SerializeField] private TMP_Text SaveStatusText;
 
         private bool showingEscapeMenu = false;
         private ChessManager chessManager;

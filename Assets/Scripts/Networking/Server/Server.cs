@@ -1,4 +1,3 @@
-using Networking.Server;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -225,7 +224,6 @@ namespace Networking.Server
 
             try
             {
-                Debug.Log("before");
                 listener = new Socket(
                     ipAddress.AddressFamily,
                     SocketType.Stream,
@@ -237,8 +235,6 @@ namespace Networking.Server
                 listener.Bind(localEndPoint);
 
                 listener.Listen(100);
-
-                Debug.Log("After");
 
                 while (running)
                 {
@@ -497,6 +493,7 @@ namespace Networking.Server
                     // Nothing recieved
                     if (recieveQueue.IsEmpty)
                     {
+
                         // Poll player to see if they are still connected
 
                         while (!PlayerData.ContainsKey(nextToPoll))

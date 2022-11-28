@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 908282287076053760}
   - component: {fileID: 908282287076053761}
   - component: {fileID: 908282287076053766}
+  - component: {fileID: 4707455350359430723}
+  - component: {fileID: 8816003191099323766}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -122,6 +124,47 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4707455350359430723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908282287076053764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9387cba76d7f98b46bcfbc9c25c3077e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8816003191099323766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908282287076053764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4707455350359430723}
+          m_TargetAssemblyTypeName: ButtonSoundScript, Assembly-CSharp
+          m_MethodName: OnClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &908282287334055955
 GameObject:
   m_ObjectHideFlags: 0

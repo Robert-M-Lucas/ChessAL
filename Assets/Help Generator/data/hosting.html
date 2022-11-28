@@ -10,12 +10,12 @@
 <h3>For players on the same network</h3>
 <p>
     To allow players on the same network (e.g. connected to the same Wi-Fi) to connect to your game you need to give them your
-    <b>local IP address</b> (you can find this on screen). In the future this will be displayed to you.
+    <b>local IP address</b> (you can find this on screen once you've created the lobby). In the future this will be displayed to you.
 </p>
 
 <h3>For players across the internet</h3>
 <p>
-    To allow players from anywhere to join you must give them your <b>public IP address</b> (you can find this on screen). You also need to forward port
+    To allow players from anywhere to join you must give them your <b>public IP address</b> (you can find this on screen once you've created the lobby). You also need to forward port
     <b>8108</b>.
 </p>
 <h5>Port forwarding</h5>
@@ -31,4 +31,11 @@
     <li>IP: <i>[your local IP address]</i></li>
     <li>Port: 8108</li>
     <li>Mode: TCP or Both</li>
+</ul>
+<h5>Common errors</h5>
+<ul>
+    <li>You don't see your local or public IP on the lobby screen. This is probably due to the server used to find your public IP being blocked</li>
+    <li>You get a 'Host failed' message without a direct reason. There is a cooldown between reusing ports for sockets so you may need to
+        wait before being able to restart the server.
+    </li>
 </ul>

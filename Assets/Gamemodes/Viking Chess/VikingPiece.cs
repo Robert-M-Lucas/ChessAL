@@ -13,7 +13,7 @@ namespace Gamemodes.VikingChess
             else AppearanceID = 104;
         }
 
-        public override int GetUID() => 800;
+        public override int GetUID() => PieceUIDs.Piece;
 
         public override List<Move> GetMoves()
         {
@@ -25,11 +25,12 @@ namespace Gamemodes.VikingChess
 
             moves = GUtil.RemoveNonEmpty(moves, Board);
 
-            if (GetUID() == 800)
+            if (GetUID() == PieceUIDs.Piece)
             {
                 for (int i = 0; i < moves.Count; i++)
                 {
-                    if ((moves[i].To.X == 0 || moves[i].To.X == 10) && (moves[i].To.Y == 0 || moves[i].To.Y == 10))
+                    if ((moves[i].To.X == 0 || moves[i].To.X == 10) && (moves[i].To.Y == 0 || moves[i].To.Y == 10) ||
+                        moves[i].To == VikingChess.Board.CENTRE)
                     {
                         moves.RemoveAt(i);
                         i--;

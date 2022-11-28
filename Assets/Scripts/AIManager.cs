@@ -186,7 +186,7 @@ namespace AI
             foreach (Move m in moves)
             {
                 // Exit if over time
-                if (current_depth == max_depth - 1 || current_depth == max_depth && IsOverTime()) return float.NaN;
+                if ((current_depth == max_depth - 1 || current_depth == max_depth) && IsOverTime()) return float.NaN;
 
                 AbstractGameManager new_manager = gameManager.Clone();
                 int next_player = new_manager.OnMove(m, gameData);

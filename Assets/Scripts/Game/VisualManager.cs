@@ -391,7 +391,7 @@ namespace Game
         /// <param name="team"></param>
         /// <param name="playerOnTeam"></param>
         /// <param name="you"></param>
-        public void OnTurn(int team, int playerOnTeam, bool you)
+        public void OnTurn(int team, int playerOnTeam, bool you, bool ai = false)
         {
             string team_string;
             if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
@@ -401,7 +401,8 @@ namespace Game
             else team_string = $"T{team+1}";
 
             string str = $"Turn: {team_string}, P{playerOnTeam+1}";
-            if (you) str += " (You)";
+            if (ai) str += " (AI)";
+            else if (you) str += " (You)";
             TurnText.text = str;
         }
 
