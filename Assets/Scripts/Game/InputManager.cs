@@ -48,7 +48,7 @@ namespace Game
                 {
                     if ((V2)selectedPiece == m.From && position == m.To)
                     {
-                        chessManager.GetLocalMove(m.From, m.To);
+                        chessManager.DoLocalMove(m.From, m.To);
                         visualManager.ToggleShowMoves(m.From);
                         return;
                     }
