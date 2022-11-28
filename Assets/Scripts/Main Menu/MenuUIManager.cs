@@ -124,7 +124,7 @@ namespace MainMenu
         public void Quit()
         {
             chessManager.StopNetworking();
-            Application.Quit(0);
+            Application.Quit();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
