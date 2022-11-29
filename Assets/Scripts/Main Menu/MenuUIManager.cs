@@ -215,7 +215,7 @@ namespace MainMenu
             bool half_success = chessManager.Host(host_settings);
             if (!half_success)
             {
-                HostNameDisallowedReason.text = "Host failed. This can be caused by trying to resart a host too quickly - try waiting a couple of minutes";
+                HostNameDisallowedReason.text = "Host failed. This can be caused by trying to restart a host too quickly - try waiting a couple of minutes";
                 return;
             }
 
@@ -420,12 +420,23 @@ namespace MainMenu
 
         #endregion
 
+        public void ForceUpdateLobby()
+        {
+            UpdateLobbyPlayerCardDisplay(chessManager.GetPlayerList());
+        }
+
         /// <summary>
         /// Updates player cards shown in a lobby
         /// </summary>
         /// <param name="playerData"></param>
         public void UpdateLobbyPlayerCardDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {
+            if (chessManager.CurrentGameManager is null)
+            {
+                Invoke("ForceUpdateLobby", 1f);
+                return;
+            }
+
             List<PlayerCardController> to_remove = new List<PlayerCardController>();
 
             foreach (PlayerCardController player_card in playerCardControllers)
