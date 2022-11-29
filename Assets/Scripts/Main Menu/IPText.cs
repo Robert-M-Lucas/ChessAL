@@ -6,6 +6,7 @@ using TMPro;
 using Networking;
 using System.Net.Sockets;
 using System.Net;
+using System;
 
 namespace MainMenu
 {
@@ -23,7 +24,18 @@ namespace MainMenu
 
         void GetIP()
         {
-            string public_ip = new System.Net.WebClient().DownloadString(NetworkSettings.PUBLIC_IP_SOURCE);
+            string public_ip;
+            try
+            {
+                public_ip = new System.Net.WebClient().DownloadString(NetworkSettings.PUBLIC_IP_SOURCE);
+                if (public_ip.Length > 20) throw new FormatException("Recieved public IP incorrectly formatted");
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                public_ip = "Not found";
+            }
+
             string private_ip = "Not found";
 
             var host = Dns.GetHostEntry(Dns.GetHostName());

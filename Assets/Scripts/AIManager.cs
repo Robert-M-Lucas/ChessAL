@@ -61,7 +61,8 @@ namespace AI
         /// <returns></returns>
         private static bool IsOverTime()
         {
-            return Timer.Elapsed.Seconds > MAX_SEARCH_TIME;
+            bool result = Timer.Elapsed.Seconds > MAX_SEARCH_TIME;
+            return result;
         }
 
         /// <summary>
@@ -80,76 +81,89 @@ namespace AI
         /// <param name="gameManager"></param>
         private static void StartMoveSearch(List<Move> possible_moves, LiveGameData initialGameData, AbstractGameManager gameManager)
         {
-            Timer.Restart();
-
-            Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
-
-            if (possible_moves.Count == 1)
+            try
             {
-                foundMove = current_best_move;
-                Progress = -1f;
-                return;
-            }
+                Debug.Log($"Starting with search time {MAX_SEARCH_TIME}");
 
-            int max_depth = 0;
+                Timer.Restart();
 
-            while (true)
-            {
-                Debug.Log($"AI Depth: {max_depth + 1}");
+                Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
 
-                if (IsOverTime())
+                if (possible_moves.Count == 1)
                 {
-                    Debug.Log("Over time");
                     foundMove = current_best_move;
                     Progress = -1f;
                     return;
                 }
 
-                float best_score = float.NegativeInfinity;
-                Move best_move = possible_moves[0];
-                
-                foreach (Move move in possible_moves)
+                int max_depth = 0;
+
+                while (true)
                 {
-                    UpdateProgress();
+                    Debug.Log($"AI Depth: {max_depth + 1}");
 
-                    AbstractGameManager cloned_game_manager = gameManager.Clone();
-                    int next_turn = cloned_game_manager.OnMove(move, initialGameData);
-                    float score;
-
-                    if (next_turn < 0)
+                    if (IsOverTime())
                     {
-                        if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
+                        Debug.Log("Over time");
+                        foundMove = current_best_move;
+                        Progress = -1f;
+                        return;
+                    }
+
+                    float best_score = float.NegativeInfinity;
+                    Move best_move = possible_moves[0];
+                    bool cancelled = false;
+
+                    foreach (Move move in possible_moves)
+                    {
+                        UpdateProgress();
+
+                        AbstractGameManager cloned_game_manager = gameManager.Clone();
+                        int next_turn = cloned_game_manager.OnMove(move, initialGameData);
+                        float score;
+
+                        if (next_turn < 0)
                         {
-                            score = float.NegativeInfinity;
+                            if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
+                            {
+                                score = float.NegativeInfinity;
+                            }
+                            else
+                            {
+                                score = float.PositiveInfinity;
+                            }
                         }
                         else
                         {
-                            score = float.PositiveInfinity;
+                            LiveGameData new_game_data = initialGameData.Clone();
+                            new_game_data.CurrentPlayer = next_turn;
+
+                            score = MiniMax(cloned_game_manager, new_game_data, cloned_game_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
+
+                            // AI terminated early
+                            if (score is float.NaN)
+                            {
+                                cancelled = true;
+                                break;
+                            }
+                        }
+
+                        if (score > best_score)
+                        {
+                            best_score = score;
+                            best_move = move;
                         }
                     }
-                    else
+
+
+                    if (!cancelled)
                     {
-                        LiveGameData new_game_data = initialGameData.Clone();
-                        new_game_data.CurrentPlayer = next_turn;
-
-                        score = MiniMax(cloned_game_manager, new_game_data, cloned_game_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
-                        if (score == float.NaN) break;
+                        current_best_move = best_move;
+                        max_depth++;
                     }
-
-                    if (score > best_score)
-                    {
-                        best_score = score;
-                        best_move = move;
-                    }
-                }
-                
-
-                if (!IsOverTime())
-                {
-                    current_best_move = best_move;
-                    max_depth++;
                 }
             }
+            catch (Exception e) { Debug.LogException(e); }
         }
 
         /// <summary>
@@ -214,7 +228,7 @@ namespace AI
                 float score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
 
                 // Return if algorithm is terminating
-                if (score == float.NaN) return float.NaN;
+                if (score is float.NaN) return float.NaN;
 
                 if (maximising && score > best_score) best_score = score;
                 else if (!maximising && score < best_score) best_score = score;

@@ -53,7 +53,10 @@ namespace MainMenu
             Team++;
             if (Team >= team_sizes.Length) Team = -1;
 
-            if (Team == -1) PlayerOnTeam = -1;
+            if (Team == -1)
+                PlayerOnTeam = -1;
+            else if (PlayerOnTeam == -1)
+                PlayerOnTeam = 0;
 
             ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
             UpdateFields();
