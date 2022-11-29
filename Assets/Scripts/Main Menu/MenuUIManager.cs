@@ -32,6 +32,7 @@ namespace MainMenu
         [SerializeField] private SaveSelector HostSaveInput = default!;
         [SerializeField] private Button HostStartButton = default!;
         [SerializeField] private GameObject HostScreen = default!;
+        [SerializeField] private TMP_Text HostStartFailText = default!;
         private bool showingHostScreen = false;
 
         [Header("Join")]
@@ -60,7 +61,7 @@ namespace MainMenu
         [Header("Other")]
         [SerializeField] private GameObject LobbyDisplay = default!;
         [SerializeField] private PlayerCardController PlayerCardPrefab = default!;
-        [SerializeField] private GameObject ShuttingDownServerScreen = default!;
+        // [SerializeField] private GameObject ShuttingDownServerScreen = default!;
 
         #endregion
 
@@ -104,6 +105,7 @@ namespace MainMenu
             HostScreen.SetActive(false);
             JoinScreen.SetActive(false);
             LocalScreen.SetActive(false);
+            HostStartFailText.text = "";
         }
 
         public void OpenSavesFolder() => SaveSystem.OpenSavesFolder();
@@ -117,6 +119,8 @@ namespace MainMenu
         /// Shows general help (not for specific gamemode)
         /// </summary>
         public void ShowHelp() => HelpSystem.OpenHelp();
+
+        public void WhichIPHelp() => HelpSystem.OpenHelp("hosting");
 
         /// <summary>
         /// Fully exits the game
@@ -222,7 +226,7 @@ namespace MainMenu
             showingHostScreen = true;
             LobbyDisplay.gameObject.SetActive(true);
             HostStatusText.gameObject.SetActive(true);
-            HostScreenDescriptionText.text = host_settings.GameMode.GetDescription();
+            HostScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
         }
 
         public void HostConnectionSuccessful()
@@ -263,6 +267,7 @@ namespace MainMenu
 
         public void HostStartGameFailed(string reason)
         {
+            HostStartFailText.text = reason;
             Debug.Log(reason);
         }
         #endregion
@@ -309,7 +314,7 @@ namespace MainMenu
         {
             JoinStatusText.text += " SUCCESS";
             JoinStatusText.gameObject.SetActive(false);
-            JoinScreenDescriptionText.text = chessManager.CurrentGameManager.GetDescription();
+            JoinScreenDescriptionText.text = "Gamemode description:\n" + chessManager.CurrentGameManager.GetDescription();
         }
 
         public void JoinFailed(string reason)
@@ -392,7 +397,7 @@ namespace MainMenu
             showingLocalScreen = true;
             LobbyDisplay.gameObject.SetActive(true);
             LocalScreen.SetActive(true);
-            LocalScreenDescriptionText.text = host_settings.GameMode.GetDescription();
+            LocalScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
         }
 
         public void AddLocalPlayer() =>  chessManager.AddLocalPlayer();
