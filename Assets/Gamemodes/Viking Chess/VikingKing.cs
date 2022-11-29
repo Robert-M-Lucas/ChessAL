@@ -12,6 +12,8 @@ namespace Gamemodes.VikingChess
         }
 
         public override int GetUID() => 801;
+
+        public override AbstractPiece Clone(AbstractBoard newBoard) => new VikingKing(Position, Team, newBoard);
     }
 
 }
