@@ -58,7 +58,7 @@ namespace Gamemodes.VikingChess
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
             Board board = new Board(newGameManager, false);
-            AbstractPiece[,] pieceBoard = new AbstractPiece[8, 8];
+            AbstractPiece[,] pieceBoard = new AbstractPiece[11, 11];
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(0); y++)
