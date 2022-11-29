@@ -155,8 +155,8 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
 
         public override AbstractGameManager Clone()
         {
-            GameManager new_game_manager = new GameManager(GameManagerData);
-            new_game_manager.Board = (Board as Board).Clone(new_game_manager);
+            GameManager new_game_manager = new VikingChess.GameManager(GameManagerData);
+            new_game_manager.Board = (Board as VikingChess.Board).Clone(new_game_manager);
             return new_game_manager;
         }
     }
