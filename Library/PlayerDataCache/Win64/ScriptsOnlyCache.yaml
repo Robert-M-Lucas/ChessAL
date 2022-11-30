@@ -106,50 +106,8 @@ ScriptsOnlyBuild:
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.PlayerCardController
-    methodName: OnTeamClick
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: FullJoin
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelectorItem
-    methodName: OnClickCall
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelector
-    methodName: ExpandOrCollapse
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelJoin
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.GamemodeSelector
-    methodName: Next
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.GamemodeSelector
-    methodName: Prev
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: FullHost
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -160,8 +118,11 @@ ScriptsOnlyBuild:
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: StartLocalGame
+    methodName: WhichIPHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -174,12 +135,6 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.GamemodeSelector
     methodName: Prev
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: Quit
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -191,31 +146,25 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
+    methodName: Quit
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
     methodName: LocalPlayShowGamemodeHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: LoadSaveAndFullLocalPlay
+    methodName: ShowHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: HostConfig
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelLocalPlay
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelHost
+    methodName: FullLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -233,31 +182,19 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelJoin
+    methodName: HostConfig
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: RemoveLocalPlayer
+    methodName: ShowJoinHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: FullLocalPlay
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: LocalPlayConfig
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: ShowHelp
+    fullTypeName: MainMenu.PlayerCardController
+    methodName: OnPlayerOnTeamClick
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -274,11 +211,8 @@ ScriptsOnlyBuild:
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: WhichIPHelp
+    methodName: StartLocalGame
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -296,13 +230,25 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: LoadSaveAndFullHost
+    methodName: CancelJoin
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.PlayerCardController
-    methodName: OnPlayerOnTeamClick
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LocalPlayConfig
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: RemoveLocalPlayer
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelJoin
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -316,6 +262,66 @@ ScriptsOnlyBuild:
     fullTypeName: MainMenu.MenuUIManager
     methodName: CancelHost
   - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelHost
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelectorItem
+    methodName: OnClickCall
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelector
+    methodName: ExpandOrCollapse
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LoadSaveAndFullLocalPlay
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: FullHost
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: LoadSaveAndFullHost
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.GamemodeSelector
+    methodName: Next
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.GamemodeSelector
+    methodName: Prev
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.PlayerCardController
+    methodName: OnTeamClick
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelLocalPlay
+  - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: HostStartGame
   - assembly: Assembly-CSharp
@@ -323,13 +329,7 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
-    methodName: ExitToMenu
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
-    methodName: ShowHelp
+    methodName: Save
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -341,13 +341,19 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
+    methodName: ShowHelp
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.GameMenuManager
     methodName: Resume
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: Game.GameMenuManager
-    methodName: Save
+    methodName: ExitToMenu
   - assembly: Assembly-CSharp
     fullTypeName: Game.RenderedCellData
     methodName: ActivateInputManager
@@ -1187,7 +1193,7 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpAsButtonMessageListener
   - hash:
       serializedVersion: 2
-      Hash: e05805453eeff3bc95b36110774d4b35
+      Hash: 76deb70facb71de1ca6e11c5166dc55f
     assemblyName: Assembly-CSharp.dll
     namespaceName: MainMenu
     className: MenuUIManager

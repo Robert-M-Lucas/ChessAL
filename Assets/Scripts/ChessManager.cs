@@ -230,14 +230,16 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Starts a local game
     /// </summary>
-    public void StartLocalGame(int AI_turn_time)
+    public string? StartLocalGame(int AI_turn_time)
     {
-        if (Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings) is not null) return;
+        string? team_validation_result = Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings);
+        if (team_validation_result is not null) return team_validation_result;
 
         AIManager.MAX_SEARCH_TIME = AI_turn_time;
 
         Destroy(networkManager.gameObject);
         MLoadGame();
+        return null;
     }
 
     public void AddLocalPlayer() 

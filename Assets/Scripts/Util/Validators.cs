@@ -127,6 +127,7 @@ public static class Validators
     {
 
         int max_team = 0;
+
         Dictionary<int, int> team_dict = new Dictionary<int, int>();
         Dictionary<int, List<int>> players_in_teams = new Dictionary<int, List<int>>();
         foreach (ClientPlayerData player in playerData)
