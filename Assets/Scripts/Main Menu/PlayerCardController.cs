@@ -38,10 +38,10 @@ namespace MainMenu
                 }
                 else TeamText.text = $"Team: {(Team + 1)}";
             }
-            else TeamText.text = "Spectator";
+            else TeamText.text = "[Click to set team]";
 
             if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
-            else PlayerOnTeamText.text = "Spectator";
+            else PlayerOnTeamText.text = "[Click to set player number]";
         }
 
         public void OnTeamClick()

@@ -55,6 +55,7 @@ namespace MainMenu
         [SerializeField] private TMP_Text LocalScreenDescriptionText = default!;
         [SerializeField] private SaveSelector LocalSaveInput = default!;
         [SerializeField] private GameObject LocalScreen = default!;
+        [SerializeField] private TMP_Text LocalStartFailText = default!;
         private bool showingLocalScreen = false;
         [SerializeField] private TMP_InputField AITurnTime = default!;
 
@@ -105,7 +106,11 @@ namespace MainMenu
             HostScreen.SetActive(false);
             JoinScreen.SetActive(false);
             LocalScreen.SetActive(false);
-            HostStartFailText.text = "";
+            HostStartFailText.text = string.Empty;
+            LocalStartFailText.text = string.Empty;
+            HostNameDisallowedReason.text = string.Empty;
+            JoinNameDisallowedReason.text = string.Empty;
+            
         }
 
         public void OpenSavesFolder() => SaveSystem.OpenSavesFolder();
@@ -119,6 +124,8 @@ namespace MainMenu
         /// Shows general help (not for specific gamemode)
         /// </summary>
         public void ShowHelp() => HelpSystem.OpenHelp();
+
+        public void ShowJoinHelp() => HelpSystem.OpenHelp("joining");
 
         public void WhichIPHelp() => HelpSystem.OpenHelp("hosting");
 
@@ -408,7 +415,8 @@ namespace MainMenu
         {
             int AI_turn_time = 20;
             int.TryParse(AITurnTime.text, out AI_turn_time);
-            chessManager.StartLocalGame(AI_turn_time);
+            string? output = chessManager.StartLocalGame(AI_turn_time);
+            if (output is not null) LocalStartFailText.text = output;
         }
 
         public void CancelLocalPlay()
@@ -420,10 +428,7 @@ namespace MainMenu
 
         #endregion
 
-        public void ForceUpdateLobby()
-        {
-            UpdateLobbyPlayerCardDisplay(chessManager.GetPlayerList());
-        }
+        private void ForceUpdateLobby() => UpdateLobbyPlayerCardDisplay(chessManager.GetPlayerList());
 
         /// <summary>
         /// Updates player cards shown in a lobby
@@ -431,7 +436,7 @@ namespace MainMenu
         /// <param name="playerData"></param>
         public void UpdateLobbyPlayerCardDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {
-            if (chessManager.CurrentGameManager is null)
+            if (chessManager.CurrentGameManager is null && playerData.Count != 0)
             {
                 Invoke("ForceUpdateLobby", 1f);
                 return;

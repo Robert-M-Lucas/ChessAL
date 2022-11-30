@@ -123,12 +123,12 @@ namespace Networking.Client
             try
             {
                 IPAddress HostIpA;
-                try { HostIpA = IPAddress.Parse(IP); } catch (FormatException) { onConnection("IP formatted incorrectly"); return; }
+                try { HostIpA = IPAddress.Parse(IP); } catch (FormatException) { onConnection("IP formatted incorrectly - (should be 4 '.' separated numbers from 0-255 e.g. 82.423.423.12)"); return; }
                 IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
 
                 handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection"); return; }
+                try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection - (they may not be hosting or have not setup port forwarding.\nOpen help and navigate to Starting a game -> Hosting)"); return; }
 
                 handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
 
@@ -412,7 +412,7 @@ namespace Networking.Client
             sendThread.Abort();
 
             Debug.Log("Flushing send queue");
-            FlushSendQueue();
+            try { FlushSendQueue(); } catch (NullReferenceException) { }
 
             Debug.Log("Disconnecting sockets");
 
