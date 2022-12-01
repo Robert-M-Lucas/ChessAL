@@ -85,7 +85,7 @@ namespace Gamemodes
 			{
 				for (int y = 0; y < PieceBoard.GetLength(1); y++)
 				{
-					if (PieceBoard[x, y] is not null) PieceBoard[x, y].OnMove(move);
+					if (PieceBoard[x, y] is not null) PieceBoard[x, y].OnMove(move, move.From == new V2(x, y));
 				}
 			}
 		}

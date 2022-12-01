@@ -72,31 +72,36 @@ namespace Gamemodes.NormalChess
             return forward_moves.Concat(attacking_moves).Concat(en_passant).ToList();
         }
 
-        public override void OnMove(Move move)
+        public override void OnMove(Move move, bool thisPiece)
         {
-            HasMoved = true;
-            if (move.To - move.From == new V2(0, 2) || move.To - move.From == new V2(0, -2))
+            if (thisPiece)
             {
-                DashMove = (Board as Board).MoveCounter;
-            }
-            else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null)
-            {
-                if (Team == 0)
+                HasMoved = true;
+                if (move.To - move.From == new V2(0, 2) || move.To - move.From == new V2(0, -2))
                 {
-                    Board.PieceBoard[move.To.X, move.To.Y - 1] = null;
+                    DashMove = (Board as Board).MoveCounter;
                 }
-                else
+                else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null)
                 {
-                    Board.PieceBoard[move.To.X, move.To.Y + 1] = null;
+                    if (Team == 0)
+                    {
+                        Board.PieceBoard[move.To.X, move.To.Y - 1] = null;
+                    }
+                    else
+                    {
+                        Board.PieceBoard[move.To.X, move.To.Y + 1] = null;
+                    }
+                }
+
+                if ((move.To.Y == Board.PieceBoard.GetLength(1) - 1 && Team == 0) || (move.To.Y == 0 && Team == 1))
+                {
+                    (Board.GameManager as GameManager).CancelDefaultMove = true;
+                    Board.PieceBoard[move.To.X, move.To.Y] = new QueenPiece(move.To, Team, Board);
+                    Board.PieceBoard[move.From.X, move.From.Y] = null;
                 }
             }
 
-            if ((move.To.Y == Board.PieceBoard.GetLength(1)-1 && Team == 0) || (move.To.Y == 0 && Team == 1))
-            {
-                (Board.GameManager as GameManager).CancelDefaultMove = true;
-                Board.PieceBoard[move.To.X, move.To.Y] = new QueenPiece(move.To, Team, Board);
-                Board.PieceBoard[move.From.X, move.From.Y] = null;
-            }
+            base.OnMove(move, thisPiece);
         }
 
         public override AbstractPiece Clone(AbstractBoard newBoard)

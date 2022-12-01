@@ -45,7 +45,7 @@ namespace Gamemodes
             Team = data.Team;
         }
 
-        public virtual void OnMove(Move move) { }
+        public virtual void OnMove(Move move, bool thisPiece) { }
 
         public virtual float GetValue() => 1f;
 

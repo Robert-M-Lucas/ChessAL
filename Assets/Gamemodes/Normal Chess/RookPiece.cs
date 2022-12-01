@@ -30,8 +30,9 @@ namespace Gamemodes.NormalChess
         }
 
         
-        public override void OnMove(Move move)
+        public override void OnMove(Move move, bool thisPiece)
         {
+            if (!thisPiece) return;
             HasMoved = true;
         }
 

@@ -68,8 +68,10 @@ namespace Gamemodes.NormalChess
             return GUtil.RemoveFriendlies(GUtil.RemoveBlocked(moves, Board), Board);
         }
 
-        public override void OnMove(Move move)
+        public override void OnMove(Move move, bool thisPiece)
         {
+            if (!thisPiece) return;
+
             HasMoved = true;
 
             // Castle
@@ -77,14 +79,16 @@ namespace Gamemodes.NormalChess
             {
                 Board.PieceBoard[move.To.X - 1, move.To.Y] = Board.PieceBoard[move.To.X + 1, move.To.Y];
                 Board.PieceBoard[move.To.X - 1, move.To.Y].Position = new V2(move.To.X - 1, move.To.Y);
-                Board.PieceBoard[move.To.X - 1, move.To.Y].OnMove(move);
+                Board.PieceBoard[move.To.X - 1, move.To.Y].OnMove(move, false);
+                (Board.PieceBoard[move.To.X - 1, move.To.Y] as RookPiece).HasMoved = true;  
                 Board.PieceBoard[move.To.X + 1, move.To.Y] = null;
             }
             else if (move.To.X - move.From.X == -2)
             {
                 Board.PieceBoard[move.To.X + 1, move.To.Y] = Board.PieceBoard[move.To.X - 2, move.To.Y];
                 Board.PieceBoard[move.To.X + 1, move.To.Y].Position = new V2(move.To.X + 1, move.To.Y);
-                Board.PieceBoard[move.To.X + 1, move.To.Y].OnMove(move);
+                Board.PieceBoard[move.To.X + 1, move.To.Y].OnMove(move, false);
+                (Board.PieceBoard[move.To.X + 1, move.To.Y] as RookPiece).HasMoved = true;
                 Board.PieceBoard[move.To.X - 2, move.To.Y] = null;
             }
         }
