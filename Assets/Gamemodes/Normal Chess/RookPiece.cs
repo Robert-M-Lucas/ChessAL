@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 namespace Gamemodes.NormalChess
@@ -36,9 +37,26 @@ namespace Gamemodes.NormalChess
 
         public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            RookPiece new_piece = new RookPiece(Position, Team, newBoard);
-            new_piece.HasMoved = HasMoved;
-            return new_piece;
+            RookPiece r = new RookPiece(Position, Team, newBoard);
+            r.HasMoved = HasMoved;
+            return r;
+        }
+
+        public override PieceSerialisationData GetData()
+        {
+            PieceSerialisationData data = new PieceSerialisationData();
+            data.Team = Team;
+            data.Position = Position;
+            data.UID = GetUID();
+            data.Data = BitConverter.GetBytes(HasMoved);
+            return data;
+        }
+
+        public override void LoadData(PieceSerialisationData data)
+        {
+            Position = data.Position;
+            Team = data.Team;
+            HasMoved = BitConverter.ToBoolean(data.Data);
         }
 
         public override int GetUID() => 104;
