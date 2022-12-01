@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="static/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="static/base.css"/>
+
+    <script src="static/bootstrap/js/bootstrap.js"></script>
+
+	<title>Help</title>
+</head>
+
+<body>
+    <main class="d-flex flex-nowrap">
+        <nav class="d-flex flex-column flex-shrink-0 p-3 bg-white" style="width: 280px!important; display: inline-block; height: 100vh;" id="sidebar">
+            <a href="index.html" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+            <span class="fs-5 fw-semibold">Help</span>
+            </a>
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1">
+                    <a class="btn btn-toggle d-inline-flex align-items-center rounded border-0" href="index.html">
+                        Home
+                    </a>
+                </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                Starting a game
+                </button>
+                <div class="collapse" id="home-collapse">
+                <ul class="btn-toggle-nav fw-normal pb-1 small">
+                    <li><a href="hosting.html" class="link-dark d-inline-flex text-decoration-none rounded">Hosting</a></li>
+                    <li><a href="joining.html" class="link-dark d-inline-flex text-decoration-none rounded">Joining</a></li>
+                    <li><a href="localplay.html" class="link-dark d-inline-flex text-decoration-none rounded">Local Play</a></li>
+                    <li><a href="in_game.html" class="link-dark d-inline-flex text-decoration-none rounded">In Game</a></li>
+                </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <a href="in_game.html" style="text-decoration: none;">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                    In Game
+                    </button>
+                </a>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                Game Modes
+                </button>
+                <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-navfw-normal pb-1 small">
+                    <li><a href="100.html" class="link-dark d-inline-flex text-decoration-none rounded">Normal Chess</a></li>
+                    <li><a href="200.html" class="link-dark d-inline-flex text-decoration-none rounded">Hole Chess</a></li>
+                    <li><a href="300.html" class="link-dark d-inline-flex text-decoration-none rounded">King of the Hill</a></li>
+                    <li><a href="400.html" class="link-dark d-inline-flex text-decoration-none rounded">Atomic Chess</a></li>
+                    <li><a href="500.html" class="link-dark d-inline-flex text-decoration-none rounded">Mega Chess</a></li>
+                    <li><a href="600.html" class="link-dark d-inline-flex text-decoration-none rounded">Last Piece Standing</a></li>
+                    <li><a href="800.html" class="link-dark d-inline-flex text-decoration-none rounded">Viking Chess</a></li>
+                    <li><a href="700.html" class="link-dark d-inline-flex text-decoration-none rounded">Checkers</a></li>
+                </ul>
+                </div>
+            </li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <div class="container main-content" style="padding: 50px">
+                <h1>Local Play</h1>
+<p>
+    To play locally simply press 'Local Play', select a gamemode or save file and press play. 
+    Then add local players or AI and change their teams as needed to fill the game's team requirements.
+</p>
+<p>
+    The AI may take up to 30 seconds to move. The better your hardware, the better the move the AI will be able to find in this time.
+    If the AI doesn't find a move, it will make a random (valid) one. Expect the AI's skill to also vary between gamemodes.
+</p>
+<p>
+    This can be great for learning new gamemodes. Remember that you can play save files from multiplayer in local play and vice versa.
+</p>
+
+<p class="text-muted">AI is currently being developed. Expect buggy behaviour</p>
+            </div>
+        </div>
+    </main>
+</body>
