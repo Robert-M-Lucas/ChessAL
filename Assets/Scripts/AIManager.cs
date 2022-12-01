@@ -131,7 +131,9 @@ namespace AI
                             }
                             else
                             {
-                                score = float.MaxValue;
+                                best_score = float.MaxValue;
+                                best_move = move;
+                                break;
                             }
                         }
                         else
@@ -139,7 +141,7 @@ namespace AI
                             LiveGameData new_game_data = initialGameData.Clone();
                             new_game_data.CurrentPlayer = next_turn;
 
-                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
+                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 0, max_depth, best_score, true);
 
                             // AI terminated early
                             if (score is float.NaN)
@@ -242,14 +244,14 @@ namespace AI
                 if (maximising && score > best_score) best_score = score;
                 else if (!maximising && score < best_score) best_score = score;
 
-                /*
+                
                 // AB Pruning
                 if ((best_score > prev_best && !prev_maximising && maximising) || (best_score <  prev_best && prev_maximising && !maximising))
                 {
                     // Debug.Log("AB pruned");
                     return best_score;
                 }
-                */
+                
             }
 
             return best_score;
