@@ -58,25 +58,26 @@ namespace Gamemodes.Checkers
             return normal_moves.Concat(jump_moves).ToList();
         }
 
-        public override void OnMove(Move move)
+        public override void OnMove(Move move, bool thisPiece)
         {
-            if (move.From != Position) return;
-
-            // Jump
-            if (move.To.X - move.From.X != 1 && move.To.X - move.From.X != -1)
+            if (thisPiece)
             {
-                V2 pos = move.From + ((move.To - move.From) / 2);
-                Board.PieceBoard[pos.X, pos.Y] = null;
-                (Board.GameManager as GameManager).PieceTaken = true;
+                // Jump
+                if (move.To.X - move.From.X != 1 && move.To.X - move.From.X != -1)
+                {
+                    V2 pos = move.From + ((move.To - move.From) / 2);
+                    Board.PieceBoard[pos.X, pos.Y] = null;
+                    (Board.GameManager as GameManager).PieceTaken = true;
+                }
+
+                if ((Team == 0 && move.To.Y == 7) || (Team == 1 && move.To.Y == 0))
+                {
+                    if (!Queen) AppearanceID += 2;
+                    Queen = true;
+                }
             }
 
-            if ((Team == 0 && move.To.Y == 7) || (Team == 1 && move.To.Y == 0))
-            {
-                if (!Queen) AppearanceID += 2;
-                Queen = true;
-            }
-
-            base.OnMove(move);
+            base.OnMove(move, thisPiece);
         }
 
         public override PieceSerialisationData GetData()
@@ -85,8 +86,7 @@ namespace Gamemodes.Checkers
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();
-            data.Data = new byte[1];
-            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(Queen), 0);
+            data.Data = BitConverter.GetBytes(Queen);
             return data;
         }
 

@@ -6,6 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Simplified Vector2
 /// </summary>
+[System.Serializable]
 public struct V2: IEquatable<V2>
 {
     public int X;

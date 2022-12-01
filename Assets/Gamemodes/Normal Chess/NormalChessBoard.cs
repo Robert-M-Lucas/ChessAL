@@ -78,7 +78,7 @@ namespace Gamemodes.NormalChess
 
         public override void OnMove(Move move)
         {
-            PieceBoard[move.From.X, move.From.Y].OnMove(move);
+            PieceBoard[move.From.X, move.From.Y].OnMove(move, true);
         }
 
         public override List<Move> GetMoves(LiveGameData gameData)
