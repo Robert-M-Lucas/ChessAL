@@ -235,7 +235,7 @@ public class ChessManager : MonoBehaviour
         string? team_validation_result = Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings);
         if (team_validation_result is not null) return team_validation_result;
 
-        AIManager.MAX_SEARCH_TIME = AI_turn_time;
+        // AIManager.MAX_SEARCH_TIME = AI_turn_time;
 
         Destroy(networkManager.gameObject);
         MLoadGame();
