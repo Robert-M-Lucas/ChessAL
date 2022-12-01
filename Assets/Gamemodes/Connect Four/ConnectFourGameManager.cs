@@ -49,45 +49,111 @@ Requires 2 teams";
             }
             if (full) return GUtil.TurnEncodeTeam(GUtil.SwitchTeam(gameData));
 
-            for (int x = 0; x <= (6 - 3); x++)
+            // Horizontal
+            for (int y = 0; y < 9; y++)
             {
-                for (int y = 0; y < 9; y++)
+                int team = -1;
+                int count = 0;
+
+                for (int x = 0; x < 7; x++)
                 {
-                    if (Board.PieceBoard[x, y] is null) continue;
-
-                    int team = Board.PieceBoard[x, y].Team;
-
-                    bool failed = false;
-                    for (int x2 = 1; x2 < 4; x2++)
+                    if (Board.PieceBoard[x, y] is null)
                     {
-                        if (Board.PieceBoard[x+x2, y] is null) { failed = true; break; }
-                        if (Board.PieceBoard[x+x2, y].Team != team) { failed = true; break; }
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x, y].Team) count++;
+                        else 
+                        {
+                            team = Board.PieceBoard[x, y].Team;
+                            count = 1;
+                        }
                     }
 
-                    if (failed) continue;
-
-                    return GUtil.TurnEncodeTeam(team);
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
                 }
             }
 
-            for (int x = 0; x < 9; x++)
+            // Vertical
+            for (int x = 0; x < 7; x++)
             {
-                for (int y = 0; y < (9 - 3); y++)
+                int team = -1;
+                int count = 0;
+
+                for (int y = 0;y < 9; y++)
                 {
-                    if (Board.PieceBoard[x, y] is null) continue;
-
-                    int team = Board.PieceBoard[x, y].Team;
-
-                    bool failed = false;
-                    for (int y2 = 1; y2 < 4; y2++)
+                    if (Board.PieceBoard[x, y] is null)
                     {
-                        if (Board.PieceBoard[x, y + y2] is null) { failed = true; break; }
-                        if (Board.PieceBoard[x, y + y2].Team != team) { failed = true; break; }
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x, y].Team) count++;
+                        else
+                        {
+                            team = Board.PieceBoard[x, y].Team;
+                            count = 1;
+                        }
                     }
 
-                    if (failed) continue;
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
+                }
+            }
 
-                    return GUtil.TurnEncodeTeam(team);
+            // Diagonal / pt.1
+            for (int y = 0; y < 9; y++)
+            {
+                int team = -1;
+                int count = 0;
+
+                for (int x = 0; x < 7 && x < (9 - y); x++)
+                {
+                    if (Board.PieceBoard[x, y + x] is null)
+                    {
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x, y + x].Team) count++;
+                        else
+                        {
+                            team = Board.PieceBoard[x, y + x].Team;
+                            count = 1;
+                        }
+                    }
+
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
+                }
+            }
+
+            // Diagonal / pt.2
+            for (int x = 1; x < 7; x++)
+            {
+                int team = -1;
+                int count = 0;
+
+                for (int y = 0; y < 9 && y < (7 - x); y++)
+                {
+                    if (Board.PieceBoard[x + y, y] is null)
+                    {
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x + y, y].Team) count++;
+                        else
+                        {
+                            team = Board.PieceBoard[x + y, y].Team;
+                            count = 1;
+                        }
+                    }
+
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
                 }
             }
 

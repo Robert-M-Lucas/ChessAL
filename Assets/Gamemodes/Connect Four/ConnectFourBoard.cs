@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 
 namespace Gamemodes.ConnectFour
 {
@@ -35,26 +31,26 @@ namespace Gamemodes.ConnectFour
         public override List<Move> GetMoves(LiveGameData gameData)
         {
             // Red
-            if (gameData.LocalPlayerTeam == 0) return GetPiece(new V2(8, 1)).GetMoves();
+            if (gameData.CurrentTeam == 0) return GetPiece(new V2(8, 1)).GetMoves();
             // Yellow
             else return GetPiece(new V2(8, 0)).GetMoves();
         }
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
-            Board board = new Board(newGameManager, false);
+            Board new_board = new Board(newGameManager, false);
             AbstractPiece[,] pieceBoard = new AbstractPiece[9, 9];
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(0); y++)
                 {
-                    if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                    if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(new_board);
                 }
             }
 
-            board.PieceBoard = pieceBoard;
+            new_board.PieceBoard = pieceBoard;
 
-            return board;
+            return new_board;
         }
     }
 }
