@@ -49,10 +49,7 @@ namespace AI
             Progress = -1f;
             foundMove = null;
             Timer.Reset();
-            if (searchThread is not null && searchThread.IsAlive)
-            {
-                searchThread.Abort();
-            }
+            if (searchThread is not null && searchThread.IsAlive) searchThread.Abort();
             searchThread = null;
         }
 
@@ -88,6 +85,7 @@ namespace AI
 
                 Timer.Restart();
 
+                // Select random move by default
                 Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
 
                 if (possible_moves.Count == 1)
@@ -119,11 +117,12 @@ namespace AI
                     {
                         UpdateProgress();
 
+                        // Test new move
                         AbstractGameManager new_manager = gameManager.Clone();
                         int next_turn = new_manager.OnMove(move, initialGameData);
                         float score;
 
-                        if (next_turn < 0)
+                        if (next_turn < 0) // If a team has won
                         {
                             if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
                             {
@@ -157,8 +156,6 @@ namespace AI
                             best_move = move;
                         }
                     }
-
-                    Debug.Log(best_score);
 
                     if (!cancelled)
                     {
@@ -206,27 +203,28 @@ namespace AI
                 // Exit if over time
                 if ((current_depth == max_depth - 1 || current_depth == max_depth) && IsOverTime()) return float.NaN;
 
-                AbstractGameManager new_manager = gameManager.Clone();
-                
+                // Apply move
+                AbstractGameManager new_manager = gameManager.Clone();       
                 int next_player = new_manager.OnMove(m, gameData);
 
                 float score;
 
-                if (next_player < 0)
+                if (next_player < 0) // A team has won
                 {
                     if (GUtil.TurnDecodeTeam(next_player) != gameData.LocalPlayerTeam)
                     {
                         if (maximising) score = float.MinValue;
-                        else return float.MinValue;
+                        else return float.MinValue; // Best possible value for minimiser so instantly return
                     }
                     else
                     {
-                        if (maximising) return float.MaxValue;
+                        if (maximising) return float.MaxValue; // Best possible value for maximiser so instantly return
                         else score = float.MinValue;
                     }
                 }
                 else
                 {
+                    // Set move to next player
                     LiveGameData new_game_data = gameData.Clone();
                     new_game_data.CurrentPlayer = next_player;
 
@@ -248,7 +246,6 @@ namespace AI
                 // AB Pruning
                 if ((best_score > prev_best && !prev_maximising && maximising) || (best_score <  prev_best && prev_maximising && !maximising))
                 {
-                    // Debug.Log("AB pruned");
                     return best_score;
                 }
                 
