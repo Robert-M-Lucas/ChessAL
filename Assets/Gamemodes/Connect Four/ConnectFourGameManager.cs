@@ -157,7 +157,61 @@ Requires 2 teams";
                 }
             }
 
-            
+            // Diagonal \ pt.1
+            for (int y = 0; y < 9; y++)
+            {
+                int team = -1;
+                int count = 0;
+
+                for (int x = 6; x >= 0 && y + (6 - x) < 9; x--)
+                {
+                    if (Board.PieceBoard[x, y + (6 - x)] is null)
+                    {
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x, y + (6 - x)].Team) count++;
+                        else
+                        {
+                            team = Board.PieceBoard[x, y + (6 - x)].Team;
+                            count = 1;
+                        }
+                    }
+
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
+                }
+            }
+
+            // Diagonal \ pt.2
+            for (int x = 6; x >= 0; x--)
+            {
+                int team = -1;
+                int count = 0;
+
+                for (int y = 0; y < 9 && x - y >= 0; y++)
+                {
+                    if (Board.PieceBoard[x - y, y] is null)
+                    {
+                        team = -1;
+                        count = 0;
+                    }
+                    else
+                    {
+                        if (team == Board.PieceBoard[x - y, y].Team) count++;
+                        else
+                        {
+                            team = Board.PieceBoard[x - y, y].Team;
+                            count = 1;
+                        }
+                    }
+
+                    if (count >= 4) return GUtil.TurnEncodeTeam(team);
+                }
+            }
+
+
 
             return 0;
         }

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Gamemodes.NormalChess
 {
     /// <summary>
-    /// Sample Board
+    /// Normal Chess Board
     /// </summary>
     public class Board : AbstractBoard
     {

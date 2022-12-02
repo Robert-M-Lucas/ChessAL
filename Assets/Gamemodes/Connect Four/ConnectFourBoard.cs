@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Gamemodes.ConnectFour
 {
     /// <summary>
-    /// Sample Board
+    /// Connect Four Board
     /// </summary>
     public class Board : AbstractBoard
     {
