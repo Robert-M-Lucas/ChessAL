@@ -7,6 +7,7 @@ using System;
 using Random = System.Random;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace AI
 {
@@ -48,10 +49,7 @@ namespace AI
             Progress = -1f;
             foundMove = null;
             Timer.Reset();
-            if (searchThread is not null && searchThread.IsAlive)
-            {
-                searchThread.Abort();
-            }
+            if (searchThread is not null && searchThread.IsAlive) searchThread.Abort();
             searchThread = null;
         }
 
@@ -87,6 +85,7 @@ namespace AI
 
                 Timer.Restart();
 
+                // Select random move by default
                 Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
 
                 if (possible_moves.Count == 1)
@@ -110,7 +109,7 @@ namespace AI
                         return;
                     }
 
-                    float best_score = float.NegativeInfinity;
+                    float best_score = float.MinValue;
                     Move best_move = possible_moves[0];
                     bool cancelled = false;
 
@@ -118,19 +117,22 @@ namespace AI
                     {
                         UpdateProgress();
 
-                        AbstractGameManager cloned_game_manager = gameManager.Clone();
-                        int next_turn = cloned_game_manager.OnMove(move, initialGameData);
+                        // Test new move
+                        AbstractGameManager new_manager = gameManager.Clone();
+                        int next_turn = new_manager.OnMove(move, initialGameData);
                         float score;
 
-                        if (next_turn < 0)
+                        if (next_turn < 0) // If a team has won
                         {
                             if (GUtil.TurnDecodeTeam(next_turn) != initialGameData.LocalPlayerTeam)
                             {
-                                score = float.NegativeInfinity;
+                                score = float.MinValue;
                             }
                             else
                             {
-                                score = float.PositiveInfinity;
+                                best_score = float.MaxValue;
+                                best_move = move;
+                                break;
                             }
                         }
                         else
@@ -138,7 +140,7 @@ namespace AI
                             LiveGameData new_game_data = initialGameData.Clone();
                             new_game_data.CurrentPlayer = next_turn;
 
-                            score = MiniMax(cloned_game_manager, new_game_data, cloned_game_manager.GetMoves(initialGameData), 0, max_depth, best_score, true);
+                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 0, max_depth, best_score, true);
 
                             // AI terminated early
                             if (score is float.NaN)
@@ -148,13 +150,12 @@ namespace AI
                             }
                         }
 
-                        if (score > best_score)
+                        if (score >= best_score)
                         {
                             best_score = score;
                             best_move = move;
                         }
                     }
-
 
                     if (!cancelled)
                     {
@@ -188,12 +189,12 @@ namespace AI
             // Set maximising or minimising
             if (gameData.CurrentTeam == gameData.LocalPlayerTeam)
             {
-                best_score = float.NegativeInfinity;
+                best_score = float.MinValue;
                 maximising = true;
             }
             else
             {
-                best_score = float.PositiveInfinity;
+                best_score = float.MaxValue;
                 maximising = false;
             }
 
@@ -202,30 +203,38 @@ namespace AI
                 // Exit if over time
                 if ((current_depth == max_depth - 1 || current_depth == max_depth) && IsOverTime()) return float.NaN;
 
-                AbstractGameManager new_manager = gameManager.Clone();
+                // Apply move
+                AbstractGameManager new_manager = gameManager.Clone();       
                 int next_player = new_manager.OnMove(m, gameData);
 
-                if (next_player < 0)
+                float score;
+
+                if (next_player < 0) // A team has won
                 {
                     if (GUtil.TurnDecodeTeam(next_player) != gameData.LocalPlayerTeam)
                     {
-                        if (maximising) return float.NegativeInfinity;
-                        else return float.PositiveInfinity;
+                        if (maximising) score = float.MinValue;
+                        else return float.MinValue; // Best possible value for minimiser so instantly return
                     }
                     else
                     {
-                        if (maximising) return float.PositiveInfinity;
-                        else return float.NegativeInfinity;
+                        if (maximising) return float.MaxValue; // Best possible value for maximiser so instantly return
+                        else score = float.MinValue;
                     }
                 }
+                else
+                {
+                    // Set move to next player
+                    LiveGameData new_game_data = gameData.Clone();
+                    new_game_data.CurrentPlayer = next_player;
 
-                LiveGameData new_game_data = gameData.Clone();
-                new_game_data.CurrentPlayer = next_player;
+                    List<Move> new_moves = new_manager.GetMoves(new_game_data);
 
-                List<Move> new_moves = new_manager.GetMoves(new_game_data);
+                    // Recursion
+                    score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+                }
 
-                // Recursion
-                float score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+                
 
                 // Return if algorithm is terminating
                 if (score is float.NaN) return float.NaN;
@@ -233,12 +242,13 @@ namespace AI
                 if (maximising && score > best_score) best_score = score;
                 else if (!maximising && score < best_score) best_score = score;
 
+                
                 // AB Pruning
                 if ((best_score > prev_best && !prev_maximising && maximising) || (best_score <  prev_best && prev_maximising && !maximising))
                 {
-                    // Debug.Log("AB pruned");
                     return best_score;
                 }
+                
             }
 
             return best_score;

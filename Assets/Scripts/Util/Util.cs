@@ -24,8 +24,6 @@ public static class Util
         {
             game_managers_data.Add((AbstractGameManagerData)Activator.CreateInstance(type));
         }
-
-        game_managers_data.RemoveAll(o => o.GetUID() == 900);
         
         return game_managers_data.OrderBy(o => o.GetUID()).ToList();
     }

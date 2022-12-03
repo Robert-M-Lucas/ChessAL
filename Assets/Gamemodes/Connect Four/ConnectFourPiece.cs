@@ -10,8 +10,8 @@ namespace Gamemodes.ConnectFour
     {
         public ConnectFourPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 701;
-            if (team != 0) AppearanceID -= 1;
+            AppearanceID = 900;
+            if (team != 0) AppearanceID += 1;
         }
 
         public override List<Move> GetMoves()

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Gamemodes.Checkers
 {
     /// <summary>
-    /// Sample Board
+    /// Checkers Board
     /// </summary>
     public class Board : AbstractBoard
     {
