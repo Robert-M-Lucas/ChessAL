@@ -436,6 +436,7 @@ namespace MainMenu
         /// <param name="playerData"></param>
         public void UpdateLobbyPlayerCardDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {
+            // Prevents errors caused by player data being sent too quickly
             if (chessManager.CurrentGameManager is null && playerData.Count != 0)
             {
                 Invoke("ForceUpdateLobby", 1f);

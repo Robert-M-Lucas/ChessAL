@@ -244,7 +244,6 @@ namespace Networking.Server
                     {
                         try
                         {
-
                             handler = listener.Accept(); // Throws socket exception code 10035 if none available
                             break;
                         }
