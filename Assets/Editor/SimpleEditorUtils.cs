@@ -10,7 +10,6 @@ namespace EditorAddons
     [InitializeOnLoad]
     public static class SimpleEditorUtils
     {
-        // click command-0 to go to the prelaunch scene and then play
         static SimpleEditorUtils()
         {
             EditorApplication.playModeStateChanged += ModeChanged;
