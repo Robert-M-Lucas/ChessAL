@@ -60,7 +60,7 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
     /// </summary>
-    private Queue<Action> mainThreadActions = new Queue<Action>();
+    private volatile Queue<Action> mainThreadActions = new Queue<Action>();
 
     #region Unity Methods
 
@@ -119,7 +119,7 @@ public class ChessManager : MonoBehaviour
             VisualManager = FindObjectOfType<VisualManager>();
             VisualManager.ChessManager = this;
             InGame = true;
-            if (MyTurn) OnTurn();
+            if (MyTurn) MOnTurn();
 
             VisualManager.OnTurn(GetPlayerList()[CurrentPlayer].Team, GetPlayerList()[CurrentPlayer].PlayerInTeam, MyTurn, LocalAIPlayers.Contains(CurrentPlayer));
         }
@@ -442,7 +442,7 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Called when it's the local players turn
     /// </summary>
-    public void OnTurn()
+    public void MOnTurn()
     {
         prevPlayer = GetLocalPlayerID();
 
@@ -532,7 +532,7 @@ public class ChessManager : MonoBehaviour
         {
             VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, true, LocalAIPlayers.Contains(CurrentPlayer));
 
-            OnTurn();
+            MOnTurn();
         }
         else
         {
