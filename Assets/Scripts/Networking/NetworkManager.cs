@@ -97,12 +97,12 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     public void Stop()
     {
-        Debug.LogWarning("Stop");
+        Debug.LogWarning("Network Stop");
         server?.Shutdown();
         server = null;
         client?.Shutdown();
         client = null;
-        Debug.LogWarning("Stop finished");
+        Debug.LogWarning("Network Stop finished");
     }
 
     // Encapsulated methods the client calls
