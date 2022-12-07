@@ -39,10 +39,11 @@ namespace Gamemodes.ConnectFour
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
             Board new_board = new Board(newGameManager, false);
+
             AbstractPiece[,] pieceBoard = new AbstractPiece[9, 9];
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < PieceBoard.GetLength(0); y++)
+                for (int y = 0; y < PieceBoard.GetLength(1); y++)
                 {
                     if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(new_board);
                 }

@@ -198,14 +198,14 @@ namespace AI
                 maximising = false;
             }
 
-            foreach (Move m in moves)
+            foreach (Move move in moves)
             {
                 // Exit if over time
                 if ((current_depth == max_depth - 1 || current_depth == max_depth) && IsOverTime()) return float.NaN;
 
                 // Apply move
                 AbstractGameManager new_manager = gameManager.Clone();       
-                int next_player = new_manager.OnMove(m, gameData);
+                int next_player = new_manager.OnMove(move, gameData);
 
                 float score;
 
