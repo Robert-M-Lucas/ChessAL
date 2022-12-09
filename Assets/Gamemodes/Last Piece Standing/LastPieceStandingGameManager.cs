@@ -37,7 +37,7 @@ Chess played until one team has no pieces remaining";
 
         public override List<Move> GetMoves(LiveGameData gameData)
         {
-            (Board as Board).VirtualTeam = gameData.LocalPlayerTeam;
+            (Board as Board).VirtualTeam = gameData.CurrentTeam;
             return Board.GetMoves(gameData);
         }
 

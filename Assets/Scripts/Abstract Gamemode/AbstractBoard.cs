@@ -65,7 +65,7 @@ namespace Gamemodes
 			{
 				for (int y = 0; y < PieceBoard.GetLength(1); y++)
 				{
-					if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == gameData.LocalPlayerTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
+					if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == gameData.CurrentTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
 				}
 			}
 			
@@ -100,7 +100,7 @@ namespace Gamemodes
                 {
 					if (PieceBoard[x, y] is not null)
 					{
-						if (PieceBoard[x, y].Team == gameData.CurrentTeam)
+						if (PieceBoard[x, y].Team == gameData.LocalPlayerTeam)
 						{
 							total += PieceBoard[x, y].GetValue();
 						}

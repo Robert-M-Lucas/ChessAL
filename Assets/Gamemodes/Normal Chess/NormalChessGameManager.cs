@@ -41,7 +41,7 @@ Traditional chess played on an 8x8 board";
 
         public override List<Move> GetMoves(LiveGameData gameData)
         {
-            (Board as Board).VirtualTeam = gameData.LocalPlayerTeam;
+            (Board as Board).VirtualTeam = gameData.CurrentTeam;
             List<Move> possible_moves = Board.GetMoves(null);
             
             int i = 0;
@@ -56,7 +56,7 @@ Traditional chess played on an 8x8 board";
                 foreach (Move move in possible_enemy_moves)
                 {
                     AbstractPiece piece = temp_board.GetPiece(move.To);
-                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.LocalPlayerTeam)
+                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.CurrentTeam)
                     {
                         failed = true;
                         break;
@@ -137,69 +137,9 @@ Traditional chess played on an 8x8 board";
             float score = base.GetScore(gameData);
             if (Board.PieceBoard.GetLength(0) == 8)
             {
-                score += GetHeatmapScore(gameData);
+                score += Heatmap.GetHeatmapScore(gameData, Board as Board);
             }
             return score;
-        }
-
-        public float GetHeatmapScore(LiveGameData gameData)
-        {
-            float total = 0;
-
-            Dictionary<Type, float[,]> heatmaps = new Dictionary<Type, float[,]>
-            {
-                {
-                    typeof(PawnPiece),
-                    new float[,]
-                    {
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f },
-                        { 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f },
-                        { 0.3f, 0.3f, 0.3f, 0.35f, 0.35f, 0.3f, 0.3f, 0.3f },
-                        { 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f },
-                        { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f },
-                        { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f },
-                    }
-                },
-                {
-                    typeof(KingPiece),
-                    new float[,]
-                    {
-                        { 0.3f, 0.2f, 0.1f, 0, 0, 0.1f, 0.2f, 0.3f },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                        { 0, 0, 0, 0, 0, 0, 0, 0 },
-                    }
-                },
-            };
-
-            for (int x = 0; x < 8; x++)
-            {
-                for (int y = 0; y < 8; y++)
-                {
-                    if (Board.PieceBoard[x, y] is null) continue;
-
-                    if (heatmaps.ContainsKey(Board.PieceBoard[x, y].GetType()))
-                    {
-                        int true_x = x;
-                        int multiplier = 1;
-                        if (Board.PieceBoard[x, y].Team != gameData.CurrentTeam)
-                        {
-                            true_x = 7 - x;
-                            multiplier = -1;
-                        }
-
-                        total += heatmaps[Board.PieceBoard[x, y].GetType()][y, true_x] * multiplier;
-                    }
-                }
-            }
-            
-            return total;
         }
     }
 }
