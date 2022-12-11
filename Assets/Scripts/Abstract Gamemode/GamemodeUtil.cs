@@ -10,6 +10,12 @@ namespace Gamemodes
     /// </summary>
     public static class GUtil
     {
+        /// <summary>
+        /// Removes all moves that lead to blocked squares
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)
         {
             for (int i = 0; i < moves.Count; i++)
@@ -24,6 +30,12 @@ namespace Gamemodes
             return moves;
         }
 
+        /// <summary>
+        /// Returns whether the square is on the board
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static bool IsOnBoard(V2 position, AbstractBoard board)
         {
             BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
@@ -32,6 +44,12 @@ namespace Gamemodes
                     || position.X >= boardRenderInfo.BoardSize || position.Y >= boardRenderInfo.BoardSize);
         }
 
+        /// <summary>
+        /// Removes moves that got to a square with a friendly piece on it
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static List<Move> RemoveFriendlies(List<Move> moves, AbstractBoard board)
         {
             // BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
@@ -48,6 +66,12 @@ namespace Gamemodes
             return moves;
         }
 
+        /// <summary>
+        /// Removes moves that don't lead to a square with an enemy on them
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static List<Move> RemoveNonEnemy(List<Move> moves, AbstractBoard board)
         {
             BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
@@ -64,6 +88,12 @@ namespace Gamemodes
             return moves;
         }
 
+        /// <summary>
+        /// Removes moves that go to squares that aren't empty
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static List<Move> RemoveNonEmpty(List<Move> moves, AbstractBoard board)
         {
             for (int i = 0; i < moves.Count; i++)
@@ -78,6 +108,12 @@ namespace Gamemodes
             return moves;
         }
 
+        /// <summary>
+        /// Removes moves that got to empty squares
+        /// </summary>
+        /// <param name="moves"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static List<Move> RemoveEmpty(List<Move> moves, AbstractBoard board)
         {
             for (int i = 0; i < moves.Count; i++)
@@ -127,6 +163,11 @@ namespace Gamemodes
             return moves;
         }
 
+        /// <summary>
+        /// Returns the first player from the opponents team
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
         public static int SwitchPlayerTeam(LiveGameData gameData)
         {
             int team = gameData.CurrentTeam;
@@ -137,6 +178,11 @@ namespace Gamemodes
             return gameData.GetPlayerByTeam(team, 0);
         }
 
+        /// <summary>
+        /// Returns the opponents team
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
         public static int SwitchTeam(LiveGameData gameData)
         {
             int team = gameData.CurrentTeam;
@@ -147,11 +193,21 @@ namespace Gamemodes
             return team;
         }
 
+        /// <summary>
+        /// Encodes the winning team into a turn
+        /// </summary>
+        /// <param name="winningTeam"></param>
+        /// <returns></returns>
         public static int TurnEncodeTeam(int winningTeam)
         {
             return -winningTeam - 1;
         }
 
+        /// <summary>
+        /// Decodes the winning team from a turn
+        /// </summary>
+        /// <param name="winningTeam"></param>
+        /// <returns></returns>
         public static int TurnDecodeTeam(int winningTeam)
         {
             return -(winningTeam + 1);

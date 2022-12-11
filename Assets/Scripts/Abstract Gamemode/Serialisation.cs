@@ -31,6 +31,9 @@ namespace Gamemodes
         public byte[] Data = new byte[0];
     }
 
+    /// <summary>
+    /// Utility class for serialisation
+    /// </summary>
     public static class SerialisationUtil
     {
         /// <summary>
