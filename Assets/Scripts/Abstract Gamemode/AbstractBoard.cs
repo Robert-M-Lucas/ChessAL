@@ -20,6 +20,10 @@ namespace Gamemodes
 			this.GameManager = gameManager;
 		}
 
+		/// <summary>
+		/// Returns serialised data
+		/// </summary>
+		/// <returns></returns>
 		public virtual SerialisationData GetData()
 		{
 			SerialisationData serialisationData = new SerialisationData();
@@ -43,6 +47,10 @@ namespace Gamemodes
             return serialisationData;
         }
 
+		/// <summary>
+		/// Loads serialised data
+		/// </summary>
+		/// <param name="data"></param>
 		public virtual void LoadData(SerialisationData data)
 		{
 			PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
@@ -58,6 +66,11 @@ namespace Gamemodes
 			}
 		}
 
+		/// <summary>
+		/// Returns a list of possible moves
+		/// </summary>
+		/// <param name="gameData"></param>
+		/// <returns></returns>
 		public virtual List<Move> GetMoves(LiveGameData gameData)
 		{
 			IEnumerable<Move> moves = new List<Move>();
@@ -72,13 +85,26 @@ namespace Gamemodes
 			return GUtil.RemoveBlocked(moves.ToList(), this);
 		}
 
+		/// <summary>
+		/// Returns a piece at the given position
+		/// </summary>
+		/// <param name="position"></param>
+		/// <returns></returns>
 		public AbstractPiece GetPiece(V2 position)
 		{
 			return PieceBoard[position.X, position.Y];
 		}
 
+		/// <summary>
+		/// Returns the render information for the board
+		/// </summary>
+		/// <returns></returns>
 		public abstract BoardRenderInfo GetBoardRenderInfo();
 
+		/// <summary>
+		/// Applies a move
+		/// </summary>
+		/// <param name="move"></param>
 		public virtual void OnMove(Move move)
 		{
 			for (int x = 0; x < PieceBoard.GetLength(0); x++)
@@ -90,6 +116,11 @@ namespace Gamemodes
 			}
 		}
 
+		/// <summary>
+		/// Returns a score for the board
+		/// </summary>
+		/// <param name="gameData"></param>
+		/// <returns></returns>
 		public virtual float GetScore(LiveGameData gameData)
 		{
 			float total = 0;
@@ -115,6 +146,11 @@ namespace Gamemodes
 			return total;
         }
 
+		/// <summary>
+		/// Returns a clone of the board
+		/// </summary>
+		/// <param name="newGameManager"></param>
+		/// <returns></returns>
 		public abstract AbstractBoard Clone(AbstractGameManager newGameManager);
 	}
 }

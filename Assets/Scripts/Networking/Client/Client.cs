@@ -128,7 +128,7 @@ namespace Networking.Client
 
                 handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection - (they may not be hosting or have not setup port forwarding.\nOpen help and navigate to Starting a game -> Hosting)"); return; }
+                try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)"); return; }
 
                 handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
 
