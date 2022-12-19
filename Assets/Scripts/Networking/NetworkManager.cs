@@ -50,13 +50,15 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     public bool Host(HostSettings settings, Action onPlayersChange, Action onGameStart)
     {
-        if (NetworkingUtils.PortInUse(NetworkSettings.PORT)) return false;
+        if (NetworkingUtils.PortInUse(NetworkSettings.PORT)) return false; // Check if port is in use
 
         ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SaveData);
 
+        // Start server
         server = new Server(gameData, settings.Password);
         server.Start();
 
+        // Start local client
         client = new Client("127.0.0.1", settings.Password, settings.PlayerName, this, OnHostSuccessOrFail);
         client.Connect();
         return true;
@@ -66,10 +68,7 @@ public class NetworkManager : MonoBehaviour
     /// Starts a game
     /// </summary>
     /// <returns>Null if successful or a string error</returns>
-    public string? HostStartGame()
-    {
-        return server?.StartGame();
-    }
+    public string? HostStartGame() => server?.StartGame();
 
     /// <summary>
     /// Joins a game

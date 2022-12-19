@@ -1,3 +1,4 @@
+using Gamemodes.NormalChess;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ When a piece is taken a 3x3 area around it is destroyed";
 
             int default_return = FalseOnMove(Board, move, gameData);
 
+            // Removes pieces around explosion
             if (explode)
             {
                 for (int x = -1; x <= 1; x++)
@@ -54,15 +56,11 @@ When a piece is taken a 3x3 area around it is destroyed";
                 }
             }
 
-            Tuple<bool, bool> kings = CheckForKings(Board);
+            KingAlive kings_alive = CheckForKings(Board);
 
-            if (!kings.Item1 && !kings.Item2)
-            {
-                return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
-            }
-
-            if (!kings.Item1) return GUtil.TurnEncodeTeam(1);
-            if (!kings.Item2) return GUtil.TurnEncodeTeam(0);
+            if (kings_alive == KingAlive.None) return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
+            if (kings_alive == KingAlive.Black) return GUtil.TurnEncodeTeam(1);
+            if (kings_alive == KingAlive.White) return GUtil.TurnEncodeTeam(0);
 
             return default_return;
         }

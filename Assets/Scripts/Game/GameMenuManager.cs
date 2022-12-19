@@ -33,6 +33,8 @@ namespace Game
         public void Save()
         {
             string fileName = FileNameInput.text;
+
+            // Check file name
             string status = Validators.ValidateFileName(fileName);
             if (status is not null)
             {
@@ -40,7 +42,8 @@ namespace Game
                 return;
             }
 
-            fileName += " - " + chessManager.GameManager.GameManagerData.GetName();
+            // fileName += " - " + chessManager.GameManager.GameManagerData.GetName();
+
             status = chessManager.Save(fileName);
             if (status is not null)
             {
@@ -57,6 +60,7 @@ namespace Game
         // Update is called once per frame
         void Update()
         {
+            // Toggle escape menu
             if (I.GetKeyDown(K.EscapeKey))
             {
                 showingEscapeMenu = !showingEscapeMenu;

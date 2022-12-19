@@ -7,6 +7,12 @@ namespace Gamemodes.NormalChess
 {
     public static class Heatmap
     {
+        /// <summary>
+        /// Returns float representing the strength of a pieces position on the board relative to the gameData.LocalPlayer
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public static float GetHeatmapScore(LiveGameData gameData, Board board)
         {
             float total = 0;

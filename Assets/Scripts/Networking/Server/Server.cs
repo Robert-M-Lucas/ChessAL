@@ -133,8 +133,9 @@ namespace Networking.Server
             if (PlayerData.ContainsKey(player))
             {
                 ServerPlayerData? playerData = null;
-                bool removed = false;
 
+                // Keep trying to remove player
+                bool removed = false;
                 while (!removed)
                 {
                     removed = PlayerData.TryRemove(player, out playerData);
@@ -143,9 +144,10 @@ namespace Networking.Server
 
                 if (playerData is null) throw new NullReferenceException();
 
-                playerData.ShutdownSocket();
+                playerData.ShutdownSocket(); // Shut down connection
                 ClientsConnected--;
 
+                // Inform other clients of disconnect
                 SendToAll(ServerInformOfClientDisconnectPacket.Build(playerData.PlayerID));
 
                 return true;
@@ -161,11 +163,10 @@ namespace Networking.Server
         /// <param name="playerInTeam"></param>
         public void SetTeam(int playerID, int team, int playerInTeam)
         {
-            if (!PlayerData.ContainsKey(playerID)) return;
+            if (!PlayerData.ContainsKey(playerID)) return; // Player has been removed
 
             bool got = false;
             ServerPlayerData? player_data = null;
-
             while (!got)
             {
                 got = PlayerData.TryGetValue(playerID, out player_data);
@@ -175,6 +176,7 @@ namespace Networking.Server
             player_data!.Team = team;
             player_data.PlayerInTeam = playerInTeam;
 
+            // Inform all clients of player data change
             SendToAll(ServerOtherClientInfoPacket.Build(player_data.PlayerID, player_data.Name, player_data.Team, player_data.PlayerInTeam));
         }
 
@@ -201,11 +203,15 @@ namespace Networking.Server
         /// <returns>Null if successful or a string error</returns>
         public string? StartGame()
         {
-            string? validate = Validators.ValidateTeams(PlayerData.Values.ToList(), gameData);
+            string? validate = Validators.ValidateTeams(PlayerData.Values.ToList(), gameData); // Check team composition
             if (validate is not null) return validate;
+
             Debug.Log("Starting game");
-            SendToAll(StartGamePacket.Build());
-            AcceptingClients = false;
+
+            SendToAll(StartGamePacket.Build()); // Inform of game start
+
+            AcceptingClients = false; // Stop accepting connections
+
             return null;
         }
 
@@ -231,14 +237,13 @@ namespace Networking.Server
                 );
 
                 NetworkSettings.ConfigureSocket(listener);
-
                 listener.Bind(localEndPoint);
-
-                listener.Listen(100);
+                listener.Listen(100); // Set queue len to 100
 
                 while (running)
                 {
-                    listener.Blocking = false;
+                    listener.Blocking = false; // Allow thread interruption
+
                     // Recieve connection data
                     while (running)
                     {
@@ -253,20 +258,22 @@ namespace Networking.Server
                             if (se.ErrorCode == 10035)
                             {
                                 Thread.Sleep(CLIENT_ACCEPT_COOLDOWN);
-                                continue;
+                                continue; // Keep listening
                             }
                             else throw se;
                         }
                     }
-                    if (!running) return;
+                    if (!running) return; // Server stopped
 
                     listener.Blocking = true;
+
                     // TODO: Remove this
                     Thread.Sleep(200);
 
                     byte[] rec_bytes = new byte[1024];
                     int total_rec = 0;
 
+                    // Keep recieving bytes until you recieve the length of the packet
                     while (total_rec < 4)
                     {
                         byte[] partial_bytes = new byte[1024];
@@ -289,6 +296,7 @@ namespace Networking.Server
                         ArrayExtensions.Slice(rec_bytes, 0, 4)
                     );
 
+                    // Keep recieving until you have all the bytes
                     while (total_rec < packet_len)
                     {
                         byte[] partial_bytes = new byte[1024];
@@ -339,6 +347,7 @@ namespace Networking.Server
                         continue;
                     }
 
+                    // Illegal name
                     string? validation_result = Validators.ValidatePlayerName(initPacket.Name);
                     if (validation_result is not null)
                     {
@@ -352,6 +361,8 @@ namespace Networking.Server
                     }
 
                     Debug.Log("Client connected");
+                    
+                    // Add player to dictionary
                     int playerID;
                     while (true)
                     {
@@ -359,8 +370,11 @@ namespace Networking.Server
                         if (add_result.Item1) { playerID = add_result.Item2; break; }
                         Thread.Sleep(CONCURRENT_DICT_COOLDOWN);
                     }
+
+                    // Inform of accepted connection
                     SendMessage(playerID, ServerConnectAcceptPacket.Build(playerID));
 
+                    // Inform new client of all existing clients
                     foreach (ServerPlayerData player_data in PlayerData.Values)
                     {
                         SendMessage(playerID, ServerOtherClientInfoPacket.Build(player_data.PlayerID, player_data.Name, player_data.Team, player_data.PlayerInTeam));
@@ -403,7 +417,7 @@ namespace Networking.Server
         /// <param name="ar"></param>
         private void ReadCallback(IAsyncResult ar)
         {
-            if (!running) { return; }
+            if (!running) { return; } // Server closed
             string content = string.Empty;
 
             ServerPlayerData CurrentPlayer = (ServerPlayerData)ar.AsyncState;
@@ -413,6 +427,7 @@ namespace Networking.Server
 
             if (bytesRead > 0)
             {
+                // Add buffer to long buffer (add newly recieved bytes to existing)
                 ArrayExtensions.Merge(
                     CurrentPlayer.LongBuffer,
                     CurrentPlayer.Buffer,
@@ -422,41 +437,25 @@ namespace Networking.Server
 
             ReprocessBuffer:
 
-                if (
-                    CurrentPlayer.CurrentPacketLength == -1
-                    && CurrentPlayer.LongBufferSize >= PacketBuilder.PacketLenLen
-                )
+                // Get packet length
+                if (CurrentPlayer.CurrentPacketLength == -1
+                    && CurrentPlayer.LongBufferSize >= PacketBuilder.PacketLenLen)
                 {
-                    CurrentPlayer.CurrentPacketLength = PacketBuilder.GetPacketLength(
-                        CurrentPlayer.LongBuffer
-                    );
+                    CurrentPlayer.CurrentPacketLength = PacketBuilder.GetPacketLength(CurrentPlayer.LongBuffer);
                 }
 
-                if (
-                    CurrentPlayer.CurrentPacketLength != -1
-                    && CurrentPlayer.LongBufferSize >= CurrentPlayer.CurrentPacketLength
-                )
+                // If enough bytes have been recieved
+                if (CurrentPlayer.CurrentPacketLength != -1
+                    && CurrentPlayer.LongBufferSize >= CurrentPlayer.CurrentPacketLength)
                 {
-                    recieveQueue.Enqueue(
-                        new Tuple<int, byte[]>(
-                            CurrentPlayer.PlayerID,
-                            ArrayExtensions.Slice(
-                                CurrentPlayer.LongBuffer,
-                                0,
-                                CurrentPlayer.CurrentPacketLength
-                            )
-                        )
-                    );
+                    recieveQueue.Enqueue(new Tuple<int, byte[]>(CurrentPlayer.PlayerID,
+                            ArrayExtensions.Slice(CurrentPlayer.LongBuffer, 0, CurrentPlayer.CurrentPacketLength)));
+
                     byte[] new_buffer = new byte[1024];
-                    ArrayExtensions.Merge(
-                        new_buffer,
-                        ArrayExtensions.Slice(
-                            CurrentPlayer.LongBuffer,
-                            CurrentPlayer.CurrentPacketLength,
-                            1024
-                        ),
-                        0
-                    );
+                    // Cut handled packet out of buffer
+                    ArrayExtensions.Merge(new_buffer,
+                        ArrayExtensions.Slice(CurrentPlayer.LongBuffer, CurrentPlayer.CurrentPacketLength, 1024), 0);
+
                     CurrentPlayer.LongBuffer = new_buffer;
                     CurrentPlayer.LongBufferSize -= CurrentPlayer.CurrentPacketLength;
                     CurrentPlayer.CurrentPacketLength = -1;
@@ -478,7 +477,7 @@ namespace Networking.Server
                 );
         }
 
-        private int nextToPoll = 0;
+        private int nextToPoll = 0; // Next player to check is still connected
 
         /// <summary>
         /// Processes recieved messages
@@ -492,9 +491,7 @@ namespace Networking.Server
                     // Nothing recieved
                     if (recieveQueue.IsEmpty)
                     {
-
                         // Poll player to see if they are still connected
-
                         while (!PlayerData.ContainsKey(nextToPoll))
                         {
                             nextToPoll++;
@@ -529,6 +526,7 @@ namespace Networking.Server
 
                     try
                     {
+                        // Decode and handle packet
                         Packet packet = PacketBuilder.Decode(content.Item2, content.Item1);
                         bool handled = internalPackerHandler.TryHandlePacket(packet);
 
@@ -556,10 +554,7 @@ namespace Networking.Server
         /// </summary>
         /// <param name="playerID">Player to send to</param>
         /// <param name="payload">Data to send</param>
-        public void SendMessage(int playerID, byte[] payload)
-        {
-            sendQueue.Enqueue(new Tuple<int, byte[]>(playerID, payload));
-        }
+        public void SendMessage(int playerID, byte[] payload)=> sendQueue.Enqueue(new Tuple<int, byte[]>(playerID, payload));
 
         /// <summary>
         /// Sends a message to all connected players
@@ -605,7 +600,7 @@ namespace Networking.Server
             Tuple<int, byte[]> to_send;
             if (sendQueue.TryDequeue(out to_send))
             {
-                if (!PlayerData.ContainsKey(to_send.Item1))
+                if (!PlayerData.ContainsKey(to_send.Item1)) // Player has been removed
                 {
                     return;
                 }
@@ -639,15 +634,17 @@ namespace Networking.Server
         {
             running = false;
 
+            acceptClientThread.Abort();
+            recieveThread.Abort();
+            sendThread.Abort();
+
+            FlushSendQueue();
+
+            // Shut down all player connections
             foreach (ServerPlayerData player_data in PlayerData.Values)
             {
                 player_data.ShutdownSocket();
             }
-
-            acceptClientThread.Abort();
-            recieveThread.Abort();
-            sendThread.Abort();
-            FlushSendQueue();
         }
     }
 }

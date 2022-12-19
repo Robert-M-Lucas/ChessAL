@@ -17,14 +17,17 @@ namespace Gamemodes.VikingChess
 
         public override List<Move> GetMoves()
         {
+            // Rook like moves
             List<Move> moves = GUtil.RaycastMoves(this, new V2(1, 0), Board)
                 .Concat(GUtil.RaycastMoves(this, new V2(-1, 0), Board))
                 .Concat(GUtil.RaycastMoves(this, new V2(0, 1), Board))
                 .Concat(GUtil.RaycastMoves(this, new V2(0, -1), Board))
                 .ToList();
 
+            // Remove occupied squares
             moves = GUtil.RemoveNonEmpty(moves, Board);
 
+            // Don't allow stopping in centre
             if (GetUID() == PieceUIDs.Piece)
             {
                 for (int i = 0; i < moves.Count; i++)

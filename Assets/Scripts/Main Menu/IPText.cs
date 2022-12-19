@@ -19,6 +19,7 @@ namespace MainMenu
 
         void Start()
         {
+            // Start looking for IP
             new Thread(GetIP).Start();
         }
 
@@ -27,7 +28,7 @@ namespace MainMenu
             string public_ip;
             try
             {
-                public_ip = new System.Net.WebClient().DownloadString(NetworkSettings.PUBLIC_IP_SOURCE);
+                public_ip = new WebClient().DownloadString(NetworkSettings.PUBLIC_IP_SOURCE); // Download IP from source
                 if (public_ip.Length > 20) throw new FormatException("Recieved public IP incorrectly formatted");
             }
             catch (Exception e)
@@ -38,6 +39,7 @@ namespace MainMenu
 
             string private_ip = "Not found";
 
+            // Get local IP
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
@@ -53,6 +55,7 @@ namespace MainMenu
 
         private void Update()
         {
+            // When IP found
             if (!set && ipText != string.Empty)
             {
                 Text.text = ipText;

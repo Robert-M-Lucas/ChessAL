@@ -291,6 +291,7 @@ namespace MainMenu
 
         public void FullJoin()
         {
+            // Check for invalid player name
             string? validation_result = Validators.ValidatePlayerName(JoinNameInput.text);
             if (validation_result is not null)
             {
@@ -300,10 +301,12 @@ namespace MainMenu
 
             JoinSettings join_settings = new JoinSettings(JoinIpInput.text, JoinPasswordInput.text, JoinNameInput.text);
 
+            // Join
             chessManager.Join(join_settings);
 
             HideAllScreens();
 
+            // Configure screens
             JoinStatusText.text = "Connecting to server...";
             showingJoinSettings = false;
             JoinScreen.SetActive(true);
@@ -337,7 +340,7 @@ namespace MainMenu
         public void CancelJoin()
         {
             HideAllScreens();
-            UpdateLobbyPlayerCardDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
+            UpdateLobbyPlayerCardDisplay(new()); // Empty player card display
             chessManager.RestartNetworking();
         }
         #endregion
@@ -354,22 +357,22 @@ namespace MainMenu
 
         public void LocalPlayShowGamemodeHelp()
         {
-            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return;
+            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return; // No gamemode selected
 
-            HelpSystem.OpenHelp(gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetUID());
-            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
+            HelpSystem.OpenHelp(gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetUID()); // Show help for current gamemode
+            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription(); // Show backup description
         }
 
         public void LoadSaveAndFullLocalPlay()
         {
-            if (LocalSaveInput.SelectedFile == string.Empty) return;
+            if (LocalSaveInput.SelectedFile == string.Empty) return; // No save selected
 
             byte[] save_data = chessManager.LoadSave(LocalSaveInput.SelectedFile);
-            int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
+            int gamemode = SerialisationUtil.GetGamemodeUID(save_data); // Extract gamemode
             FullLocalPlay(save_data, gamemode);
         }
 
-        public void FullLocalPlay() => FullLocalPlay(null, null);
+        public void FullLocalPlay() => FullLocalPlay(null, null); // Local play with no save
 
         public void FullLocalPlay(byte[]? saveData, int? gameMode)
         {
@@ -397,7 +400,7 @@ namespace MainMenu
                 host_settings = new HostSettings(game_data_selected, "", "", saveData);
             }
 
-            chessManager.PrepLocal(host_settings);
+            chessManager.PrepLocal(host_settings); // Prepare for local play
 
             HideAllScreens();
 
@@ -414,14 +417,14 @@ namespace MainMenu
         public void StartLocalGame()
         {
             int AI_turn_time = 20;
-            int.TryParse(AITurnTime.text, out AI_turn_time);
+            // int.TryParse(AITurnTime.text, out AI_turn_time);
             string? output = chessManager.StartLocalGame(AI_turn_time);
-            if (output is not null) LocalStartFailText.text = output;
+            if (output is not null) LocalStartFailText.text = output; // Start failed
         }
 
         public void CancelLocalPlay()
         {
-            UpdateLobbyPlayerCardDisplay(new ConcurrentDictionary<int, ClientPlayerData>());
+            UpdateLobbyPlayerCardDisplay(new()); // Empty display
             chessManager.ResetLocalSettings();
             HideAllScreens();
         }
@@ -450,9 +453,9 @@ namespace MainMenu
                 if (!playerData.ContainsKey(player_card.PlayerID))
                 {
                     Destroy(player_card.gameObject);
-                    to_remove.Add(player_card);
+                    to_remove.Add(player_card); // Queue removal
                 }
-                else
+                else // Update card
                 {
                     ClientPlayerData player_data = playerData[player_card.PlayerID];
                     player_card.PlayerName = player_data.Name;
@@ -462,6 +465,7 @@ namespace MainMenu
                 }
             }
 
+            // Remove
             foreach (PlayerCardController player_card in to_remove) playerCardControllers.Remove(player_card);
 
 
@@ -477,7 +481,7 @@ namespace MainMenu
                     }
                 }
 
-                if (!shown) CreatePlayerCard(player_data);
+                if (!shown) CreatePlayerCard(player_data); // Create missing cards
             }
         }
 
@@ -490,6 +494,7 @@ namespace MainMenu
             GameObject new_card = Instantiate(PlayerCardPrefab.gameObject);
             new_card.SetActive(true);
             PlayerCardController card_controller = new_card.GetComponent<PlayerCardController>();
+
             card_controller.PlayerID = playerData.PlayerID;
             card_controller.PlayerName = playerData.Name;
             card_controller.Team = playerData.Team;

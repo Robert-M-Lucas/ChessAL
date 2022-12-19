@@ -38,6 +38,7 @@ First king to the 2x2 square in the center of the board wins. Normal check and c
         {
             int default_return = FalseOnMove(Board, move, gameData);
 
+            // Check for centre winner
             List<V2> centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };
 
             foreach (V2 cell in centers)
@@ -49,6 +50,7 @@ First king to the 2x2 square in the center of the board wins. Normal check and c
                 }
             }
 
+            // Else return default
             return default_return;
         }
     }

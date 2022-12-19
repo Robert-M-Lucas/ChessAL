@@ -9,10 +9,10 @@ namespace Gamemodes.MegaChess
     {
         public Board(AbstractGameManager gameManager) : base(gameManager)
         {
-            InitialiseBoard2();
+            MegaInitialiseBoard();
         }
 
-        public void InitialiseBoard2()
+        public void MegaInitialiseBoard()
         {
             PieceBoard = new AbstractPiece[16, 16];
 

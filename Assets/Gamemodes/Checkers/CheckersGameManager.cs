@@ -41,6 +41,7 @@ Traditional checkers played on an 8x8 board";
         public List<Move> GetMoves(LiveGameData gameData, V2? enforce_from = null)
         {
             List<Move> moves = Board.GetMoves(gameData);
+            // Force move to be by a piece (when chaining jumps)
             if (enforce_from is not null)
             {
                 int i = 0;
@@ -57,6 +58,7 @@ Traditional checkers played on an 8x8 board";
                 }
             }
 
+            // Check if one of the moves is a take
             bool can_take = false;
             foreach (Move move in moves)
             {
@@ -67,6 +69,7 @@ Traditional checkers played on an 8x8 board";
                 }
             }
 
+            // If can take remove all normal moves
             if (can_take)
             {
                 int i = 0;

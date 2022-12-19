@@ -41,7 +41,7 @@ namespace Gamemodes
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] Construct(SerialisationData data)
+        public static byte[] Construct(SerialisationData data) // SEE DOCUMENTATION FOR SAVE FILE FORMATTING
         {
             int length = 20; // GamemodeUID, TeamTurn, PlayerOnTeamTurn, EllapsedTime (long - 4 bytes)
             length += 4; // GameManagerData length
@@ -101,7 +101,7 @@ namespace Gamemodes
         }
 
         /// <summary>
-        /// Returns the GamemodeUID from save data
+        /// Returns the GamemodeUID from save data without having to decode the entire file
         /// </summary>
         /// <param name="saveData"></param>
         /// <returns></returns>
@@ -115,7 +115,7 @@ namespace Gamemodes
         /// </summary>
         /// <param name="saveData"></param>
         /// <returns></returns>
-        public static SerialisationData Deconstruct(byte[] saveData)
+        public static SerialisationData Deconstruct(byte[] saveData) // SEE DOCUMENTATION FOR SAVE FILE FORMATTING
         {
             SerialisationData data = new SerialisationData();
 

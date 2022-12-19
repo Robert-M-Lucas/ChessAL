@@ -81,7 +81,7 @@ namespace Networking.Packets
         /// <param name="contents"></param>
         /// <returns></returns>
         /// <exception cref="PacketDecodeError"></exception>
-        public static byte[] Build(int UID, List<byte[]> contents)
+        public static byte[] Build(int UID, List<byte[]> contents) // READ DOCUMENTATION TO SEE PACKET STRUCTURE
         {
             try
             {
@@ -114,10 +114,7 @@ namespace Networking.Packets
         /// </summary>
         /// <param name="input"></param>
         /// <returns>Encoded bytes</returns>
-        public static byte[] ByteEncode(string input)
-        {
-            return _encoder.GetBytes(input);
-        }
+        public static byte[] ByteEncode(string input) => _encoder.GetBytes(input);
 
         /// <summary>
         /// Separates raw packet data into its separate components
@@ -125,7 +122,7 @@ namespace Networking.Packets
         /// <param name="data"></param>
         /// <param name="from"></param>
         /// <returns></returns>
-        public static Packet Decode(byte[] data, int from = -1)
+        public static Packet Decode(byte[] data, int from = -1) // READ DOCUMENTATION TO SEE PACKET STRUCTURE
         {
             int cursor = 4;
             int UID = BitConverter.ToInt32(ArrayExtensions.Slice(data, cursor, cursor + UIDLen));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Visual board settings provided by board manager
+/// Visual board settings provided by Board Manager
 /// </summary>
 public struct BoardRenderInfo
 {

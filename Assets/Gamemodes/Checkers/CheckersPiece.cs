@@ -12,8 +12,8 @@ namespace Gamemodes.Checkers
 
         public CheckersPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            AppearanceID = 701;
-            if (team != 0) AppearanceID -= 1;
+            AppearanceID = PieceUIDs.CHECKER;
+            if (team == 0) AppearanceID += 1;
         }
 
         public override List<Move> GetMoves()
@@ -27,6 +27,7 @@ namespace Gamemodes.Checkers
                 new Move(Position, Position + new V2(-1, 1 * m))
             };
 
+            // Queen can move backwards
             if (Queen)
             {
                 normal_moves.Add(new Move(Position, Position + new V2(1, -1 * m)));
@@ -35,6 +36,7 @@ namespace Gamemodes.Checkers
 
             normal_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(normal_moves, Board), Board);
 
+            // Create list of squares around piece
             List<Move> jump_moves = new List<Move>()
             {
                 new Move(Position, Position + new V2(1, 1)),
@@ -42,17 +44,19 @@ namespace Gamemodes.Checkers
                 new Move(Position, Position + new V2(1, -1)),
                 new Move(Position, Position + new V2(-1, -1))
             };
+            // Remove all unoccupied or friendly occupied
             jump_moves = GUtil.RemoveFriendlies(GUtil.RemoveEmpty(GUtil.RemoveBlocked(jump_moves, Board), Board), Board);
 
             for (int i = 0; i < jump_moves.Count; i++)
             {
                 V2 to = jump_moves[i].To;
-                to -= Position;
-                to *= 2;
-                to += Position;
-                jump_moves[i] = new Move(jump_moves[i].From, to);
+                to -= Position; // Make irrelevant of position
+                to *= 2; // Double distance
+                to += Position; // Make relative to position
+                jump_moves[i] = new Move(jump_moves[i].From, to); // Replace
             }
 
+            // Remove blocked
             jump_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(jump_moves, Board), Board);
 
             return normal_moves.Concat(jump_moves).ToList();
@@ -70,6 +74,7 @@ namespace Gamemodes.Checkers
                     (Board.GameManager as GameManager).PieceTaken = true;
                 }
 
+                // Become queen
                 if ((Team == 0 && move.To.Y == 7) || (Team == 1 && move.To.Y == 0))
                 {
                     if (!Queen) AppearanceID += 2;

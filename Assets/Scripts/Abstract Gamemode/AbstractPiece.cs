@@ -26,10 +26,22 @@ namespace Gamemodes
             Board = board;
         }
 
+        /// <summary>
+        /// Returns a list of possible moves for this piece
+        /// </summary>
+        /// <returns></returns>
         public virtual List<Move> GetMoves() { return new List<Move>(); }
 
+        /// <summary>
+        /// Returns the piece's UID
+        /// </summary>
+        /// <returns></returns>
         public abstract int GetUID();
 
+        /// <summary>
+        /// Returns the piece's serialised data
+        /// </summary>
+        /// <returns></returns>
         public virtual PieceSerialisationData GetData()
         {
             PieceSerialisationData data = new PieceSerialisationData();
@@ -39,16 +51,34 @@ namespace Gamemodes
             return data;
         }
 
+        /// <summary>
+        /// Loads serialised data into the piece
+        /// </summary>
+        /// <param name="data"></param>
         public virtual void LoadData(PieceSerialisationData data)
         {
             Position = data.Position;
             Team = data.Team;
         }
 
+        /// <summary>
+        /// Applies a move to the piece
+        /// </summary>
+        /// <param name="move"></param>
+        /// <param name="thisPiece"></param>
         public virtual void OnMove(Move move, bool thisPiece) { }
 
+        /// <summary>
+        /// Returns the piece's value to its team
+        /// </summary>
+        /// <returns></returns>
         public virtual float GetValue() => 1f;
 
+        /// <summary>
+        /// Returns a clone of the piece
+        /// </summary>
+        /// <param name="newBoard"></param>
+        /// <returns></returns>
         public abstract AbstractPiece Clone(AbstractBoard newBoard);
     }
 }

@@ -19,12 +19,14 @@ public static class Util
     {
         List<AbstractGameManagerData> game_managers_data = new List<AbstractGameManagerData>();
 
+        // Get types from reflection
         foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractGameManagerData))))
         {
             game_managers_data.Add((AbstractGameManagerData)Activator.CreateInstance(type));
         }
         
+        // Order
         return game_managers_data.OrderBy(o => o.GetUID()).ToList();
     }
 
@@ -36,6 +38,7 @@ public static class Util
     {
         List<Type> pieces = new List<Type>();
 
+        // Get types from reflection
         foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
         {
@@ -53,10 +56,11 @@ public static class Util
     {
         List<AbstractPiece> pieces = new List<AbstractPiece>();
 
+        // Get types from reflection
         foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
         {
-            pieces.Add((AbstractPiece)Activator.CreateInstance(type, new object[] { new V2(0, 0), 0, null }));
+            pieces.Add((AbstractPiece)Activator.CreateInstance(type, new object[] { new V2(0, 0), 0, null })); // Create instance
         }
 
         return pieces;

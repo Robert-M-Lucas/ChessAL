@@ -35,6 +35,7 @@ Chess played until one team has no pieces remaining";
             Board = new NormalChess.Board(this);
         }
 
+        // Override chess get moves to ignore check and king loss
         public override List<Move> GetMoves(LiveGameData gameData)
         {
             (Board as Board).VirtualTeam = gameData.CurrentTeam;

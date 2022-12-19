@@ -111,11 +111,13 @@ namespace Game
 
         // Run once
         void Start()
-        {            
+        {   
+            // Get information for how board should be displayed
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
 
             Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
+            // Initial update
             OnResolutionChange();
             RenderBoardBackground();
             UpdateAllPieces();
@@ -128,6 +130,8 @@ namespace Game
         public void OnTeamWin(int team)
         {
             string team_string;
+
+            // Set to team alias e.g. 'Black' if exists
             if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
             {
                 team_string = ChessManager.CurrentGameManager.TeamAliases()[team];
@@ -135,7 +139,7 @@ namespace Game
             else team_string = $"Team {team + 1}";
 
             TeamWinText.text = $"{team_string} won!";
-            TeamWinText.gameObject.SetActive(true);
+            TeamWinText.gameObject.SetActive(true); // Show
         }
 
         /// <summary>
@@ -143,9 +147,11 @@ namespace Game
         /// </summary>
         public void UpdateAllPieces()
         {
+            // Remove all pieces
             foreach (GameObject g in pieces) Destroy(g);
             pieces.Clear();
 
+            // Create all pieces
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
@@ -161,12 +167,15 @@ namespace Game
         /// <param name="piece"></param>
         private void AddPiece(AbstractPiece piece)
         {
+            // Duplicate piece
             GameObject new_gameobject = Instantiate(PiecePrefab);
             pieces.Add(new_gameobject);
             Image image = new_gameobject.GetComponent<Image>();
 
+            // Show
             new_gameobject.SetActive(true);
 
+            // Set image
             piece_images[piece] = image;
 
             UpdatePiece(piece);
@@ -179,9 +188,9 @@ namespace Game
         private void UpdatePiece(AbstractPiece piece)
         {
             Image image = piece_images[piece];
-            image.sprite = internalSpriteTable[piece.AppearanceID];
+            image.sprite = internalSpriteTable[piece.AppearanceID]; // Get piece appearance
 
-            SizeGameObject(image.gameObject, piece.Position);
+            SizeGameObject(image.gameObject, piece.Position); // Resize for display scale
         }
 
         /// <summary>
@@ -222,17 +231,17 @@ namespace Game
                 {
                     GameObject new_square = Instantiate(SquarePrefab);
 
-                    SizeGameObject(new_square, new V2(x, y));
+                    SizeGameObject(new_square, new V2(x, y)); // Size for board
 
                     RenderedCellData rendered_piece_data = new_square.GetComponent<RenderedCellData>();
-                    rendered_piece_data.Position = new V2(x, y);
+                    rendered_piece_data.Position = new V2(x, y); // Set position data
 
                     Image image = new_square.GetComponent<Image>();
                     Squares[x, y] = image;
 
-                    ResetSquareColor(new V2(x, y));
+                    ResetSquareColor(new V2(x, y)); // Set to default colour
 
-                    new_square.SetActive(true);
+                    new_square.SetActive(true); // Show
                 }
             }
         }
@@ -241,11 +250,17 @@ namespace Game
         private void SizeGameObject(GameObject gameObject, V2 position)
         {
             RectTransform rect = gameObject.GetComponent<RectTransform>();
-            rect.SetParent(renderBox);
+            rect.SetParent(renderBox); // Set as a child of the render box
+            
+            // Set min and max anchors to corners of square
             rect.anchorMin = new Vector2((float)position.X / boardRenderInfo.BoardSize, (float)position.Y / boardRenderInfo.BoardSize);
             rect.anchorMax = new Vector2((float)(position.X + 1) / boardRenderInfo.BoardSize, (float)(position.Y + 1) / boardRenderInfo.BoardSize);
+
+            // Set position to that square
             rect.localPosition = new Vector2((position.X + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
                 (position.Y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+
+            // Resize
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
         }
@@ -301,6 +316,7 @@ namespace Game
             {
                 if (move.From == clickPosition)
                 {
+                    // Create new move indicator
                     GameObject new_indicator = Instantiate(MoveOptionPrefab);
                     SizeGameObject(new_indicator, move.To);
                     new_indicator.SetActive(true);
@@ -317,6 +333,7 @@ namespace Game
         /// <param name="position"></param>
         public void SelectSquare(V2 position)
         {
+            // Set colour to themed select colour
             if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
             else Squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
         }
@@ -376,9 +393,10 @@ namespace Game
         /// <param name="to"></param>
         public void OnMove(V2 from, V2 to)
         {
-            foreach (V2 grey in greyscaled) ResetSquareColor(grey);
+            foreach (V2 grey in greyscaled) ResetSquareColor(grey); // Reset grey from prefious turn
             greyscaled.Clear();
 
+            // Show new move
             ShowMove(from);
             ShowMove(to);
             greyscaled.Add(from);
@@ -393,6 +411,7 @@ namespace Game
         /// <param name="you"></param>
         public void OnTurn(int team, int playerOnTeam, bool you, bool ai = false)
         {
+            // Shows team alias if exists
             string team_string;
             if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
             {
@@ -413,7 +432,7 @@ namespace Game
         /// <param name="progress"></param>
         public void ShowAIInfo(bool waiting, float progress)
         {
-            if (!waiting) AIText.gameObject.SetActive(false);
+            if (!waiting) AIText.gameObject.SetActive(false); // Hide if inactive
             else
             {
                 AIText.gameObject.SetActive(true);
@@ -421,8 +440,12 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Updates the squares to the current theme colour
+        /// </summary>
         private void UpdateTheme() 
         {
+            // Reset all squares
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
@@ -437,11 +460,10 @@ namespace Game
             // Check for theme change input
             if (I.GetKeyDown(K.ChangeThemeKey))
             {
-                Debug.Log("Change");
                 currentTheme++;
                 if (currentTheme >= Themes.Length) currentTheme = 0;
                 UpdateTheme();
-                PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme);
+                PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
             }
 
             // Check for resolution change

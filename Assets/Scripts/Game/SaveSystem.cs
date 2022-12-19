@@ -29,10 +29,7 @@ public static class SaveSystem
         string save_location = GetSaveFolder();
         try
         {
-            if (!Directory.Exists(save_location))
-            {
-                Directory.CreateDirectory(save_location);
-            }
+            if (!Directory.Exists(save_location)) Directory.CreateDirectory(save_location);
 
             File.WriteAllBytes(save_location + "\\" + fileName + ".sav", data);
         }
@@ -60,11 +57,14 @@ public static class SaveSystem
     /// <returns></returns>
     public static byte[] Load(string fileName)
     {
+        // Remove leading and trailing " if exists
         if (fileName[0] == '"') fileName = fileName.Substring(1, fileName.Length - 1);
         if (fileName[fileName.Length - 1] == '"') fileName = fileName.Substring(0, fileName.Length - 1);
 
+        // Adds extension if needed
         if (Path.GetExtension(fileName) != ".sav") fileName += ".sav";
 
+        // Adds path to save folder if only filename is provided
         string save_location = GetSaveFolder();
         if (!fileName.Contains('\\') && !fileName.Contains('/')) fileName = save_location + "\\" + fileName;
 
@@ -77,20 +77,16 @@ public static class SaveSystem
     public static void OpenSavesFolder()
     {
         string save_location = GetSaveFolder();
-        if (!Directory.Exists(save_location))
-        {
-            Directory.CreateDirectory(save_location);
-        }
+        if (!Directory.Exists(save_location)) Directory.CreateDirectory(save_location);
 
+        // Windows only open file explorer
 #if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-
         Process.Start(new ProcessStartInfo()
         {
             FileName = save_location + "\\",
             UseShellExecute = true,
             Verb = "open"
         });
-
 #endif
     }
 }

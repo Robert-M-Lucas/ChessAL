@@ -3,6 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents the current state of a game other than the board
+/// </summary>
 public class LiveGameData
 {
     private ChessManager chessManager;

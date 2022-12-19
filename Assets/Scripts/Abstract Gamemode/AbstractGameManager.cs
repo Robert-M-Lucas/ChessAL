@@ -47,6 +47,10 @@ namespace Gamemodes
             this.GameManagerData = gameManagerData;
         }
 
+        /// <summary>
+        /// Returns the serialised game
+        /// </summary>
+        /// <returns></returns>
         public virtual SerialisationData GetData()
         {
             SerialisationData serialisationData = Board.GetData();
@@ -54,6 +58,10 @@ namespace Gamemodes
             return serialisationData;
         }
 
+        /// <summary>
+        /// Loads serialisation data into the game
+        /// </summary>
+        /// <param name="data"></param>
         public virtual void LoadData(SerialisationData data)
         {
             Board.LoadData(data);
@@ -99,6 +107,10 @@ namespace Gamemodes
             return Board.GetScore(gameData);
         }
 
+        /// <summary>
+        /// Returns a clone of the game
+        /// </summary>
+        /// <returns></returns>
         public abstract AbstractGameManager Clone();
     }
 }

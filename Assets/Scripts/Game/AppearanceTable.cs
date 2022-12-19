@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Stores a single mapping from a piece ID to its sprite
+/// </summary>
 [System.Serializable]
 public class PieceSprite
 {

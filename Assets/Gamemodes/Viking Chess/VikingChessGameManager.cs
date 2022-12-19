@@ -75,12 +75,17 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                     if (Board.PieceBoard[x, y] is not null && Board.PieceBoard[x, y].Team != turn)
                     {
                         List<V2> neigbours = new List<V2>();
+
                         bool active = false;
                         bool king = Board.PieceBoard[x, y].GetUID() == PieceUIDs.King;
+
                         V2 current_pos = new V2(x, y);
+
                         List<V2> around = new List<V2>() { new V2(1, 0), new V2(-1, 0), new V2(0, 1), new V2(0, -1) };
+
                         List<V2> winning_squares = new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10) };
 
+                        // Find status of squares around piece
                         foreach (V2 pos in around)
                         {
                             if (king && !GUtil.IsOnBoard(current_pos + pos, Board))
@@ -110,6 +115,7 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                             }
                         }
 
+                        // Piece hasn't moved this turn
                         if (!active) continue;
 
                         // King is surrounded
