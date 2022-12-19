@@ -20,11 +20,9 @@ namespace MainMenu
         public TMP_Text TeamText;
         public TMP_Text PlayerOnTeamText;
 
-        public void Start()
-        {
-            
-        }
-
+        /// <summary>
+        /// Updates the text on player cards
+        /// </summary>
         public void UpdateFields()
         {
             PlayerIDText.text = PlayerID.ToString();
@@ -46,7 +44,7 @@ namespace MainMenu
 
         public void OnTeamClick()
         {
-            if (!ChessManager.IsHost() && !ChessManager.localPlay) return;
+            if (!ChessManager.IsHost() && !ChessManager.localPlay) return; // Player is not host
 
             TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
 
@@ -64,8 +62,8 @@ namespace MainMenu
 
         public void OnPlayerOnTeamClick()
         {
-            if (!ChessManager.IsHost() && !ChessManager.localPlay) return;
-            if (Team == -1) return;
+            if (!ChessManager.IsHost() && !ChessManager.localPlay) return; // Player is not host
+            if (Team == -1) return; // Player is spectator
 
             TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
 

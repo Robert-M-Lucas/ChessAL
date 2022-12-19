@@ -32,6 +32,7 @@ namespace Gamemodes.ConnectFour
         {
             if (thisPiece)
             {
+                // Make piece 'fall'
                 for (int y = 8; y >= -1; y--)
                 {
                     if (y == -1 || Board.GetPiece(new V2(move.To.X, y)) is not null)

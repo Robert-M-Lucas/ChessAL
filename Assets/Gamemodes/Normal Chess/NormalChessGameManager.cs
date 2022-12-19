@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 namespace Gamemodes.NormalChess
@@ -29,6 +30,14 @@ Traditional chess played on an 8x8 board";
         public override string[] TeamAliases() => new string[] { "White", "Black" };
     }
 
+    public enum KingAlive
+    {
+        None = 0,
+        White = 1,
+        Black = 2,
+        Both = 3,
+    }
+
     public class GameManager : AbstractGameManager
     {
         
@@ -44,13 +53,15 @@ Traditional chess played on an 8x8 board";
             (Board as Board).VirtualTeam = gameData.CurrentTeam;
             List<Move> possible_moves = Board.GetMoves(null);
             
+            // Test if possible moves leave king in check
             int i = 0;
             while (i < possible_moves.Count)
             {
-                Board temp_board = (Board as Board).Clone(this) as Board;
-                FalseOnMove(temp_board, possible_moves[i], gameData);
-                temp_board.VirtualTeam = GUtil.SwitchTeam(gameData);
+                Board temp_board = (Board as Board).Clone(this) as Board; // Clone
+                FalseOnMove(temp_board, possible_moves[i], gameData); // Make move
+                temp_board.VirtualTeam = GUtil.SwitchTeam(gameData); // Change team
 
+                // Check enemy moves for check
                 bool failed = false;
                 List<Move> possible_enemy_moves = temp_board.GetMoves(null);
                 foreach (Move move in possible_enemy_moves)
@@ -67,15 +78,18 @@ Traditional chess played on an 8x8 board";
                 {
                     possible_moves.RemoveAt(i);
                 }
-                else
-                {
-                    i++;
-                }
+                else i++;
             }
+
             return possible_moves;
         }
 
-        protected Tuple<bool, bool> CheckForKings(AbstractBoard board)
+        /// <summary>
+        /// Returns whether each king is alive
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        protected KingAlive CheckForKings(AbstractBoard board)
         {
             bool white_king = false;
             bool black_king = false;
@@ -94,7 +108,10 @@ Traditional chess played on an 8x8 board";
                 }
             }
 
-            return new Tuple<bool, bool>(white_king, black_king);
+            if (white_king && black_king) return KingAlive.Both;
+            else if (white_king) return KingAlive.White;
+            else if (black_king) return KingAlive.Black;
+            else return KingAlive.None;
         }
 
         protected int FalseOnMove(AbstractBoard board, Move move, LiveGameData gameData)
@@ -112,10 +129,10 @@ Traditional chess played on an 8x8 board";
 
             (board as Board).MoveCounter++;
 
-            Tuple<bool, bool> kings = CheckForKings(board);
+            KingAlive kings_alive = CheckForKings(board);
 
-            if (!kings.Item1) return GUtil.TurnEncodeTeam(1);
-            if (!kings.Item2) return GUtil.TurnEncodeTeam(0);
+            if (kings_alive == KingAlive.Black) return GUtil.TurnEncodeTeam(1);
+            if (kings_alive == KingAlive.White || kings_alive == KingAlive.None) return GUtil.TurnEncodeTeam(0);
 
             return GUtil.SwitchPlayerTeam(gameData);
         }
@@ -135,6 +152,8 @@ Traditional chess played on an 8x8 board";
         public override float GetScore(LiveGameData gameData)
         {
             float score = base.GetScore(gameData);
+
+            // Add heatmap only if chess is on 8x8 board
             if (Board.PieceBoard.GetLength(0) == 8)
             {
                 score += Heatmap.GetHeatmapScore(gameData, Board as Board);

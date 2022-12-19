@@ -146,25 +146,25 @@ namespace Gamemodes
             while (true)
             {
                 if (move == maxMoves) break;
-                if (!IsOnBoard(current_pos, board)) break;
+                if (!IsOnBoard(current_pos, board)) break; // Position has left board
 
                 if (board.PieceBoard[current_pos.X, current_pos.Y] is not null)
                 {
-                    if (board.PieceBoard[current_pos.X, current_pos.Y].Team == piece.Team) break;
+                    if (board.PieceBoard[current_pos.X, current_pos.Y].Team == piece.Team) break; // Has hit friendly piece
                     moves.Add(new Move(piece.Position, current_pos));
                     break;
                 }
 
                 moves.Add(new Move(piece.Position, current_pos));
                 move++;
-                current_pos += direction;
+                current_pos += direction; // Step in direction again
             }
 
             return moves;
         }
 
         /// <summary>
-        /// Returns the first player from the opponents team
+        /// Returns the first player from the opponent's team
         /// </summary>
         /// <param name="gameData"></param>
         /// <returns></returns>
@@ -179,7 +179,7 @@ namespace Gamemodes
         }
 
         /// <summary>
-        /// Returns the opponents team
+        /// Returns the opponent's team
         /// </summary>
         /// <param name="gameData"></param>
         /// <returns></returns>

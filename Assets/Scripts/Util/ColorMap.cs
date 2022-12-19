@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public static class ColorMap
 {
     public static Dictionary<int, Color> Map = new Dictionary<int, Color>()
@@ -10,3 +11,4 @@ public static class ColorMap
         { 1, Color.white },
     };
 }
+*/

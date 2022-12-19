@@ -68,6 +68,7 @@ namespace AI
         /// </summary>
         private static void UpdateProgress()
         {
+            // Convert to percentage
             Progress = Mathf.Clamp((float) (Timer.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
         }
 
@@ -88,6 +89,7 @@ namespace AI
                 // Select random move by default
                 Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
 
+                // Only one possible move
                 if (possible_moves.Count == 1)
                 {
                     foundMove = current_best_move;
@@ -137,9 +139,11 @@ namespace AI
                         }
                         else
                         {
+                            // Clone game state
                             LiveGameData new_game_data = initialGameData.Clone();
-                            new_game_data.CurrentPlayer = next_turn;
+                            new_game_data.CurrentPlayer = next_turn; // Set new player
 
+                            // Recursively search for moves
                             score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 0, max_depth, best_score, true);
 
                             // AI terminated early
@@ -157,6 +161,7 @@ namespace AI
                         }
                     }
 
+                    // Update current best if search has not been cancelled
                     if (!cancelled)
                     {
                         current_best_move = best_move;
@@ -264,7 +269,7 @@ namespace AI
             {
                 Debug.Log("Found move returned");
 
-                Move new_move = new Move(((Move)foundMove).From, ((Move)foundMove).To);
+                Move new_move = new Move(((Move)foundMove).From, ((Move)foundMove).To); // Copy move
                 foundMove = null;
                 return new_move;
             }

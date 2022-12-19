@@ -24,23 +24,25 @@ namespace Networking
                 return true;
         }
 
+        /// <summary>
+        /// Checks if port is available for server hosting
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
         public static bool PortInUse(int port)
         {
-            bool in_use = false;
-
             IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
             IPEndPoint[] ipEndPoints = ipProperties.GetActiveTcpListeners();
 
 
             foreach (IPEndPoint endPoint in ipEndPoints)
             {
-                if (endPoint.Port == port)
+                if (endPoint.Port == port) // Port found
                 {
-                    in_use = true;
-                    break;
+                    return true;
                 }
             }
-            return in_use;
+            return false;
         }
     }
 }

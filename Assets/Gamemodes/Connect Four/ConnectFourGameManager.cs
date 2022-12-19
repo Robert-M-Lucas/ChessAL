@@ -211,9 +211,7 @@ Requires 2 teams";
                 }
             }
 
-
-
-            return 0;
+            return 0; // No win
         }
 
         public override int OnMove(Move move, LiveGameData gameData)

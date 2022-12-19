@@ -105,6 +105,7 @@ namespace Networking.Client
             internalPacketHandler = new InternalClientPacketHandler(this);
             this.onConnection = onConnection;
 
+            // Create threads
             connectionThread = new Thread(StartConnecting);
             receiveThread = new Thread(ReceiveLoop);
             sendThread = new Thread(SendLoop);
@@ -123,16 +124,18 @@ namespace Networking.Client
             try
             {
                 IPAddress HostIpA;
-                try { HostIpA = IPAddress.Parse(IP); } catch (FormatException) { onConnection("IP formatted incorrectly - (should be 4 '.' separated numbers from 0-255 e.g. 82.423.423.12)"); return; }
+                try { HostIpA = IPAddress.Parse(IP); } 
+                catch (FormatException) { onConnection("IP formatted incorrectly - (should be 4 '.' separated numbers from 0-255 e.g. 82.423.423.12)"); return; }
+
                 IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
+                handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // Create socket
 
-                handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                try { handler.Connect(RemoteEP); } 
+                catch (SocketException) { onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)"); return; }
 
-                try { handler.Connect(RemoteEP); } catch (SocketException) { onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)"); return; }
+                handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password)); // Send connection request
 
-                handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password));
-
-                handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null);
+                handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null); // Start recieving data
 
                 // Successful connection
                 onConnection(null);
@@ -173,7 +176,7 @@ namespace Networking.Client
         /// <param name="moveData"></param>
         public void OnLocalMove(int nextPlayer, V2 from, V2 to)
         {
-            SendMessage(MoveUpdatePacket.Build(nextPlayer, (int) from.X, (int) from.Y, (int)to.X, (int)to.Y));
+            SendMessage(MoveUpdatePacket.Build(nextPlayer, from.X, from.Y, to.X, to.Y));
         }
 
         /// <summary>
@@ -189,6 +192,7 @@ namespace Networking.Client
             ClientPlayerData player_data = new ClientPlayerData(playerID, name, team, playerInTeam);
             bool player_added;
 
+            // Add if not exists
             if (!PlayerData.ContainsKey(playerID)) player_added = PlayerData.TryAdd(playerID, player_data);
             else
             {
@@ -201,6 +205,7 @@ namespace Networking.Client
 
             if (!player_added) return false;
 
+            // Inform of player change
             networkManager.OnPlayersChange();
 
             return true;
@@ -218,6 +223,7 @@ namespace Networking.Client
 
                 if (!removed) return false;
 
+                // Inform of player change
                 networkManager.OnPlayersChange();
 
                 return true;
@@ -237,40 +243,39 @@ namespace Networking.Client
 
             if (bytesRead > 0)
             {
+                // Add new bytes to existing bytes
                 ArrayExtensions.Merge(serverLongBuffer, serverBuffer, serverLongBufferSize);
                 serverLongBufferSize += bytesRead;
 
             ReprocessBuffer:
-                if (
-                    serverCurrentPacketLength == -1
-                    && serverLongBufferSize >= PacketBuilder.PacketLenLen
 
-                )
+                // Get packet len
+                if (serverCurrentPacketLength == -1
+                    && serverLongBufferSize >= PacketBuilder.PacketLenLen)
                 {
                     serverCurrentPacketLength = PacketBuilder.GetPacketLength(serverLongBuffer);
                 }
 
-                if (
-                    serverCurrentPacketLength != -1
-                    && serverLongBufferSize >= serverCurrentPacketLength
-                )
+                // If enough bytes have been recieved
+                if (serverCurrentPacketLength != -1
+                    && serverLongBufferSize >= serverCurrentPacketLength)
                 {
-                    ContentQueue.Enqueue(
-                        ArrayExtensions.Slice(serverLongBuffer, 0, serverCurrentPacketLength)
-                    );
+                    ContentQueue.Enqueue(ArrayExtensions.Slice(serverLongBuffer, 0, serverCurrentPacketLength)); // Handle message
 
                     byte[] new_buffer = new byte[1024];
-                    ArrayExtensions.Merge(
-                        new_buffer,
+
+                    // Cut out handled message
+                    ArrayExtensions.Merge(new_buffer,
                         ArrayExtensions.Slice(serverLongBuffer, serverCurrentPacketLength, 1024),
-                        0
-                    );
+                        0);
+
                     serverLongBuffer = new_buffer;
                     serverLongBufferSize -= serverCurrentPacketLength;
                     serverCurrentPacketLength = -1;
+
+                    // Process again if there is more data
                     if (serverLongBufferSize > 0)
                     {
-                        // TODO: Don't use goto as it is bad practice
                         goto ReprocessBuffer;
                     }
                 }

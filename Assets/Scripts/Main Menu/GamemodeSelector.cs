@@ -27,6 +27,8 @@ namespace MainMenu
 #endif
             Start();
         }
+
+        // Editor utility to autopopulate list if empty
 #if UNITY_EDITOR
         private void OnValidate()
         {

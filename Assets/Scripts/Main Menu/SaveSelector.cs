@@ -82,6 +82,7 @@ namespace MainMenu
             
             for (int i = 0; i < save_files.Length; i++)
             {
+                // Shorten file names
                 save_file_names[i] = Path.GetFileNameWithoutExtension(save_files[i]);
                 if (save_file_names[i].Length > MAX_FILENAME_LENGTH)
                 {
@@ -89,13 +90,16 @@ namespace MainMenu
                 }
             }
 
+            // Destroy all active children
             for (int i = 0; i < SelectorListParent.transform.childCount; i++)
             {
                 if (SelectorListParent.transform.GetChild(i).gameObject.activeSelf) Destroy(SelectorListParent.transform.GetChild(i).gameObject);
             }
 
+            // Update for screen scale
             UpdateItemScale();
 
+            // Redisplay saves
             for (int i = 0; i < save_file_names.Length; i++)
             {
                 SaveSelectorItemPrefab.Text.text = save_file_names[i];

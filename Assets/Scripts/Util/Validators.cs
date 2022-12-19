@@ -125,7 +125,6 @@ public static class Validators
     /// <returns>Null if successful or a string error</returns>
     public static string? ValidateTeams(List<ClientPlayerData> playerData, HostSettings gameData)
     {
-
         int max_team = 0;
 
         Dictionary<int, int> team_dict = new Dictionary<int, int>();

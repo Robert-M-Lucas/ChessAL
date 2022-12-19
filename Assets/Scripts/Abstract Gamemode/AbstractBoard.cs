@@ -28,7 +28,6 @@ namespace Gamemodes
 		{
 			SerialisationData serialisationData = new SerialisationData();
 
-            IEnumerable<Move> moves = new List<Move>();
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(1); y++)

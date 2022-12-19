@@ -20,7 +20,7 @@ public class SoundMananger : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // Persist between scenes
         }
     }
 
@@ -39,6 +39,7 @@ public class SoundMananger : MonoBehaviour
     /// </summary>
     public void PlayPieceMoveSound()
     {
+        // Select random sound index
         int r = Random.Range(0, PieceMoveSounds.Length - 1);
 
         // Ensure same sound isn't played twice in a row
@@ -47,7 +48,9 @@ public class SoundMananger : MonoBehaviour
             r += 1;
             if (r >= PieceMoveSounds.Length) { r = 0; }
         }
+
         _previous = r;
+
         PlaySound(PieceMoveSounds[r]);
     }
 
@@ -63,8 +66,9 @@ public class SoundMananger : MonoBehaviour
         // soundling.transform.SetParent(Camera.main.gameObject.transform);
         // soundling.transform.localPosition = Vector3.zero;
 
-        soundling.transform.position = Camera.main.transform.position;
+        soundling.transform.position = Camera.main.transform.position; // Set soundling to camera position
 
+        // Set and play sound
         AudioSource audioSource = soundling.GetComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.Play();

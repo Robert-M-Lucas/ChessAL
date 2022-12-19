@@ -63,6 +63,7 @@ namespace Gamemodes.NormalChess
 
             attacking_moves = GUtil.RemoveNonEnemy(GUtil.RemoveBlocked(attacking_moves, Board), Board);
 
+            // Dash move
             if (!HasMoved && Board.GetPiece(Position + new V2(0, m)) is null)
             {
                 forward_moves.Add(new Move(Position, Position + new V2(0, 2 * m)));
@@ -79,9 +80,9 @@ namespace Gamemodes.NormalChess
                 HasMoved = true;
                 if (move.To - move.From == new V2(0, 2) || move.To - move.From == new V2(0, -2))
                 {
-                    DashMove = (Board as Board).MoveCounter;
+                    DashMove = (Board as Board).MoveCounter; // Track when piece dashed
                 }
-                else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null)
+                else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null) // En passant
                 {
                     if (Team == 0)
                     {
@@ -93,6 +94,7 @@ namespace Gamemodes.NormalChess
                     }
                 }
 
+                // Piece promotion
                 if ((move.To.Y == Board.PieceBoard.GetLength(1) - 1 && Team == 0) || (move.To.Y == 0 && Team == 1))
                 {
                     (Board.GameManager as GameManager).CancelDefaultMove = true;

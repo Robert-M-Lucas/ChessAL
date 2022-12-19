@@ -13,7 +13,9 @@ using Networking.Client;
 
 #nullable enable
 
+// Don't run in build
 #if UNITY_EDITOR
+
 /// <summary>
 /// Class for automatically testing project every time the solution is recompiled. Not included in build.
 /// </summary>
@@ -26,6 +28,7 @@ public class Tests
 
     static Tests()
     {
+        // Add method to event
         AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
     }
 
@@ -221,6 +224,10 @@ public class Tests
     }
     */
 
+    /// <summary>
+    /// Runs tests on V2 methods and operations
+    /// </summary>
+    /// <returns></returns>
     private static bool TestV2()
     {
         output_string += "Testing V2 functions\n";
@@ -239,16 +246,12 @@ public class Tests
 
         return true;
     }
-
-    // WIP
-    private static bool EndToEndNetworkTest()
-    {
-        return false;
-    }
 }
 
+/*
 public class TestNetworkManager: NetworkManager
 {
 
 }
+*/
 #endif

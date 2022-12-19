@@ -64,7 +64,7 @@ public struct V2: IEquatable<V2>
 
     public override int GetHashCode()
     {
-        int hCode = X ^ Y;
+        int hCode = X ^ Y; // Make hash code combination of X and Y
         return hCode.GetHashCode();
     }
 }

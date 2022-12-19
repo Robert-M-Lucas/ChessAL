@@ -36,7 +36,7 @@ namespace Game
 
         public void OnCellClick(V2 position)
         {
-            if (!chessManager.MyTurn && !chessManager.LocalAIPlayers.Contains(chessManager.GetLocalPlayerID()))
+            if (!chessManager.MyTurn && !chessManager.LocalAIPlayers.Contains(chessManager.GetLocalPlayerID())) // Not my turn
             {
                 visualManager.HideMoves();
                 return;
@@ -48,6 +48,7 @@ namespace Game
                 {
                     if ((V2)selectedPiece == m.From && position == m.To)
                     {
+                        // Make move
                         chessManager.DoLocalMove(m.From, m.To);
                         visualManager.ToggleShowMoves(m.From);
                         return;
