@@ -6,6 +6,7 @@ using System.Security;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Diagnostics;
+using System.Linq;
 
 #nullable enable
 
@@ -47,7 +48,14 @@ public static class SaveSystem
     public static string[] ListAllSaveFiles()
     {
         string save_location = GetSaveFolder();
-        return Directory.GetFiles(save_location, "*.sav");
+        DirectoryInfo info = new DirectoryInfo(save_location);
+        FileInfo[] files = info.GetFiles().OrderByDescending(p => p.CreationTime).ToArray();
+        string[] file_names = new string[files.Length];
+        for (int i = 0; i < files.Length; i++)
+        {
+            file_names[i] = files[i].Name;
+        }
+        return file_names;
     }
 
     /// <summary>
