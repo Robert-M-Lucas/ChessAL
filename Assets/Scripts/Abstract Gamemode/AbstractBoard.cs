@@ -28,6 +28,7 @@ namespace Gamemodes
 		{
 			SerialisationData serialisationData = new SerialisationData();
 
+			// Add data for every piece on board
             for (int x = 0; x < PieceBoard.GetLength(0); x++)
             {
                 for (int y = 0; y < PieceBoard.GetLength(1); y++)
@@ -35,10 +36,7 @@ namespace Gamemodes
                     if (PieceBoard[x, y] is not null)
 					{
 						PieceSerialisationData data = PieceBoard[x, y].GetData();
-                        if (data is not null)
-						{
-							serialisationData.PieceData.Add(data);
-						}
+                        if (data is not null) serialisationData.PieceData.Add(data);
 					}
                 }
             }
@@ -53,14 +51,17 @@ namespace Gamemodes
 		public virtual void LoadData(SerialisationData data)
 		{
 			PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
+
+			// Get map of UIDs to pieces
 			List<AbstractPiece> all_pieces = Util.GetAllPieces();
 			Dictionary<int, Type> mapped_pieces = new Dictionary<int, Type>();
 			foreach (AbstractPiece piece in all_pieces) mapped_pieces[piece.GetUID()] = piece.GetType();
 
+			// Create instance of every piece in save data and place it on the board
 			foreach (PieceSerialisationData piece_data in data.PieceData)
 			{
 				AbstractPiece new_piece = (AbstractPiece)Activator.CreateInstance(mapped_pieces[piece_data.UID], new object[] { piece_data.Position, piece_data.Team, this });
-				new_piece.LoadData(piece_data);
+				new_piece.LoadData(piece_data); // Load piece data
 				PieceBoard[piece_data.Position.X, piece_data.Position.Y] = new_piece;
 			}
 		}
