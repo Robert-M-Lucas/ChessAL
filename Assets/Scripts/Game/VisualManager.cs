@@ -43,6 +43,7 @@ namespace Game
         public Color BlackMoveColor;
     }
 
+    [RequireComponent(typeof(GameMenuManager))]
     public class VisualManager : MonoBehaviour
     {
         public Theme[] Themes;
@@ -63,7 +64,7 @@ namespace Game
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
         public ChessManager ChessManager;
-
+        public GameMenuManager GameMenuManager;
 
         private const string PLAYER_PREFS_THEME_KEY = "Theme";
 
@@ -458,7 +459,7 @@ namespace Game
         void Update()
         {
             // Check for theme change input
-            if (I.GetKeyDown(K.ChangeThemeKey))
+            if (I.GetKeyDown(K.ChangeThemeKey) && !GameMenuManager.ShowingEscapeMenu)
             {
                 currentTheme++;
                 if (currentTheme >= Themes.Length) currentTheme = 0;

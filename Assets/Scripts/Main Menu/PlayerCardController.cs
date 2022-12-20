@@ -15,10 +15,10 @@ namespace MainMenu
         public ChessManager ChessManager;
         public MenuUIManager MenuUIManager;
 
-        public TMP_Text PlayerIDText;
-        public TMP_Text PlayerNameText;
-        public TMP_Text TeamText;
-        public TMP_Text PlayerOnTeamText;
+        [SerializeField] private TMP_Text PlayerIDText;
+        [SerializeField] private TMP_Text PlayerNameText;
+        [SerializeField] private TMP_Text TeamText;
+        [SerializeField] private TMP_Text PlayerOnTeamText;
 
         /// <summary>
         /// Updates the text on player cards
@@ -36,10 +36,22 @@ namespace MainMenu
                 }
                 else TeamText.text = $"Team: {(Team + 1)}";
             }
-            else TeamText.text = "[Click to set team]";
+            else
+            {
+                if (ChessManager.IsHost() || ChessManager.localPlay)
+                    TeamText.text = "[Click to set team]";
+                else
+                    TeamText.text = "[Unset]";
+            }
 
             if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
-            else PlayerOnTeamText.text = "[Click to set player number]";
+            else
+            {
+                if (ChessManager.IsHost() || ChessManager.localPlay)
+                    PlayerOnTeamText.text = "[Unset]";
+                else
+                    PlayerOnTeamText.text = "[Unset]";
+            }
         }
 
         public void OnTeamClick()

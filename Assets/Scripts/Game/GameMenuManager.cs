@@ -11,7 +11,7 @@ namespace Game
         [SerializeField] private TMP_InputField FileNameInput;
         [SerializeField] private TMP_Text SaveStatusText;
 
-        private bool showingEscapeMenu = false;
+        public bool ShowingEscapeMenu = false;
         private ChessManager chessManager;
 
         void Start()
@@ -21,7 +21,7 @@ namespace Game
 
         public void Resume()
         {
-            showingEscapeMenu = false;
+            ShowingEscapeMenu = false;
             EscapeMenu.SetActive(false);
         }
 
@@ -63,8 +63,8 @@ namespace Game
             // Toggle escape menu
             if (I.GetKeyDown(K.EscapeKey))
             {
-                showingEscapeMenu = !showingEscapeMenu;
-                EscapeMenu.SetActive(showingEscapeMenu);
+                ShowingEscapeMenu = !ShowingEscapeMenu;
+                EscapeMenu.SetActive(ShowingEscapeMenu);
             }
         }
     }
