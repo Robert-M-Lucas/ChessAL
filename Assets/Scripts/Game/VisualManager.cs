@@ -318,6 +318,7 @@ namespace Game
                 if (move.From == clickPosition)
                 {
                     // Create new move indicator
+
                     GameObject new_indicator = Instantiate(MoveOptionPrefab);
                     SizeGameObject(new_indicator, move.To);
                     new_indicator.SetActive(true);

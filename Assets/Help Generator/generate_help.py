@@ -22,7 +22,7 @@ os.mkdir(PATH_TO_HELP)
 shutil.copytree(PATH_TO_STATIC, PATH_TO_HELP + "/" + PATH_TO_STATIC.split("/")[-1])
 
 # Get list of html files
-files_in_data = [f for f in os.listdir(PATH_TO_DATA) if os.path.isfile(os.path.join(PATH_TO_DATA, f)) and f[-5:] == ".html"]
+files_in_data = [f for f in os.listdir(PATH_TO_DATA) if os.path.isfile(os.path.join(PATH_TO_DATA, f)) and (f[-5:] == ".html")]
 
 for file in files_in_data:
     if file == "template.html": continue
