@@ -238,7 +238,7 @@ namespace Networking.Server
 
                 NetworkSettings.ConfigureSocket(listener);
                 listener.Bind(localEndPoint);
-                listener.Listen(100); // Set queue len to 100
+                listener.Listen(100); // Set queue length to 100
 
                 while (running)
                 {
