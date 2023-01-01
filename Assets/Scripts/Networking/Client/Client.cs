@@ -130,8 +130,12 @@ namespace Networking.Client
                 IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
                 handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // Create socket
 
-                try { handler.Connect(RemoteEP); } 
-                catch (SocketException) { onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)"); return; }
+                try { handler.Connect(RemoteEP); }
+                catch (SocketException se) {
+                    Debug.LogError(se);
+                    onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)");  
+                    return;
+                }
 
                 handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password)); // Send connection request
 
