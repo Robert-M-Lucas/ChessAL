@@ -51,6 +51,7 @@ namespace Game
                         // Make move
                         chessManager.DoLocalMove(m.From, m.To);
                         visualManager.ToggleShowMoves(m.From);
+                        visualManager.SelectSquare(m.From);
                         return;
                     }
                 }

@@ -4,14 +4,33 @@
 <h3>Moving</h3>
 <p>
     All pieces can move like rooks in chess, that is, move in any direction any amount of places (not diagonally).
-    No piece other than the king can enter the corner squares, which ends the game.
+    No piece other than the king can enter the corner squares, which ends the game, or the centre square.
 </p>
-
+<div class="container">
+    <img src="static/img/800_win_example.png"></img>
+    <p class="text-muted">King can move (top-left) to corner to win</p>
+</div>
 <h3>Taking pieces</h3>
 <p>
     To take a piece, you must surround it on two opposite sides with your pieces. A piece can be moved between two enemy pieces without being taken.
-    The king cannot be used to take pieces.
+    The king cannot be used to take pieces. If a piece is by the corner square, it can be taken against that square with a single piece.
 </p>
+<div class="container">
+    <img src="static/img/800_take_example.png"></img>
+    <p class="text-muted">Black can move to take white</p>
+</div>
+<div class="container">
+    <img src="static/img/800_take_example_2.png"></img>
+    <p class="text-muted">White can take black against corner (bottom-left) square</p>
+</div>
 <p>
     To take the king it must be surrounded on four sides or, if against a wall, three. This ends the game.
 </p>
+<div class="container">
+    <img src="static/img/800_win_example_2.png"></img>
+    <p class="text-muted">Black can move to encircle king against wall and win</p>
+</div>
+<div class="container">
+    <img src="static/img/800_win_example_3.png"></img>
+    <p class="text-muted">Black can move to encircle king and win</p>
+</div>

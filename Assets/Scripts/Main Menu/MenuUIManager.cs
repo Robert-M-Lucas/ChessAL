@@ -442,7 +442,7 @@ namespace MainMenu
             // Prevents errors caused by player data being sent too quickly
             if (chessManager.CurrentGameManager is null && playerData.Count != 0)
             {
-                Invoke("ForceUpdateLobby", 1f);
+                Invoke("ForceUpdateLobby", 1f); // Run again in 1s
                 return;
             }
 
