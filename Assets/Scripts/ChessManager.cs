@@ -318,7 +318,11 @@ public class ChessManager : MonoBehaviour
     public void JoinSucceed() => mainThreadActions.Enqueue(() => { menuUIManager.JoinConnectionSuccessful(); });
     public void JoinFailed(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.JoinFailed(reason); });
     public void ClientKicked(string reason) => mainThreadActions.Enqueue(() => { menuUIManager.ClientKicked(reason); });
-    public void PlayerListUpdate() => mainThreadActions.Enqueue(() => { menuUIManager.UpdateLobbyPlayerCardDisplay(GetPlayerList()); });
+    public void PlayerListUpdate() 
+    {
+        if (!InGame)
+            mainThreadActions.Enqueue(() => { menuUIManager.UpdateLobbyPlayerCardDisplay(GetPlayerList()); });
+    }
     #endregion
 
     // Handles Scene Changes and Gamemode Loading
