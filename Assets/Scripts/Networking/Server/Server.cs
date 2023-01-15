@@ -236,7 +236,11 @@ namespace Networking.Server
                     ProtocolType.Tcp
                 );
 
-                NetworkSettings.ConfigureSocket(listener);
+                // *** CAUSES ERRORS ***
+                // listener.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true); 
+
+                listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+
                 listener.Bind(localEndPoint);
                 listener.Listen(100); // Set queue length to 100
 
@@ -244,12 +248,14 @@ namespace Networking.Server
                 {
                     listener.Blocking = false; // Allow thread interruption
 
+                    Debug.Log("Waiting for connection");
                     // Recieve connection data
                     while (running)
                     {
                         try
                         {
                             handler = listener.Accept(); // Throws socket exception code 10035 if none available
+                            Debug.Log("Client connection");
                             break;
                         }
                         catch (SocketException se)
