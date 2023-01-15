@@ -8,7 +8,7 @@ namespace Networking
     public static class NetworkSettings
     {
         public const int PORT = 8108;
-        public const string VERSION = "0.2.5";
+        public const string VERSION = "0.2.6";
         public const string PUBLIC_IP_SOURCE = "https://ipinfo.io/ip";
     }
 }
