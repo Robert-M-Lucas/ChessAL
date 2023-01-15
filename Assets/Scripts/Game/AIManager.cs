@@ -8,6 +8,8 @@ using Random = System.Random;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using UnityEngine.SocialPlatforms.Impl;
+using JetBrains.Annotations;
+using System.Linq;
 
 namespace AI
 {
@@ -25,6 +27,8 @@ namespace AI
         public static int MAX_SEARCH_TIME = 12;
 
         private static Thread searchThread = null;
+
+        // private static float?[] threadResults;
 
         /// <summary>
         /// Finds the best move for the AI to play next
@@ -72,6 +76,32 @@ namespace AI
             Progress = Mathf.Clamp((float) (Timer.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
         }
 
+        /*
+        struct MiniMaxStruct
+        {
+            public AbstractGameManager gameManager;
+            public LiveGameData gameData;
+            public List<Move> moves;
+            public int current_depth;
+            public int max_depth;
+            public float prev_best;
+            public bool prev_maximising;
+            public int id;
+
+            public MiniMaxStruct(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int current_depth, int max_depth, float prev_best, bool prev_maximising, int id)
+            {
+                this.gameManager = gameManager;
+                this.gameData = gameData;
+                this.moves = moves;
+                this.current_depth = current_depth;
+                this.max_depth = max_depth;
+                this.prev_best = prev_best;
+                this.prev_maximising = prev_maximising;
+                this.id = id;
+            }
+        }
+        */
+
         /// <summary>
         /// Starts looking for a move
         /// </summary>
@@ -97,7 +127,7 @@ namespace AI
                     return;
                 }
 
-                int max_depth = 0;
+                int max_depth = 2;
 
                 while (true)
                 {
@@ -115,10 +145,16 @@ namespace AI
                     Move best_move = possible_moves[0];
                     bool cancelled = false;
 
+                    // threadResults = new float?[possible_moves.Count];
+                    // for (int i = 0; i < possible_moves.Count; i++) { threadResults[i] = null; }
+                    // int id = -1;
+
                     foreach (Move move in possible_moves)
                     {
+                        // id++;
                         UpdateProgress();
-
+                        
+                        
                         // Test new move
                         AbstractGameManager new_manager = gameManager.Clone();
                         int next_turn = new_manager.OnMove(move, initialGameData);
@@ -143,8 +179,10 @@ namespace AI
                             LiveGameData new_game_data = initialGameData.Clone();
                             new_game_data.CurrentPlayer = next_turn; // Set new player
 
+                            // ThreadPool.QueueUserWorkItem(new WaitCallback(RunMiniMax), new MiniMaxStruct(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true, id));
+                            // continue;
                             // Recursively search for moves
-                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 0, max_depth, best_score, true);
+                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true);
 
                             // AI terminated early
                             if (score is float.NaN)
@@ -153,6 +191,7 @@ namespace AI
                                 break;
                             }
                         }
+                        // continue;
 
                         if (score >= best_score)
                         {
@@ -161,16 +200,60 @@ namespace AI
                         }
                     }
 
+                    /*
+                    bool complete = false;
+                    while (!complete)
+                    {
+                        complete = true;
+                        for (int i = 0; i < possible_moves.Count; i++)
+                        {
+                            if (threadResults[i] == null)
+                            {
+                                complete = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    float max = float.NegativeInfinity;
+                    int max_pos = 0;
+                    for (int i = 0; i< possible_moves.Count; i++)
+                    {
+                        if (threadResults[i] is float.NaN)
+                        {
+                            cancelled = true;
+                            break;
+                        }
+                        else if (threadResults[i] > max)
+                        {
+                            max = (float) threadResults[i];
+                            max_pos = i;
+                        }
+                    }
+                    */
+
                     // Update current best if search has not been cancelled
                     if (!cancelled)
                     {
                         current_best_move = best_move;
+                        // current_best_move = possible_moves[max_pos];
                         max_depth++;
                     }
+                        
+                    }
                 }
-            }
             catch (Exception e) { Debug.LogException(e); }
         }
+
+        /*
+        private static void RunMiniMax(object state)
+        {
+            var mmstruct = (MiniMaxStruct) state;
+            Debug.Log($"Thread {mmstruct.id}");
+            threadResults[mmstruct.id] = MiniMax(mmstruct.gameManager, mmstruct.gameData, mmstruct.moves, mmstruct.current_depth, mmstruct.max_depth, mmstruct.prev_best, mmstruct.prev_maximising);
+
+        }
+        */
 
         /// <summary>
         /// Implementation of the MiniMax algorithm with AB pruning
