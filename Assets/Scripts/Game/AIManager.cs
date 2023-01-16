@@ -179,8 +179,10 @@ namespace AI
                             LiveGameData new_game_data = initialGameData.Clone();
                             new_game_data.CurrentPlayer = next_turn; // Set new player
 
-                            // ThreadPool.QueueUserWorkItem(new WaitCallback(RunMiniMax), new MiniMaxStruct(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true, id));
+                            // ThreadPool.QueueUserWorkItem(new WaitCallback(RunMiniMax),
+                            //          new MiniMaxStruct(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true, id));
                             // continue;
+
                             // Recursively search for moves
                             score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true);
 

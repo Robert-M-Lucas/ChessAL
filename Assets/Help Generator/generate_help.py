@@ -18,7 +18,7 @@ if os.path.exists(PATH_TO_HELP):
 # Create help directory
 os.mkdir(PATH_TO_HELP)
 
-# Copy static files
+# Copy static files (css, imgs, etc)
 shutil.copytree(PATH_TO_STATIC, PATH_TO_HELP + "/" + PATH_TO_STATIC.split("/")[-1])
 
 # Get list of html files

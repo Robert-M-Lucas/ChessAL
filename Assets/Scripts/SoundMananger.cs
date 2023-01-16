@@ -63,10 +63,8 @@ public class SoundMananger : MonoBehaviour
         // Instantiate a 'soundling' to play sound so multiple sounds can play at once
         GameObject soundling = Instantiate(Soundling);
 
-        // soundling.transform.SetParent(Camera.main.gameObject.transform);
-        // soundling.transform.localPosition = Vector3.zero;
-
-        soundling.transform.position = Camera.main.transform.position; // Set soundling to camera position
+        // Set soundling to camera position to create stereo audio at proper volume
+        soundling.transform.position = Camera.main.transform.position;
 
         // Set and play sound
         AudioSource audioSource = soundling.GetComponent<AudioSource>();
