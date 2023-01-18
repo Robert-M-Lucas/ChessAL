@@ -119,6 +119,6 @@ namespace Gamemodes.NormalChess
 
         public override int GetUID() => 101;
 
-        public override float GetValue() => 2f;
+        public override float GetValue() => 1000f;
     }
 }

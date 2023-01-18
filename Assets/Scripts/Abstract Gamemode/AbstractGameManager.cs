@@ -71,7 +71,7 @@ namespace Gamemodes
         /// Returns a list of possible moves
         /// </summary>
         /// <returns></returns>
-        public virtual List<Move> GetMoves(LiveGameData gameData)
+        public virtual List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
             return Board.GetMoves(gameData);
         }

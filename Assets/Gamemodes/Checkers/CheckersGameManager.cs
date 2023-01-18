@@ -89,7 +89,7 @@ Traditional checkers played on an 8x8 board";
             return moves;
         }
 
-        public override List<Move> GetMoves(LiveGameData gameData)
+        public override List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
             return GetMoves(gameData);
         }

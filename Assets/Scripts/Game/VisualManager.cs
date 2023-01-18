@@ -12,33 +12,23 @@ namespace Game
     /// <summary>
     /// Stores theme data
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class Theme
     {
         public string Name;
-
         [Space(7)]
-
         public Color WhiteColor;
         public Color BlackColor;
-
         [Space(7)]
-
         public Color WhiteHighlightColor;
         public Color BlackHighlightColor;
-
         [Space(7)]
-
         public Color WhiteSelectColor;
         public Color BlackSelectColor;
-
         [Space(7)]
-
         public Color WhiteBlockedColor;
         public Color BlackBlockedColor;
-
         [Space(7)]
-
         public Color WhiteMoveColor;
         public Color BlackMoveColor;
     }
@@ -457,15 +447,23 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// Cycles the current theme and saves the new theme
+        /// </summary>
+        public void CycleTheme()
+        {
+            currentTheme++;
+            if (currentTheme >= Themes.Length) currentTheme = 0;
+            UpdateTheme();
+            PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
+        }
+
         void Update()
         {
             // Check for theme change input
             if (I.GetKeyDown(K.ChangeThemeKey) && !GameMenuManager.ShowingEscapeMenu)
             {
-                currentTheme++;
-                if (currentTheme >= Themes.Length) currentTheme = 0;
-                UpdateTheme();
-                PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
+                CycleTheme();
             }
 
             // Check for resolution change

@@ -452,7 +452,7 @@ public class ChessManager : MonoBehaviour
 
         LiveGameData gameData = GetLiveGameData();
 
-        var possible_moves = GameManager.GetMoves(gameData);
+        var possible_moves = GameManager.GetMoves(gameData, fastMode: false);
         if (possible_moves.Count == 0)
         {
             // Runs on no moves event
