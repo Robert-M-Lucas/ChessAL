@@ -55,7 +55,7 @@ Traditional chess played on an 8x8 board";
             if (!fastMode)
             {
                 // Test if possible moves leave king in check
-                int i = 0;BuildIndex 
+                int i = 0; 
                 while (i < possible_moves.Count)
                 {
                     Board temp_board = (Board as Board).Clone(this) as Board; // Clone
