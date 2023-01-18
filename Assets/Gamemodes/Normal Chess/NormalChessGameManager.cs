@@ -47,37 +47,40 @@ Traditional chess played on an 8x8 board";
             Board = new Board(this);
         }
 
-        public override List<Move> GetMoves(LiveGameData gameData)
+        public override List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
             (Board as Board).VirtualTeam = gameData.CurrentTeam;
             List<Move> possible_moves = Board.GetMoves(null);
-            
-            // Test if possible moves leave king in check
-            int i = 0;
-            while (i < possible_moves.Count)
+
+            if (!fastMode)
             {
-                Board temp_board = (Board as Board).Clone(this) as Board; // Clone
-                FalseOnMove(temp_board, possible_moves[i], gameData); // Make move
-                temp_board.VirtualTeam = GUtil.SwitchTeam(gameData); // Change team
-
-                // Check enemy moves for check
-                bool failed = false;
-                List<Move> possible_enemy_moves = temp_board.GetMoves(null);
-                foreach (Move move in possible_enemy_moves)
+                // Test if possible moves leave king in check
+                int i = 0;
+                while (i < possible_moves.Count)
                 {
-                    AbstractPiece piece = temp_board.GetPiece(move.To);
-                    if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.CurrentTeam)
+                    Board temp_board = (Board as Board).Clone(this) as Board; // Clone
+                    FalseOnMove(temp_board, possible_moves[i], gameData); // Make move
+                    temp_board.VirtualTeam = GUtil.SwitchTeam(gameData); // Change team
+
+                    // Check enemy moves for check
+                    bool failed = false;
+                    List<Move> possible_enemy_moves = temp_board.GetMoves(null);
+                    foreach (Move move in possible_enemy_moves)
                     {
-                        failed = true;
-                        break;
+                        AbstractPiece piece = temp_board.GetPiece(move.To);
+                        if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.CurrentTeam)
+                        {
+                            failed = true;
+                            break;
+                        }
                     }
-                }
 
-                if (failed)
-                {
-                    possible_moves.RemoveAt(i);
+                    if (failed)
+                    {
+                        possible_moves.RemoveAt(i);
+                    }
+                    else i++;
                 }
-                else i++;
             }
 
             return possible_moves;

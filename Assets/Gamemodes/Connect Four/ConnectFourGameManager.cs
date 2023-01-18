@@ -35,7 +35,7 @@ Requires 2 teams";
             Board = new Board(this);
         }
 
-        public override List<Move> GetMoves(LiveGameData gameData)
+        public override List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
             return Board.GetMoves(gameData);
         }

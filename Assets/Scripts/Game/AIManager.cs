@@ -184,7 +184,7 @@ namespace AI
                             // continue;
 
                             // Recursively search for moves
-                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data), 1, max_depth, best_score, true);
+                            score = MiniMax(new_manager, new_game_data, new_manager.GetMoves(new_game_data, fastMode: true), 1, max_depth, best_score, true);
 
                             // AI terminated early
                             if (score is float.NaN)
@@ -318,7 +318,7 @@ namespace AI
                     LiveGameData new_game_data = gameData.Clone();
                     new_game_data.CurrentPlayer = next_player;
 
-                    List<Move> new_moves = new_manager.GetMoves(new_game_data);
+                    List<Move> new_moves = new_manager.GetMoves(new_game_data, fastMode: true);
 
                     // Recursion
                     move_score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
