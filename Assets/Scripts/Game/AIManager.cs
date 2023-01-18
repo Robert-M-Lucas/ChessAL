@@ -288,6 +288,8 @@ namespace AI
                 maximising = false;
             }
 
+            if (moves.Count == 0) { Debug.LogError("HOW???"); }
+
             foreach (Move move in moves)
             {
                 // Exit if over time
@@ -297,19 +299,19 @@ namespace AI
                 AbstractGameManager new_manager = gameManager.Clone();       
                 int next_player = new_manager.OnMove(move, gameData);
 
-                float score;
+                float move_score;
 
                 if (next_player < 0) // A team has won
                 {
                     if (GUtil.TurnDecodeTeam(next_player) != gameData.LocalPlayerTeam)
                     {
-                        if (maximising) score = float.MinValue;
-                        else return float.MinValue; // Best possible value for minimiser so instantly return
+                        if (maximising) move_score = float.MinValue + current_depth;
+                        else return float.MinValue + current_depth; // Best possible value for minimiser so instantly return
                     }
                     else
                     {
-                        if (maximising) return float.MaxValue; // Best possible value for maximiser so instantly return
-                        else score = float.MinValue;
+                        if (maximising) return float.MaxValue - current_depth; // Best possible value for maximiser so instantly return
+                        else move_score = float.MaxValue - current_depth;
                     }
                 }
                 else
@@ -321,16 +323,16 @@ namespace AI
                     List<Move> new_moves = new_manager.GetMoves(new_game_data);
 
                     // Recursion
-                    score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+                    move_score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
                 }
 
                 
 
                 // Return if algorithm is terminating
-                if (score is float.NaN) return float.NaN;
+                if (move_score is float.NaN) return float.NaN;
 
-                if (maximising && score > best_score) best_score = score;
-                else if (!maximising && score < best_score) best_score = score;
+                if (maximising && move_score > best_score) best_score = move_score;
+                else if (!maximising && move_score < best_score) best_score = move_score;
 
                 
                 // AB Pruning
