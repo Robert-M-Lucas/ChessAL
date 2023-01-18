@@ -288,8 +288,6 @@ namespace AI
                 maximising = false;
             }
 
-            if (moves.Count == 0) { Debug.LogError("HOW???"); }
-
             foreach (Move move in moves)
             {
                 // Exit if over time
