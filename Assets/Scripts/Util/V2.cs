@@ -62,6 +62,11 @@ public struct V2: IEquatable<V2>
         return new V2(lhs.X / rhs, lhs.Y / rhs);
     }
 
+    public Vector2 Vector2()
+    {
+        return new Vector2(X, Y);
+    }
+
     public override int GetHashCode()
     {
         int hCode = X ^ Y; // Make hash code combination of X and Y

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Gamemodes;
-using System.Net.NetworkInformation;
 using TMPro;
 using System;
 
@@ -36,25 +35,27 @@ namespace Game
     [RequireComponent(typeof(GameMenuManager))]
     public class VisualManager : MonoBehaviour
     {
-        public Theme[] Themes;
+        [SerializeField] private float pieceTravelTime;
+
+        [SerializeField] private Theme[] Themes;
         private int currentTheme = 0;
 
-        public RectTransform renderBox;
+        [SerializeField] private RectTransform renderBox;
 
-        public GameObject SquarePrefab;
-        public GameObject PiecePrefab;
-        public GameObject MoveOptionPrefab;
+        [SerializeField] private GameObject SquarePrefab;
+        [SerializeField] private GameObject PiecePrefab;
+        [SerializeField] private GameObject MoveOptionPrefab;
 
-        public TMP_Text TurnText;
-        public TMP_Text TeamWinText;
-        public TMP_Text TimerText;
-        public TMP_Text AIText;
+        [SerializeField] private TMP_Text TurnText;
+        [SerializeField] private TMP_Text TeamWinText;
+        [SerializeField] private TMP_Text TimerText;
+        [SerializeField] private TMP_Text AIText;
 
-        public AppearanceTable[] AppearanceTables;
+        [SerializeField] private AppearanceTable[] AppearanceTables;
         private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
 
         public ChessManager ChessManager;
-        public GameMenuManager GameMenuManager;
+        [SerializeField] private GameMenuManager GameMenuManager;
 
         private const string PLAYER_PREFS_THEME_KEY = "Theme";
 
@@ -66,13 +67,15 @@ namespace Game
 
         private List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
-        private List<GameObject> pieces = new List<GameObject>();
+        private Dictionary<V2, GameObject> pieces = new Dictionary<V2, GameObject>();
 
         private Image[,] Squares;
 
         private V2? currentlyShowing = null;
 
         private List<V2> greyscaled = new List<V2>();
+
+        private int[,] currentBoardHash;
 
         // Run once
         private void Awake()
@@ -105,6 +108,7 @@ namespace Game
         {   
             // Get information for how board should be displayed
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
+            currentBoardHash = new int[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
             Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
@@ -136,18 +140,85 @@ namespace Game
         /// <summary>
         /// Renders all pieces in BoardManager
         /// </summary>
-        public void UpdateAllPieces()
-        {
-            // Remove all pieces
-            foreach (GameObject g in pieces) Destroy(g);
-            pieces.Clear();
+        public void UpdateAllPieces(Move move) => UpdateAllPieces(move, true);
 
-            // Create all pieces
+        /// <summary>
+        /// Renders all pieces in BoardManager
+        /// </summary>
+        public void UpdateAllPieces() => UpdateAllPieces(new Move(new V2(-1, -1), new V2(-1, -1)), false);
+
+        /// <summary>
+        /// Renders all pieces in BoardManager
+        /// </summary>
+        private void UpdateAllPieces(Move move, bool hasMove)
+        {
+            void CheckSlide(V2 from, V2 to)
+            {
+                if (ChessManager.GameManager.Board.PieceBoard[to.X, to.Y] is not null &&
+                    currentBoardHash[from.X, from.Y] == ChessManager.GameManager.Board.PieceBoard[to.X, to.Y].GetHashCode())
+                {
+                    GameObject piece = pieces[from];
+                    piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
+                    pieces.Remove(from);
+                    if (currentBoardHash[to.X, to.Y] != 0)
+                    {
+                        currentBoardHash[to.X, to.Y] = 0;
+                        Destroy(pieces[new V2(to.X, to.Y)]);
+                        pieces.Remove(new V2(to.X, to.Y));
+                    }
+                    pieces.Add(to, piece);
+                    currentBoardHash[to.X, to.Y] = currentBoardHash[from.X, from.Y];
+                    currentBoardHash[from.X, from.Y] = 0;
+                }
+            }
+
+            // Check for sliding moves
+            if (hasMove) CheckSlide(move.From, move.To);
+
+            // Check for more sliding moves
+            for (int x1 = 0; x1 < boardRenderInfo.BoardSize; x1++)
+            {
+                for (int y1 = 0; y1 < boardRenderInfo.BoardSize; y1++)
+                {
+                    if (currentBoardHash[x1, y1] == 0 ||
+                        currentBoardHash[x1, y1] == (ChessManager.GameManager.Board.PieceBoard[x1, y1]?.GetHashCode() ?? 0))
+                            continue;
+
+                    for (int x2 = 0; x2 < boardRenderInfo.BoardSize; x2++)
+                    {
+                        for (int y2 = 0; y2 < boardRenderInfo.BoardSize; y2++)
+                        {
+                            CheckSlide(new V2(x1, y1), new V2(x2, y2));
+                        }
+                    }
+                }
+            }
+
+            // Resolve difference between previous and current board state
+            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            {
+                for (int y = 0; y < boardRenderInfo.BoardSize; y++) {
+                    if (currentBoardHash[x, y] != (ChessManager.GameManager.Board.PieceBoard[x, y]?.GetHashCode() ?? 0))
+                    {
+                        if (currentBoardHash[x, y] != 0)
+                        {
+                            Destroy(pieces[new V2(x, y)]);
+                            pieces.Remove(new V2(x, y));
+                        }
+                        if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                    }
+                }
+            }
+
+            // Rebuild hash table
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                    if (ChessManager.GameManager.Board.PieceBoard[x, y] is null)
+                        currentBoardHash[x, y] = 0;
+                    else
+                        currentBoardHash[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].GetHashCode();
                 }
             }
         }
@@ -160,7 +231,7 @@ namespace Game
         {
             // Duplicate piece
             GameObject new_gameobject = Instantiate(PiecePrefab);
-            pieces.Add(new_gameobject);
+            pieces.Add(piece.Position, new_gameobject);
             Image image = new_gameobject.GetComponent<Image>();
 
             // Show
@@ -237,19 +308,21 @@ namespace Game
             }
         }
 
+        public void SizeGameObject(GameObject gameObject, V2 position) => SizeGameObject(gameObject, position.Vector2());
+
         // Gives a GameObject the correct size, scale and position
-        private void SizeGameObject(GameObject gameObject, V2 position)
+        public void SizeGameObject(GameObject gameObject, Vector2 position)
         {
             RectTransform rect = gameObject.GetComponent<RectTransform>();
             rect.SetParent(renderBox); // Set as a child of the render box
             
             // Set min and max anchors to corners of square
-            rect.anchorMin = new Vector2((float)position.X / boardRenderInfo.BoardSize, (float)position.Y / boardRenderInfo.BoardSize);
-            rect.anchorMax = new Vector2((float)(position.X + 1) / boardRenderInfo.BoardSize, (float)(position.Y + 1) / boardRenderInfo.BoardSize);
+            rect.anchorMin = new Vector2((float)position.x / boardRenderInfo.BoardSize, (float)position.y / boardRenderInfo.BoardSize);
+            rect.anchorMax = new Vector2((float)(position.x + 1) / boardRenderInfo.BoardSize, (float)(position.y + 1) / boardRenderInfo.BoardSize);
 
             // Set position to that square
-            rect.localPosition = new Vector2((position.X + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
-                (position.Y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+            rect.localPosition = new Vector2((position.x + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
+                (position.y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
 
             // Resize
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);

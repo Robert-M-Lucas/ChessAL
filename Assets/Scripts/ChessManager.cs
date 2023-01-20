@@ -532,7 +532,7 @@ public class ChessManager : MonoBehaviour
         
         // Show and make move sound
         VisualManager.OnMove(from, to);
-        VisualManager.UpdateAllPieces();
+        VisualManager.UpdateAllPieces(new Move(from, to));
         SoundMananger.GetInstance().PlayPieceMoveSound();
 
         // If game is over
