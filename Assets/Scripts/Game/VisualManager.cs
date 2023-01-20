@@ -74,7 +74,7 @@ namespace Game
         private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
         private Dictionary<V2, GameObject> pieces3D = new Dictionary<V2, GameObject>();
 
-        private Image[,] Squares;
+        private Image[,] squares;
 
         private V2? currentlyShowing = null;
 
@@ -119,12 +119,16 @@ namespace Game
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
             currentBoardHash = new int[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
-            Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
+            squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
             // Initial update
             OnResolutionChange();
             RenderBoardBackground();
-            if (boardRenderInfo.Allows3D) VisualManager3D.RenderBoard(boardRenderInfo);
+            if (boardRenderInfo.Allows3D)
+            {
+                VisualManager3D.RenderBoard(boardRenderInfo);
+                VisualManager3D.UpdateTheme(Themes[currentTheme]);
+            }
             UpdateAllPieces();
             
         }
@@ -147,9 +151,6 @@ namespace Game
             TeamWinText.text = $"{team_string} won!";
             TeamWinText.gameObject.SetActive(true); // Show
         }
-
-        // TODO
-        public void Render3DBoard() { }
 
         /// <summary>
         /// Renders all pieces in BoardManager
@@ -296,7 +297,7 @@ namespace Game
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        private bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
+        public static bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
 
         /// <summary>
         /// Renders the board's cells
@@ -315,7 +316,7 @@ namespace Game
                     rendered_piece_data.Position = new V2(x, y); // Set position data
 
                     Image image = new_square.GetComponent<Image>();
-                    Squares[x, y] = image;
+                    squares[x, y] = image;
 
                     ResetSquareColor(new V2(x, y)); // Set to default colour
 
@@ -415,8 +416,8 @@ namespace Game
         public void SelectSquare(V2 position)
         {
             // Set colour to themed select colour
-            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
-            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
+            else squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
         }
 
         /// <summary>
@@ -425,8 +426,8 @@ namespace Game
         /// <param name="position"></param>
         public void ShowMove(V2 position)
         {
-            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
-            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
+            else squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
         }
 
         /// <summary>
@@ -435,36 +436,40 @@ namespace Game
         /// <param name="position"></param>
         public void ResetSquareColor(V2 position)
         {
+            float alpha = squares[position.X, position.Y].color.a;
             if (IsWhite(position))
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteBlockedColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteHighlightColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteHighlightColor;
                 }
                 else
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteColor;
                 }
             }
             else
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackBlockedColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].BlackBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackHighlightColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].BlackHighlightColor;
                 }
                 else
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackColor;
+                    squares[position.X, position.Y].color = Themes[currentTheme].BlackColor;
                 }
             }
+            Color square_color = squares[position.X, position.Y].color;
+            square_color.a = alpha;
+            squares[position.X, position.Y].color = square_color;
         }
 
         /// <summary>
@@ -534,6 +539,9 @@ namespace Game
                     ResetSquareColor(new V2(x, y));
                 }
             }
+
+            if (boardRenderInfo.Allows3D)
+                VisualManager3D.UpdateTheme(Themes[currentTheme]);
         }
 
         /// <summary>

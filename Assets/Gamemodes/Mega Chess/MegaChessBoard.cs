@@ -55,7 +55,7 @@ namespace Gamemodes.MegaChess
 
         public override BoardRenderInfo GetBoardRenderInfo()
         {
-            return new BoardRenderInfo(16, new List<V2>());
+            return new BoardRenderInfo(16, new List<V2>(), null, true);
         }
     }
 
