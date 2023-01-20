@@ -118,7 +118,7 @@ namespace Gamemodes.NormalChess
 
         public override BoardRenderInfo GetBoardRenderInfo()
         {
-            return new BoardRenderInfo(8, new List<V2>());
+            return new BoardRenderInfo(8, null, null, true);
         }
     }
 }

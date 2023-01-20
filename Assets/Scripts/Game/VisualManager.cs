@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Gamemodes;
 using TMPro;
 using System;
+using System.Data;
 
 namespace Game
 {
@@ -35,12 +36,16 @@ namespace Game
     [RequireComponent(typeof(GameMenuManager))]
     public class VisualManager : MonoBehaviour
     {
+        public VisualManagerThreeD VisualManager3D;
+
         [SerializeField] private float pieceTravelTime;
 
         [SerializeField] private Theme[] Themes;
         private int currentTheme = 0;
 
         [SerializeField] private RectTransform renderBox;
+
+        [SerializeField] private Image Hide3DImage;
 
         [SerializeField] private GameObject SquarePrefab;
         [SerializeField] private GameObject PiecePrefab;
@@ -52,7 +57,7 @@ namespace Game
         [SerializeField] private TMP_Text AIText;
 
         [SerializeField] private AppearanceTable[] AppearanceTables;
-        private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
+        private Dictionary<int, PieceAppearance> internalAppearanceMap = new Dictionary<int, PieceAppearance>();
 
         public ChessManager ChessManager;
         [SerializeField] private GameMenuManager GameMenuManager;
@@ -63,11 +68,11 @@ namespace Game
 
         private Resolution resolution = new Resolution();
 
-        private Dictionary<AbstractPiece, Image> piece_images = new Dictionary<AbstractPiece, Image>();
-
         private List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
-        private Dictionary<V2, GameObject> pieces = new Dictionary<V2, GameObject>();
+
+        private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
+        private Dictionary<V2, GameObject> pieces3D = new Dictionary<V2, GameObject>();
 
         private Image[,] Squares;
 
@@ -77,22 +82,26 @@ namespace Game
 
         private int[,] currentBoardHash;
 
+        private float transitionProgress = float.NaN;
+        private bool targetDimension = true; // true = 2D
+        [SerializeField] private float transitionTime = 2f;
+
         // Run once
         private void Awake()
         {
             // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
             {
-                foreach (PieceSprite piece_sprite in appearance_table.Appearances)
+                foreach (PieceAppearance piece_appearance in appearance_table.Appearances)
                 {
 #if UNITY_EDITOR
-                    if (internalSpriteTable.ContainsKey(piece_sprite.ID))
+                    if (internalAppearanceMap.ContainsKey(piece_appearance.ID))
                     {
                         throw new Exception("Duplicate appearance ID");
                     }
 #endif
 
-                    internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
+                    internalAppearanceMap[piece_appearance.ID] = piece_appearance;
                 }
             }
 
@@ -115,7 +124,9 @@ namespace Game
             // Initial update
             OnResolutionChange();
             RenderBoardBackground();
+            if (boardRenderInfo.Allows3D) VisualManager3D.RenderBoard(boardRenderInfo);
             UpdateAllPieces();
+            
         }
 
         /// <summary>
@@ -137,6 +148,9 @@ namespace Game
             TeamWinText.gameObject.SetActive(true); // Show
         }
 
+        // TODO
+        public void Render3DBoard() { }
+
         /// <summary>
         /// Renders all pieces in BoardManager
         /// </summary>
@@ -157,16 +171,16 @@ namespace Game
                 if (ChessManager.GameManager.Board.PieceBoard[to.X, to.Y] is not null &&
                     currentBoardHash[from.X, from.Y] == ChessManager.GameManager.Board.PieceBoard[to.X, to.Y].GetHashCode())
                 {
-                    GameObject piece = pieces[from];
+                    GameObject piece = pieces2D[from];
                     piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
-                    pieces.Remove(from);
+                    pieces2D.Remove(from);
                     if (currentBoardHash[to.X, to.Y] != 0)
                     {
                         currentBoardHash[to.X, to.Y] = 0;
-                        Destroy(pieces[new V2(to.X, to.Y)]);
-                        pieces.Remove(new V2(to.X, to.Y));
+                        Destroy(pieces2D[new V2(to.X, to.Y)]);
+                        pieces2D.Remove(new V2(to.X, to.Y));
                     }
-                    pieces.Add(to, piece);
+                    pieces2D.Add(to, piece);
                     currentBoardHash[to.X, to.Y] = currentBoardHash[from.X, from.Y];
                     currentBoardHash[from.X, from.Y] = 0;
                 }
@@ -202,8 +216,8 @@ namespace Game
                     {
                         if (currentBoardHash[x, y] != 0)
                         {
-                            Destroy(pieces[new V2(x, y)]);
-                            pieces.Remove(new V2(x, y));
+                            Destroy(pieces2D[new V2(x, y)]);
+                            pieces2D.Remove(new V2(x, y));
                         }
                         if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
                     }
@@ -231,14 +245,16 @@ namespace Game
         {
             // Duplicate piece
             GameObject new_gameobject = Instantiate(PiecePrefab);
-            pieces.Add(piece.Position, new_gameobject);
+            pieces2D.Add(piece.Position, new_gameobject);
             Image image = new_gameobject.GetComponent<Image>();
+
+            if (boardRenderInfo.Allows3D)
+            {
+                // new_gameobject = Instantiate(internalAppearanceMap[piece.AppearanceID].Prefab3D);
+            }
 
             // Show
             new_gameobject.SetActive(true);
-
-            // Set image
-            piece_images[piece] = image;
 
             UpdatePiece(piece);
         }
@@ -249,8 +265,8 @@ namespace Game
         /// <param name="piece"></param>
         private void UpdatePiece(AbstractPiece piece)
         {
-            Image image = piece_images[piece];
-            image.sprite = internalSpriteTable[piece.AppearanceID]; // Get piece appearance
+            Image image = pieces2D[piece.Position].GetComponent<Image>();
+            image.sprite = internalAppearanceMap[piece.AppearanceID].Sprite; // Get piece appearance
 
             SizeGameObject(image.gameObject, piece.Position); // Resize for display scale
         }
@@ -537,6 +553,40 @@ namespace Game
             if (I.GetKeyDown(K.ChangeThemeKey) && !GameMenuManager.ShowingEscapeMenu)
             {
                 CycleTheme();
+            }
+
+            // Transition between 2D and 3D
+            if (I.GetKeyDown(K.ChangeDimensionKey) && transitionProgress is float.NaN && boardRenderInfo.Allows3D)
+            {
+                targetDimension = !targetDimension;
+                transitionProgress = 0f;
+            }
+
+            if (transitionProgress is not float.NaN)
+            {
+                transitionProgress += Time.deltaTime / transitionTime;
+                if (transitionProgress >= 1f) transitionProgress = 1f;
+
+                float progress = transitionProgress;
+                if (targetDimension == false) progress = 1f - progress;
+
+                progress = MathP.CosSmooth(progress);
+
+                Hide3DImage.color = new Color(Hide3DImage.color.r, Hide3DImage.color.g, Hide3DImage.color.b, progress);
+
+                Image[] children = renderBox.transform.GetComponentsInChildren<Image>();
+                Color newColor;
+                foreach (Image child in children)
+                {
+                    newColor = child.color;
+                    newColor.a = progress;
+                    child.color = newColor;
+                }
+
+                if (transitionProgress == 1f)
+                {
+                    transitionProgress = float.NaN;
+                }
             }
 
             // Check for resolution change

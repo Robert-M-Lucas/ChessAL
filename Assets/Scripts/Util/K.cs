@@ -12,4 +12,5 @@ public static class K
 
     public static KeyCode EscapeKey = KeyCode.Escape;
     public static KeyCode ChangeThemeKey = KeyCode.T;
+    public static KeyCode ChangeDimensionKey = KeyCode.Tab;
 }
