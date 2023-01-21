@@ -15,7 +15,7 @@ C:/Users/rober/Documents/$ CS Project/ChessAL
 -logFile
 Logs/AssetImportWorker2.log
 -srvPort
-52011
+50060
 Successfully changed project path to: C:/Users/rober/Documents/$ CS Project/ChessAL
 C:/Users/rober/Documents/$ CS Project/ChessAL
 [UnityMemory] Configuration Parameters - Can be set up in boot.config
@@ -47,11 +47,11 @@ C:/Users/rober/Documents/$ CS Project/ChessAL
     "memorysetup-temp-allocator-size-cloud-worker=32768"
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
-Player connection [11220] Host "[IP] 192.168.0.65 [Port] 0 [Flags] 2 [Guid] 4081198511 [EditorId] 4081198511 [Version] 1048832 [Id] WindowsEditor(7,RobertPC) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
+Player connection [13232] Host "[IP] 192.168.0.65 [Port] 0 [Flags] 2 [Guid] 3041316337 [EditorId] 3041316337 [Version] 1048832 [Id] WindowsEditor(7,RobertPC) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
 
-Player connection [11220] Host "[IP] 192.168.0.65 [Port] 0 [Flags] 2 [Guid] 4081198511 [EditorId] 4081198511 [Version] 1048832 [Id] WindowsEditor(7,RobertPC) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [13232] Host "[IP] 192.168.0.65 [Port] 0 [Flags] 2 [Guid] 3041316337 [EditorId] 3041316337 [Version] 1048832 [Id] WindowsEditor(7,RobertPC) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
 
-Refreshing native plugins compatible for Editor in 124.46 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 7.89 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2022.2.2f1 (c93c5d3acf5b)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/Resources/UnitySubsystems
@@ -67,53 +67,44 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56220
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56032
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2022.2.2f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.007714 seconds.
-- Loaded All Assemblies, in  0.550 seconds
+Registered in 0.006655 seconds.
+- Loaded All Assemblies, in  0.295 seconds
 Native extension for WindowsStandalone target not found
 Native extension for Android target not found
-CommandWithNoStdoutInvokationFailure: Unable to start ADB server. Please make sure the Android SDK is installed and is properly configured in the Editor. See the Console for more details.
-  at UnityEditor.Android.Command.RunWithShellExecute (System.String command, System.String args, System.String workingdir, System.String errorMsg) [0x00060] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.ADB.StartServer () [0x00013] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.ADB.Run (System.String[] command, UnityEditor.Android.Command+WaitingForProcessToExit waitingForProcessToExit, System.String errorMsg) [0x0000b] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.AndroidDeploymentTargetsExtension.GetKnownTargets (UnityEditor.DeploymentTargets.IDeploymentTargetsMainThreadContext context, UnityEditor.ProgressHandler progressHandler) [0x0013b] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.TargetScanWorker.ScanSync () [0x00028] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.TargetExtension.OnUsbDevicesChanged (UnityEditor.Hardware.UsbDevice[] usbDevices) [0x00081] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Android.TargetExtension.OnLoad () [0x000ad] in <78a7f7e9a87745b9a9f63bc62bfdda7d>:0 
-  at UnityEditor.Modules.ModuleManager.InitializePlatformSupportModules () [0x0009d] in <d92715ccd3ac42dbaeb8a2239166e2e8>:0 
-
+Android Extension - Scanning For ADB Devices 158 ms
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  8.382 seconds
+- Finished resetting the current domain, in  0.388 seconds
 Domain Reload Profiling:
-	ReloadAssembly (283ms)
-		BeginReloadAssembly (77ms)
+	ReloadAssembly (190ms)
+		BeginReloadAssembly (94ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
 		LoadAllAssembliesAndSetupDomain (0ms)
-			LoadAssemblies (75ms)
+			LoadAssemblies (92ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (260ms)
-				TypeCache.Initialize (259ms)
-					TypeCache.ScanAssembly (257ms)
+			SetupTypeCache (100ms)
+				TypeCache.Initialize (99ms)
+					TypeCache.ScanAssembly (98ms)
 				ResolveRequiredComponents (0ms)
 		FinalizeReload (0ms)
 			ReleaseScriptCaches (0ms)
 			RebuildScriptCaches (0ms)
-			SetupLoadedEditorAssemblies (8323ms)
+			SetupLoadedEditorAssemblies (340ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (8183ms)
-				SetLoadedEditorAssemblies (5ms)
+				InitializePlatformSupportModulesInManaged (215ms)
+				SetLoadedEditorAssemblies (4ms)
 				RefreshPlugins (0ms)
 				BeforeProcessingInitializeOnLoad (1ms)
-				ProcessInitializeOnLoadAttributes (95ms)
-				ProcessInitializeOnLoadMethodAttributes (39ms)
+				ProcessInitializeOnLoadAttributes (85ms)
+				ProcessInitializeOnLoadMethodAttributes (35ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
@@ -123,8 +114,8 @@ Worker process is ready to serve import requests
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
 Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
-- Loaded All Assemblies, in  0.863 seconds
-Refreshing native plugins compatible for Editor in 6.01 ms, found 3 plugins.
+- Loaded All Assemblies, in  0.525 seconds
+Refreshing native plugins compatible for Editor in 2.77 ms, found 3 plugins.
 Native extension for WindowsStandalone target not found
 Native extension for Android target not found
 Mono: successfully reloaded assembly
@@ -153,7 +144,7 @@ UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
 
 (Filename: Assets/Scripts/Testing/Tests.cs Line: 54)
 
-Tests successful! (12ms)
+Tests successful! (8ms)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
@@ -163,171 +154,44 @@ UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
 
 (Filename: Assets/Scripts/Testing/Tests.cs Line: 56)
 
-- Finished resetting the current domain, in  1.061 seconds
+- Finished resetting the current domain, in  0.607 seconds
 Domain Reload Profiling:
-	ReloadAssembly (233ms)
-		BeginReloadAssembly (126ms)
-			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (5ms)
-			BackupInstance (0ms)
-			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (25ms)
-		LoadAllAssembliesAndSetupDomain (640ms)
-			LoadAssemblies (100ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (587ms)
-				TypeCache.Initialize (330ms)
-					TypeCache.ScanAssembly (324ms)
-				ResolveRequiredComponents (4ms)
-		FinalizeReload (0ms)
-			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (0ms)
-			SetupLoadedEditorAssemblies (845ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (21ms)
-				SetLoadedEditorAssemblies (10ms)
-				RefreshPlugins (0ms)
-				BeforeProcessingInitializeOnLoad (125ms)
-				ProcessInitializeOnLoadAttributes (647ms)
-				ProcessInitializeOnLoadMethodAttributes (32ms)
-				AfterProcessingInitializeOnLoad (8ms)
-				EditorAssembliesLoaded (0ms)
-			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (6ms)
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.08 seconds
-Refreshing native plugins compatible for Editor in 3.11 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3585 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 26 unused Assets / (304.0 KB). Loaded Objects now: 4050.
-Memory consumption went from 0.55 GB to 0.55 GB.
-Total: 4.512400 ms (FindLiveObjects: 0.306800 ms CreateObjectMapping: 0.229800 ms MarkObjects: 3.823300 ms  DeleteObjects: 0.151700 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:SearchIndexIgnoredProperties: e643bd26f0fe6173181afceb89e7c659 -> 
-  custom:AudioImporter_EditorPlatform: d09bf68614088b80899f8185d706f6e7 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-========================================================================
-Received Import Request.
-  Time since last request: 16720.853813 seconds.
-  path: Assets/Materials/White 4.mat
-  artifactKey: Guid(9841085d9ab22634ea415ee9302f6f61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Number of updated assets reloaded before import = 0
-Start importing Assets/Materials/White 4.mat using Guid(9841085d9ab22634ea415ee9302f6f61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '87f708e0321f02ebf42151a16e30235d') in 0.113372 seconds 
-Number of asset objects unloaded after import = 1
-========================================================================
-Received Import Request.
-  Time since last request: 0.000035 seconds.
-  path: Assets/Materials/White.mat
-  artifactKey: Guid(174be81865af1b046912a94012b228a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Number of updated assets reloaded before import = 0
-Start importing Assets/Materials/White.mat using Guid(174be81865af1b046912a94012b228a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4594657cc9eb441c286b46f7d48bc7cb') in 0.016672 seconds 
-Number of asset objects unloaded after import = 1
-========================================================================
-Received Import Request.
-  Time since last request: 0.000025 seconds.
-  path: Assets/Materials/Black 2.mat
-  artifactKey: Guid(aa9ec4ca4383d9a4aa2117acadd65de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Number of updated assets reloaded before import = 0
-Start importing Assets/Materials/Black 2.mat using Guid(aa9ec4ca4383d9a4aa2117acadd65de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a6ca715cd0076327ae2a7b3a1b4f6fe4') in 0.015515 seconds 
-Number of asset objects unloaded after import = 1
-========================================================================
-Received Import Request.
-  Time since last request: 0.000026 seconds.
-  path: Assets/Materials/Black 5.mat
-  artifactKey: Guid(4591705c5a10c074bb23decedbc2f496) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Number of updated assets reloaded before import = 0
-Start importing Assets/Materials/Black 5.mat using Guid(4591705c5a10c074bb23decedbc2f496) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '608acc57c2ea5b9f374e59074425b73a') in 0.016341 seconds 
-Number of asset objects unloaded after import = 1
-========================================================================
-Received Prepare
-Begin MonoManager ReloadAssembly
-Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
-Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
-- Loaded All Assemblies, in  0.746 seconds
-Refreshing native plugins compatible for Editor in 3.10 ms, found 3 plugins.
-Native extension for WindowsStandalone target not found
-Native extension for Android target not found
-Mono: successfully reloaded assembly
-Starting tests
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Tests:OnAfterAssemblyReload () (at Assets/Scripts/Testing/Tests.cs:40)
-UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
-
-(Filename: Assets/Scripts/Testing/Tests.cs Line: 40)
-
-Test log: [...]
-Testing packet encoding
-Running Game Manager Tests
-Running Piece Tests
-Running validator tests
-Testing V2 functions
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Tests:OnAfterAssemblyReload () (at Assets/Scripts/Testing/Tests.cs:54)
-UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
-
-(Filename: Assets/Scripts/Testing/Tests.cs Line: 54)
-
-Tests successful! (7ms)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:Log (object)
-Tests:OnAfterAssemblyReload () (at Assets/Scripts/Testing/Tests.cs:56)
-UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
-
-(Filename: Assets/Scripts/Testing/Tests.cs Line: 56)
-
-- Finished resetting the current domain, in  0.865 seconds
-Domain Reload Profiling:
-	ReloadAssembly (214ms)
-		BeginReloadAssembly (149ms)
+	ReloadAssembly (154ms)
+		BeginReloadAssembly (87ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (4ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (55ms)
-		LoadAllAssembliesAndSetupDomain (529ms)
-			LoadAssemblies (86ms)
+			CreateAndSetChildDomain (18ms)
+		LoadAllAssembliesAndSetupDomain (370ms)
+			LoadAssemblies (65ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (493ms)
-				TypeCache.Initialize (275ms)
-					TypeCache.ScanAssembly (267ms)
-				ResolveRequiredComponents (5ms)
+			SetupTypeCache (339ms)
+				TypeCache.Initialize (204ms)
+					TypeCache.ScanAssembly (200ms)
+				ResolveRequiredComponents (3ms)
 		FinalizeReload (0ms)
 			ReleaseScriptCaches (0ms)
 			RebuildScriptCaches (0ms)
-			SetupLoadedEditorAssemblies (460ms)
+			SetupLoadedEditorAssemblies (478ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (23ms)
+				InitializePlatformSupportModulesInManaged (15ms)
 				SetLoadedEditorAssemblies (6ms)
 				RefreshPlugins (0ms)
-				BeforeProcessingInitializeOnLoad (80ms)
-				ProcessInitializeOnLoadAttributes (327ms)
-				ProcessInitializeOnLoadMethodAttributes (18ms)
+				BeforeProcessingInitializeOnLoad (74ms)
+				ProcessInitializeOnLoadAttributes (357ms)
+				ProcessInitializeOnLoadMethodAttributes (20ms)
 				AfterProcessingInitializeOnLoad (5ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (4ms)
-Refreshing native plugins compatible for Editor in 3.60 ms, found 3 plugins.
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 2.76 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3564 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 21 unused Assets / (34.8 KB). Loaded Objects now: 4093.
-Memory consumption went from 0.54 GB to 0.54 GB.
-Total: 4.187800 ms (FindLiveObjects: 0.309900 ms CreateObjectMapping: 0.193800 ms MarkObjects: 3.615500 ms  DeleteObjects: 0.067700 ms)
+Unloading 3585 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (304.0 KB). Loaded Objects now: 4050.
+Memory consumption went from 0.55 GB to 0.55 GB.
+Total: 3.329800 ms (FindLiveObjects: 0.259700 ms CreateObjectMapping: 0.088100 ms MarkObjects: 2.881800 ms  DeleteObjects: 0.099400 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
@@ -342,12 +206,268 @@ AssetImportParameters requested are different than current active one (requested
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
+Received Import Request.
+  Time since last request: 522.988604 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36bb51f144d1465e61b6bbbc6f98daca') in 0.085139 seconds 
+Number of asset objects unloaded after import = 12
+========================================================================
+Received Import Request.
+  Time since last request: 9.621461 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b949102ca350e03a44e3fb8bdef050ae') in 0.007751 seconds 
+Number of asset objects unloaded after import = 12
+========================================================================
+Received Import Request.
+  Time since last request: 1.280736 seconds.
+  path: Assets/Materials/Black.mat
+  artifactKey: Guid(6308bbf343738ba4ca1dbae414969589) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Materials/Black.mat using Guid(6308bbf343738ba4ca1dbae414969589) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '723d3f82393dde16045bc2694b134d92') in 0.034457 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 0.000018 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/Black Squares.mat
+  artifactKey: Guid(c7ba53a4b6745a342852498d501518dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/Black Squares.mat using Guid(c7ba53a4b6745a342852498d501518dd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a2c19e2f6ee721c712101f045fabb604') in 0.015576 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 0.000020 seconds.
+  path: Assets/Materials/Black 5.mat
+  artifactKey: Guid(4591705c5a10c074bb23decedbc2f496) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Materials/Black 5.mat using Guid(4591705c5a10c074bb23decedbc2f496) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '43e2e952266cbe7872cffecb1b50d55d') in 0.012674 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 3.264645 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ff57af510af5659b0a7eb19cef30483f') in 0.009424 seconds 
+Number of asset objects unloaded after import = 12
+========================================================================
+Received Import Request.
+  Time since last request: 5.451182 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fd171567ebfb57d1d6b582266d2c824b') in 0.009663 seconds 
+Number of asset objects unloaded after import = 11
+========================================================================
+Received Import Request.
+  Time since last request: 1.490005 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9945ed383e18ea0808c5ffaaa0f37246') in 0.007232 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 5.254079 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '58fb4eedcce8d44392068d4f55c0d7ef') in 0.009190 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 0.393012 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '72440abfdd2f48071d145e52c89b2ef3') in 0.009646 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 3.412009 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29b1fd0e54166a58203d7bc388175e99') in 0.009839 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 1.608426 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e4f75bec0db69685e4ac9944d973adf8') in 0.008856 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 3.436059 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ade2cf764c433f818cfce7362b92461d') in 0.007014 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 6.856433 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2e9051955c67957627af9b949c5c5f68') in 0.007096 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 7.675517 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '264596f92a872143bebd4090d0fd1940') in 0.009436 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 2.401690 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '666e94399cfc6da5bcd753c2e61b9bd2') in 0.009307 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 20.610810 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '314e17eb337a4c0c8163df8aefcc4319') in 0.009496 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 7.303322 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29048b21b3f4bfaaad6780a296828914') in 0.007064 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 6.262136 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1105849e6fe3ccbe2e59e9911285a7ba') in 0.007694 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 3.637563 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'df79193431034d696d680b3ead7115f0') in 0.009692 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 7.491222 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c326e3c763d46f29e4a767fe5e23db00') in 0.007522 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 2.738613 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab
+  artifactKey: Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black.prefab using Guid(61ed95d5d9afc0842b0c4d0c96678d38) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'abfa7210ffda6193f08372cf3eb17451') in 0.006827 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 23.252140 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black 1.prefab
+  artifactKey: Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn Black 1.prefab using Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '61528b23b271890eb1f46f18d1823ef5') in 0.016432 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 4.525014 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab
+  artifactKey: Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab using Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4371aba2d4a5411f6d0f4279917b45a6') in 0.010276 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 9.774556 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/Chess Board Surround Mat.mat
+  artifactKey: Guid(19a7f7dd4f56bdb4cbbd019b9a6bbf26) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/Chess Board Surround Mat.mat using Guid(19a7f7dd4f56bdb4cbbd019b9a6bbf26) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6daab822f7ee9c7b1c79f565c16fffe0') in 0.013431 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 0.000099 seconds.
+  path: Assets/Plugins/PanettoneGames/DualPlay/Resources/fonts/Sukar-Black.ttf
+  artifactKey: Guid(cf3829fc565c99d49941606dc5d7f343) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Plugins/PanettoneGames/DualPlay/Resources/fonts/Sukar-Black.ttf using Guid(cf3829fc565c99d49941606dc5d7f343) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36856489cb45fc64bde7e9b304170487') in 0.033745 seconds 
+Number of asset objects unloaded after import = 4
+========================================================================
+Received Import Request.
+  Time since last request: 0.783347 seconds.
+  path: Assets/Materials/White 2.mat
+  artifactKey: Guid(a5c74ace24edd86469b1b1117b71b3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Materials/White 2.mat using Guid(a5c74ace24edd86469b1b1117b71b3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5c6d3f1fb03be05e7d0665b008c3aab3') in 0.019443 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 0.018522 seconds.
+  path: Assets/Materials/White 5.mat
+  artifactKey: Guid(fdfa01910598819419943252a47e3591) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Materials/White 5.mat using Guid(fdfa01910598819419943252a47e3591) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f85f98c1ce9b9f700be506d68c6eedcf') in 0.019422 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/White Squares.mat
+  artifactKey: Guid(d6f6d820a99dc744bb6ebdbeb458c160) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/fbx/Materials/White Squares.mat using Guid(d6f6d820a99dc744bb6ebdbeb458c160) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '391c35e31a24de006a5e3d0afa4ded16') in 0.012811 seconds 
+Number of asset objects unloaded after import = 1
+========================================================================
+Received Import Request.
+  Time since last request: 1.883403 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab
+  artifactKey: Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab using Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '19d0424f480e7caf45ac844d7ba93c58') in 0.010994 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 0.608098 seconds.
+  path: Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab
+  artifactKey: Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/Pieces/Chess Set/Prefabs/Chess Pawn White 1.prefab using Guid(df1d342121c8d9c4cbc419bd1a305c8c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9250fc52a89d940058a8fb7f04d8c09a') in 0.009778 seconds 
+Number of asset objects unloaded after import = 10
+========================================================================
+Received Import Request.
+  Time since last request: 39.628409 seconds.
+  path: Assets/Gamemodes/Normal Chess/ChessAppearanceTable.asset
+  artifactKey: Guid(d1a836d4518d2b34db25a726483a0bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Number of updated assets reloaded before import = 0
+Start importing Assets/Gamemodes/Normal Chess/ChessAppearanceTable.asset using Guid(d1a836d4518d2b34db25a726483a0bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd310cb02b438df791af0dac3523d4158') in 0.067032 seconds 
+Number of asset objects unloaded after import = 78
+========================================================================
 Received Prepare
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
 Symbol file LoadedFromMemory doesn't match image C:\Users\rober\Documents\$ CS Project\ChessAL\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
-- Loaded All Assemblies, in  0.751 seconds
-Refreshing native plugins compatible for Editor in 6.26 ms, found 3 plugins.
+- Loaded All Assemblies, in  0.653 seconds
+Refreshing native plugins compatible for Editor in 3.11 ms, found 3 plugins.
 Native extension for WindowsStandalone target not found
 Native extension for Android target not found
 Mono: successfully reloaded assembly
@@ -376,7 +496,7 @@ UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
 
 (Filename: Assets/Scripts/Testing/Tests.cs Line: 54)
 
-Tests successful! (15ms)
+Tests successful! (10ms)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
@@ -386,43 +506,43 @@ UnityEditor.AssemblyReloadEvents:OnAfterAssemblyReload ()
 
 (Filename: Assets/Scripts/Testing/Tests.cs Line: 56)
 
-- Finished resetting the current domain, in  1.504 seconds
+- Finished resetting the current domain, in  1.230 seconds
 Domain Reload Profiling:
-	ReloadAssembly (191ms)
-		BeginReloadAssembly (130ms)
+	ReloadAssembly (201ms)
+		BeginReloadAssembly (137ms)
 			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (5ms)
+			DisableScriptedObjects (4ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (49ms)
-		LoadAllAssembliesAndSetupDomain (557ms)
-			LoadAssemblies (78ms)
+			CreateAndSetChildDomain (48ms)
+		LoadAllAssembliesAndSetupDomain (449ms)
+			LoadAssemblies (84ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (516ms)
-				TypeCache.Initialize (279ms)
-					TypeCache.ScanAssembly (271ms)
-				ResolveRequiredComponents (6ms)
+			SetupTypeCache (413ms)
+				TypeCache.Initialize (246ms)
+					TypeCache.ScanAssembly (238ms)
+				ResolveRequiredComponents (4ms)
 		FinalizeReload (0ms)
 			ReleaseScriptCaches (0ms)
 			RebuildScriptCaches (0ms)
-			SetupLoadedEditorAssemblies (790ms)
+			SetupLoadedEditorAssemblies (667ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (130ms)
-				SetLoadedEditorAssemblies (9ms)
+				InitializePlatformSupportModulesInManaged (29ms)
+				SetLoadedEditorAssemblies (8ms)
 				RefreshPlugins (0ms)
-				BeforeProcessingInitializeOnLoad (123ms)
-				ProcessInitializeOnLoadAttributes (487ms)
-				ProcessInitializeOnLoadMethodAttributes (31ms)
-				AfterProcessingInitializeOnLoad (9ms)
+				BeforeProcessingInitializeOnLoad (128ms)
+				ProcessInitializeOnLoadAttributes (466ms)
+				ProcessInitializeOnLoadMethodAttributes (27ms)
+				AfterProcessingInitializeOnLoad (8ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (6ms)
-Refreshing native plugins compatible for Editor in 3.41 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 4.50 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 3565 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 21 unused Assets / (42.2 KB). Loaded Objects now: 4096.
+Unloading 3564 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 21 unused Assets / (34.7 KB). Loaded Objects now: 4097.
 Memory consumption went from 0.54 GB to 0.54 GB.
-Total: 3.971900 ms (FindLiveObjects: 0.269600 ms CreateObjectMapping: 0.160600 ms MarkObjects: 3.490900 ms  DeleteObjects: 0.049600 ms)
+Total: 5.257600 ms (FindLiveObjects: 0.651300 ms CreateObjectMapping: 0.279200 ms MarkObjects: 4.261100 ms  DeleteObjects: 0.065300 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
@@ -436,8 +556,3 @@ AssetImportParameters requested are different than current active one (requested
   custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
-TcpMessagingSession - receive error: operation aborted. errorcode: 995, details: The I/O operation has been aborted because of either a thread exit or an application request.
-AssetImportWorker is now disconnected from the server
-Process exiting
-Exiting without the bug reporter. Application will terminate with return code 0

@@ -134,12 +134,20 @@ public class VisualManagerThreeD : MonoBehaviour
         GameObject new_piece = Instantiate(visualManager.InternalAppearanceMap[piece.AppearanceID].Prefab3D);
         pieces.Add(piece.Position, new_piece);
         new_piece.transform.SetParent(squares[piece.Position.X, piece.Position.Y].transform);
-        new_piece.transform.localPosition = Vector3.zero;
+        new_piece.transform.localPosition = new Vector3(0, 0.25f, 0);
     }
 
-    public void Move(V2 from, V2 to) { }
+    public void Move(V2 from, V2 to) 
+    { 
+        DestroyPiece(from);
+        Create(visualManager.ChessManager.GameManager.Board.PieceBoard[to.X, to.Y]);
+    }
 
-    public void DestroyPiece(V2 position) { }
+    public void DestroyPiece(V2 position) 
+    {
+        Destroy(pieces[position]);
+        pieces.Remove(position);
+    }
 
     private void HoverSquare(V2 position) { hoveringOver = position; }
 
