@@ -18,6 +18,12 @@ public struct V2: IEquatable<V2>
         Y = y;
     }
 
+    public V2(int xy)
+    {
+        X = xy;
+        Y = xy;
+    }
+
     public bool Equals(V2 b) => Equals((V2?)b);
 
     public bool Equals(V2? nb)
