@@ -1,7 +1,9 @@
 using Game;
+using Gamemodes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,20 +23,27 @@ public class VisualManagerThreeD : MonoBehaviour
     [SerializeField] private Material blackBlockedMaterial;
     [SerializeField] private Material whiteMoveMaterial;
     [SerializeField] private Material blackMoveMaterial;
+    [SerializeField] private Material white3DHighlightMaterial;
+    [SerializeField] private Material black3DHighlightMaterial;
 
     private MeshRenderer[,] squares;
 
-    private int boardSize;
+    private List<V2> highlightedSquares= new List<V2>();
+
+    private V2 moveFromSquare = new V2(-1);
+    private V2 moveToSquare = new V2(-1);
+
+    private BoardRenderInfo boardRenderInfo;
 
     private float[,] targetDisplacement;
-    private int[,] highlighted;
+    private bool[,] highlighted;
 
     private V2 hoveringOver = new V2(-1, -1);
     private V2 selected = new V2(-1, -1);
 
     public void RenderBoard(BoardRenderInfo boardRenderInfo)
     {
-        boardSize = boardRenderInfo.BoardSize;
+        this.boardRenderInfo = boardRenderInfo;
 
         squares = new MeshRenderer[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
@@ -46,7 +55,7 @@ public class VisualManagerThreeD : MonoBehaviour
                 squares[x, y] = new_square.GetComponent<MeshRenderer>();
                 new_square.transform.SetParent(transform);
 
-                ResetSquareColor(new V2(x, y), boardRenderInfo);
+                ResetSquareColor(new V2(x, y));
 
                 new_square.transform.position = new Vector3(x - (boardRenderInfo.BoardSize / 2f), -0.25f, y - (boardRenderInfo.BoardSize / 2f));
                 new_square.SetActive(true);
@@ -58,7 +67,7 @@ public class VisualManagerThreeD : MonoBehaviour
         cameraManager.maxDist = cameraManager.minDist * 2;
     }
 
-    public void ResetSquareColor(V2 position, BoardRenderInfo boardRenderInfo)
+    public void ResetSquareColor(V2 position)
     {
         if (VisualManager.IsWhite(position))
         {
@@ -69,6 +78,10 @@ public class VisualManagerThreeD : MonoBehaviour
             else if (boardRenderInfo.HighlightedSquares.Contains(position))
             {
                 squares[position.X, position.Y].material = whiteHighlightMaterial;
+            }
+            else if (position == moveFromSquare || position == moveToSquare)
+            {
+                squares[position.X, position.Y].material = whiteMoveMaterial;
             }
             else
             {
@@ -84,6 +97,10 @@ public class VisualManagerThreeD : MonoBehaviour
             else if (boardRenderInfo.HighlightedSquares.Contains(position))
             {
                 squares[position.X, position.Y].material = blackHighlightMaterial;
+            }
+            else if (position == moveFromSquare || position == moveToSquare)
+            {
+                squares[position.X, position.Y].material = blackMoveMaterial;
             }
             else
             {
@@ -104,29 +121,81 @@ public class VisualManagerThreeD : MonoBehaviour
         blackMoveMaterial.color = theme.BlackMoveColor;
         whiteBlockedMaterial.color = theme.WhiteBlockedColor;
         blackBlockedMaterial.color = theme.BlackBlockedColor;
+        white3DHighlightMaterial.color = theme.White3DHighlightColor;
+        black3DHighlightMaterial.color = theme.Black3DHighlightColor;
     }
 
-    public void Create() { }
+    public void Create(AbstractPiece piece) { }
 
-    public void Move() { }
+    public void Move(V2 from, V2 to) { }
 
-    public void Destroy() { }
+    public void DestroyPiece(V2 position) { }
 
     private void HoverSquare(V2 position) { hoveringOver = position; }
 
     private void HoverNone() { hoveringOver = new V2(-1, -1); }
 
-    private void SelectSquare(V2 position) { selected = position; }
+    private void SelectSquare(V2 position, VisualManager visualManager)
+    {
+        if (position == selected) selected = new V2(-1);
+        else
+        {
+            if (visualManager.possibleMoves.FindIndex((m) => m.From == selected && m.To == position) != -1)
+            {
+                visualManager.ChessManager.DoLocalMove(selected, position);
+                selected = new V2(-1);
+            }
+            else
+                selected = position;
+        }
+    }
 
     private void DeselectSquare() { selected = new V2(-1, -1); }
 
-    public void ExternalUpdate()
+    private void HighlightSquare(V2 square)
+    {
+        highlightedSquares.Add(square);
+        if (VisualManager.IsWhite(square))
+            squares[square.X, square.Y].material = white3DHighlightMaterial;
+        else
+            squares[square.X, square.Y].material = black3DHighlightMaterial;
+    }
+
+    private void ClearHighlighted()
+    {
+        foreach(V2 square in highlightedSquares)
+        {
+            ResetSquareColor(square);
+        }
+        highlightedSquares.Clear();
+    }
+
+    public void ShowLastMove(V2 from, V2 to)
+    {
+        V2 temp_place = moveFromSquare;
+        moveFromSquare = new V2(-1);
+        if (temp_place != new V2(-1)) ResetSquareColor(temp_place);
+        temp_place = moveToSquare;
+        moveToSquare = new V2(-1);
+        if (moveToSquare != new V2(-1)) ResetSquareColor(moveToSquare);
+
+        if (VisualManager.IsWhite(from)) squares[from.X, from.Y].material = whiteMoveMaterial;
+        else squares[from.X, from.Y].material = blackMoveMaterial;
+
+        if (VisualManager.IsWhite(to)) squares[to.X, to.Y].material = whiteMoveMaterial;
+        else squares[to.X, to.Y].material = blackMoveMaterial;
+
+        moveFromSquare = from;
+        moveToSquare = to;
+    }   
+
+    public void ExternalUpdate(VisualManager visualManager)
     {
 
-        V2? currentPosition = cameraManager.ExternalUpdate(boardSize);
+        V2? currentPosition = cameraManager.ExternalUpdate(boardRenderInfo.BoardSize);
         if (currentPosition is not null && !I.GetMouseButton(K.SecondaryClick))
         {
-            if (I.GetMouseButtonDown(K.PrimaryClick)) SelectSquare((V2)currentPosition);
+            if (I.GetMouseButtonDown(K.PrimaryClick)) SelectSquare((V2)currentPosition, visualManager);
             HoverSquare((V2)currentPosition);
         }
         else
@@ -135,13 +204,13 @@ public class VisualManagerThreeD : MonoBehaviour
             HoverNone();
         }
 
-        UpdateDisplacements();
+        UpdateDisplacements(visualManager);
     }
 
-    private void UpdateDisplacements()
+    private void UpdateDisplacements(VisualManager visualManager)
     {
-        targetDisplacement = new float[boardSize, boardSize];
-        highlighted = new int[boardSize, boardSize];
+        targetDisplacement = new float[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
+        highlighted = new bool[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
         if (hoveringOver.X != -1)
         {
@@ -151,59 +220,28 @@ public class VisualManagerThreeD : MonoBehaviour
         if (selected.X != -1)
         {
             targetDisplacement[selected.X, selected.Y] += 0.3f;
-        }
+            // highlighted[selected.X, selected.Y] = true;
 
-        /*
-        foreach (Tuple<Vector2Int, bool> possible_move in chessManagerInterface.possibleMoves)
-        {
-            targetDisplacement[possible_move.Item1.x, possible_move.Item1.y] += 0.2f;
-            if (chessManagerInterface.chessManager.State.GetPieceAtPosition(possible_move.Item1) != null)
+            if (visualManager.possibleMoves.FindIndex((m) => m.From == selected) != -1)
             {
-                highlighted[possible_move.Item1.x, possible_move.Item1.y] = 2;
-            }
-            else
-            {
-                highlighted[possible_move.Item1.x, possible_move.Item1.y] = 1;
-            }
-        }
-        */
-
-        /*
-        int i = 0;
-        while (i < ripples.Count)
-        {
-            if (ripples[i].frame_num >= Ripple.FRAME_COUNT)
-            {
-                ripples.RemoveAt(i);
-            }
-            else
-            {
-                i++;
-            }
-        }
-
-        foreach (RippleData ripple in ripples)
-        {
-            float[,] frame = ripple.GetFrame();
-
-            for (int x = 0; x < 8; x++)
-            {
-                for (int y = 0; y < 8; y++)
+                foreach (Move m in visualManager.possibleMoves.FindAll((m) => m.From == selected))
                 {
-                    targetDisplacement[x, y] += frame[x, y];
+                    highlighted[m.To.X, m.To.Y] = true;
+                    targetDisplacement[m.To.X, m.To.Y] += 0.2f;
                 }
             }
         }
-        */
 
-        for (int x = 0; x < boardSize; x++)
+        ClearHighlighted();
+        for (int x = 0; x < boardRenderInfo.BoardSize; x++)
         {
-            for (int y = 0; y < boardSize; y++)
+            for (int y = 0; y < boardRenderInfo.BoardSize; y++)
             {
                 float target_delta = targetDisplacement[x, y] + 1 - squares[x, y].transform.position.y;
                 if (target_delta == 0) { return; }
                 squares[x, y].transform.position += Vector3.up * Mathf.Log(target_delta, 2) * Time.deltaTime * 10;
                 squares[x, y].transform.position = new Vector3(squares[x, y].transform.position.x, Mathf.Clamp(squares[x, y].transform.position.y, -10, 10), squares[x, y].transform.position.z);
+                if (highlighted[x, y]) HighlightSquare(new V2(x, y));
             }
         }
     }

@@ -31,6 +31,9 @@ namespace Game
         [Space(7)]
         public Color WhiteMoveColor;
         public Color BlackMoveColor;
+        [Space(7)]
+        public Color White3DHighlightColor;
+        public Color Black3DHighlightColor;
     }
 
     [RequireComponent(typeof(GameMenuManager))]
@@ -68,7 +71,7 @@ namespace Game
 
         private Resolution resolution = new Resolution();
 
-        private List<Move> possibleMoves = new List<Move>();
+        public List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
 
         private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
@@ -173,7 +176,15 @@ namespace Game
                 {
                     GameObject piece = pieces2D[from];
                     piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
+
+                    if (boardRenderInfo.Allows3D)
+                    {
+                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to);
+                        VisualManager3D.Move(from, to);
+                    }
+
                     pieces2D.Remove(from);
+
                     if (currentBoardHash[to.X, to.Y] != 0)
                     {
                         currentBoardHash[to.X, to.Y] = 0;
@@ -218,8 +229,13 @@ namespace Game
                         {
                             Destroy(pieces2D[new V2(x, y)]);
                             pieces2D.Remove(new V2(x, y));
+                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y));
                         }
-                        if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                        if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
+                        {
+                            AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                            if (boardRenderInfo.Allows3D) VisualManager3D.Create(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                        }
                     }
                 }
             }
@@ -423,7 +439,7 @@ namespace Game
         /// Marks a square as having had a piece move there last turn
         /// </summary>
         /// <param name="position"></param>
-        public void ShowMove(V2 position)
+        public void ShowPreviousMove(V2 position)
         {
             if (IsWhite(position)) squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
             else squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
@@ -482,10 +498,12 @@ namespace Game
             greyscaled.Clear();
 
             // Show new move
-            ShowMove(from);
-            ShowMove(to);
+            ShowPreviousMove(from);
+            ShowPreviousMove(to);
             greyscaled.Add(from);
             greyscaled.Add(to);
+
+            if (boardRenderInfo.Allows3D) VisualManager3D.ShowLastMove(from, to);
         }
 
         /// <summary>
@@ -600,7 +618,7 @@ namespace Game
 
             if (!targetDimension)
             {
-                VisualManager3D.ExternalUpdate();
+                VisualManager3D.ExternalUpdate(this);
             }
 
             // Check for resolution change
