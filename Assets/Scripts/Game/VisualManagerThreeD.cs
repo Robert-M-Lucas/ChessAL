@@ -1,10 +1,13 @@
 using Game;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class VisualManagerThreeD : MonoBehaviour
 {
+    [SerializeField] private CameraManager cameraManager;
+
     [SerializeField] private GameObject squarePrefab;
     [SerializeField] private Material whiteMaterial;
     [SerializeField] private Material blackMaterial;
@@ -19,8 +22,12 @@ public class VisualManagerThreeD : MonoBehaviour
 
     private MeshRenderer[,] squares;
 
+    private int boardSize;
+
     public void RenderBoard(BoardRenderInfo boardRenderInfo)
     {
+        boardSize = boardRenderInfo.BoardSize;
+
         squares = new MeshRenderer[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
         for (int x = 0; x < boardRenderInfo.BoardSize; x++)
@@ -37,6 +44,10 @@ public class VisualManagerThreeD : MonoBehaviour
                 new_square.SetActive(true);
             }
         }
+
+        cameraManager.cameraPosition.localPosition = new Vector3(0, 0, -boardRenderInfo.BoardSize * 1.5f);
+        cameraManager.minDist = Mathf.Sqrt(2 * Mathf.Pow((boardRenderInfo.BoardSize + 2) / 2, 2));
+        cameraManager.maxDist = cameraManager.minDist * 2;
     }
 
     public void ResetSquareColor(V2 position, BoardRenderInfo boardRenderInfo)
@@ -85,5 +96,25 @@ public class VisualManagerThreeD : MonoBehaviour
         blackMoveMaterial.color = theme.BlackMoveColor;
         whiteBlockedMaterial.color = theme.WhiteBlockedColor;
         blackBlockedMaterial.color = theme.BlackBlockedColor;
+    }
+
+    public void Create() { }
+
+    public void Move() { }
+
+    public void Destroy() { }
+
+    public void ExternalUpdate()
+    {
+
+        V2? currentPosition = cameraManager.ExternalUpdate(boardSize);
+        if (currentPosition is not null)
+        {
+            squares[((V2)currentPosition).X, ((V2)currentPosition).Y].SetMaterials(new List<Material>());
+        }
+        else
+        {
+
+        }
     }
 }

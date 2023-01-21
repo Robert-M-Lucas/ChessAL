@@ -72,7 +72,6 @@ namespace Game
         private List<GameObject> moveIndicators = new List<GameObject>();
 
         private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
-        private Dictionary<V2, GameObject> pieces3D = new Dictionary<V2, GameObject>();
 
         private Image[,] squares;
 
@@ -568,6 +567,7 @@ namespace Game
             {
                 targetDimension = !targetDimension;
                 transitionProgress = 0f;
+                if (targetDimension) renderBox.gameObject.SetActive(true);
             }
 
             if (transitionProgress is not float.NaN)
@@ -594,7 +594,13 @@ namespace Game
                 if (transitionProgress == 1f)
                 {
                     transitionProgress = float.NaN;
+                    if (!targetDimension) renderBox.gameObject.SetActive(false);
                 }
+            }
+
+            if (!targetDimension)
+            {
+                VisualManager3D.ExternalUpdate();
             }
 
             // Check for resolution change
