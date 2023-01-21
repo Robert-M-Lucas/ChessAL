@@ -11,6 +11,7 @@ using UnityEngine.UIElements;
 public class VisualManagerThreeD : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private VisualManager visualManager;
 
     [SerializeField] private GameObject squarePrefab;
     [SerializeField] private Material whiteMaterial;
@@ -28,12 +29,15 @@ public class VisualManagerThreeD : MonoBehaviour
 
     private MeshRenderer[,] squares;
 
+    private Dictionary<V2, GameObject> pieces= new Dictionary<V2, GameObject>();
+
     private List<V2> highlightedSquares= new List<V2>();
 
     private V2 moveFromSquare = new V2(-1);
     private V2 moveToSquare = new V2(-1);
 
     private BoardRenderInfo boardRenderInfo;
+    
 
     private float[,] targetDisplacement;
     private bool[,] highlighted;
@@ -125,7 +129,13 @@ public class VisualManagerThreeD : MonoBehaviour
         black3DHighlightMaterial.color = theme.Black3DHighlightColor;
     }
 
-    public void Create(AbstractPiece piece) { }
+    public void Create(AbstractPiece piece)
+    {
+        GameObject new_piece = Instantiate(visualManager.InternalAppearanceMap[piece.AppearanceID].Prefab3D);
+        pieces.Add(piece.Position, new_piece);
+        new_piece.transform.SetParent(squares[piece.Position.X, piece.Position.Y].transform);
+        new_piece.transform.localPosition = Vector3.zero;
+    }
 
     public void Move(V2 from, V2 to) { }
 
@@ -177,7 +187,7 @@ public class VisualManagerThreeD : MonoBehaviour
         if (temp_place != new V2(-1)) ResetSquareColor(temp_place);
         temp_place = moveToSquare;
         moveToSquare = new V2(-1);
-        if (moveToSquare != new V2(-1)) ResetSquareColor(moveToSquare);
+        if (temp_place != new V2(-1)) ResetSquareColor(temp_place);
 
         if (VisualManager.IsWhite(from)) squares[from.X, from.Y].material = whiteMoveMaterial;
         else squares[from.X, from.Y].material = blackMoveMaterial;
@@ -189,9 +199,8 @@ public class VisualManagerThreeD : MonoBehaviour
         moveToSquare = to;
     }   
 
-    public void ExternalUpdate(VisualManager visualManager)
+    public void ExternalUpdate()
     {
-
         V2? currentPosition = cameraManager.ExternalUpdate(boardRenderInfo.BoardSize);
         if (currentPosition is not null && !I.GetMouseButton(K.SecondaryClick))
         {
@@ -204,10 +213,10 @@ public class VisualManagerThreeD : MonoBehaviour
             HoverNone();
         }
 
-        UpdateDisplacements(visualManager);
+        UpdateDisplacements();
     }
 
-    private void UpdateDisplacements(VisualManager visualManager)
+    private void UpdateDisplacements()
     {
         targetDisplacement = new float[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
         highlighted = new bool[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];

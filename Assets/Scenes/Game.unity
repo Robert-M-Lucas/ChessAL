@@ -1027,7 +1027,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850501250}
-  m_LocalRotation: {x: 0.19080894, y: 0, z: 0, w: 0.9816273}
+  m_LocalRotation: {x: 0.35836798, y: 0, z: 0, w: 0.93358046}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1035,7 +1035,7 @@ Transform:
   - {fileID: 619800208}
   m_Father: {fileID: 1303691176}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 22, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 42, y: 0, z: 0}
 --- !u!1 &880657994
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,59 +1523,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VisualManager3D: {fileID: 1438867882}
   pieceTravelTime: 0.3
-  Themes:
-  - Name: Lichess
-    WhiteColor: {r: 0.9529412, g: 0.85882354, b: 0.7019608, a: 1}
-    BlackColor: {r: 0.7019608, g: 0.54509807, b: 0.39215687, a: 1}
-    WhiteHighlightColor: {r: 0.6886792, g: 0.5169155, b: 0.23064259, a: 1}
-    BlackHighlightColor: {r: 0.4245283, g: 0.26939857, b: 0.11814703, a: 1}
-    WhiteSelectColor: {r: 0.50980395, g: 0.5921569, b: 0.4117647, a: 1}
-    BlackSelectColor: {r: 0.32941177, g: 0.39215687, b: 0.23529412, a: 1}
-    WhiteBlockedColor: {r: 0.2264151, g: 0, b: 0, a: 1}
-    BlackBlockedColor: {r: 0.09433961, g: 0, b: 0, a: 1}
-    WhiteMoveColor: {r: 0.8, g: 0.83137256, b: 0.42352942, a: 1}
-    BlackMoveColor: {r: 0.6175343, g: 0.6415094, b: 0.32983267, a: 1}
-    White3DHighlightColor: {r: 1, g: 0.92539847, b: 0, a: 0}
-    Black3DHighlightColor: {r: 0.7075472, g: 0.6291156, b: 0, a: 0}
-  - Name: Chess.com
-    WhiteColor: {r: 0.92156863, g: 0.92156863, b: 0.827451, a: 1}
-    BlackColor: {r: 0.4509804, g: 0.5764706, b: 0.32941177, a: 1}
-    WhiteHighlightColor: {r: 0.5, g: 0.47334254, b: 0.3183962, a: 1}
-    BlackHighlightColor: {r: 0.26415092, g: 0.23948023, b: 0.14079742, a: 1}
-    WhiteSelectColor: {r: 0.9529412, g: 0.9529412, b: 0.41960785, a: 1}
-    BlackSelectColor: {r: 0.7372549, g: 0.79607844, b: 0.17254902, a: 1}
-    WhiteBlockedColor: {r: 0.2264151, g: 0, b: 0, a: 1}
-    BlackBlockedColor: {r: 0.09433961, g: 0, b: 0, a: 1}
-    WhiteMoveColor: {r: 0.9529412, g: 0.9529412, b: 0.41960785, a: 1}
-    BlackMoveColor: {r: 0.7372549, g: 0.79607844, b: 0.17254902, a: 1}
-    White3DHighlightColor: {r: 1, g: 0.9254902, b: 0, a: 0}
-    Black3DHighlightColor: {r: 0.7058824, g: 0.627451, b: 0, a: 0}
-  - Name: Black and White
-    WhiteColor: {r: 1, g: 1, b: 1, a: 1}
-    BlackColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
-    WhiteHighlightColor: {r: 0.5, g: 0.47334254, b: 0.3183962, a: 1}
-    BlackHighlightColor: {r: 0.26415092, g: 0.23948023, b: 0.14079742, a: 1}
-    WhiteSelectColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
-    BlackSelectColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
-    WhiteBlockedColor: {r: 0.2264151, g: 0, b: 0, a: 1}
-    BlackBlockedColor: {r: 0.09433961, g: 0, b: 0, a: 1}
-    WhiteMoveColor: {r: 0.50980395, g: 0.5921569, b: 0.4117647, a: 1}
-    BlackMoveColor: {r: 0.32941177, g: 0.39215687, b: 0.23529412, a: 1}
-    White3DHighlightColor: {r: 1, g: 0.9254902, b: 0, a: 0}
-    Black3DHighlightColor: {r: 0.7058824, g: 0.627451, b: 0, a: 0}
-  - Name: Karolina
-    WhiteColor: {r: 1, g: 0, b: 0.92892265, a: 1}
-    BlackColor: {r: 0.4751377, g: 0, b: 1, a: 1}
-    WhiteHighlightColor: {r: 1, g: 0.85106367, b: 0, a: 1}
-    BlackHighlightColor: {r: 1, g: 0.5087234, b: 0, a: 1}
-    WhiteSelectColor: {r: 0.32182944, g: 1, b: 0, a: 1}
-    BlackSelectColor: {r: 0.00859418, g: 0.3773585, b: 0, a: 1}
-    WhiteBlockedColor: {r: 0.2264151, g: 0, b: 0, a: 1}
-    BlackBlockedColor: {r: 0.09433961, g: 0, b: 0, a: 1}
-    WhiteMoveColor: {r: 0, g: 0.7691431, b: 1, a: 1}
-    BlackMoveColor: {r: 0, g: 0.10163784, b: 1, a: 1}
-    White3DHighlightColor: {r: 1, g: 0.9254902, b: 0, a: 0}
-    Black3DHighlightColor: {r: 0.7058824, g: 0.627451, b: 0, a: 0}
+  themes:
+  - Name: Test
+    WhiteColor: {r: 0.69947696, g: 1, b: 0.6556604, a: 0}
+    BlackColor: {r: 0, g: 0.38679248, b: 0.054497268, a: 0}
+    WhiteHighlightColor: {r: 0.4827229, g: 0.5283019, b: 0, a: 0}
+    BlackHighlightColor: {r: 0.34134337, g: 0.3490566, b: 0.014818435, a: 0}
+    WhiteSelectColor: {r: 0, g: 1, b: 0.5635319, a: 0}
+    BlackSelectColor: {r: 0, g: 0.5943396, b: 0.36645836, a: 0}
+    WhiteBlockedColor: {r: 0.6698113, g: 0, b: 0, a: 0}
+    BlackBlockedColor: {r: 0.38679248, g: 0, b: 0, a: 0}
+    WhiteMoveColor: {r: 0.7735849, g: 0.48866835, b: 0, a: 0}
+    BlackMoveColor: {r: 0.4056604, g: 0.24358131, b: 0, a: 0}
+    White3DHighlightColor: {r: 0.9887359, g: 1, b: 0, a: 0}
+    Black3DHighlightColor: {r: 0.5048894, g: 0.5283019, b: 0, a: 0}
+  currentTheme: 0
   renderBox: {fileID: 910990398}
   Hide3DImage: {fileID: 790045625}
   SquarePrefab: {fileID: 1935436147}
@@ -2069,6 +2031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraManager: {fileID: 1914843240}
+  visualManager: {fileID: 1172155900}
   squarePrefab: {fileID: 1235436509}
   whiteMaterial: {fileID: 2100000, guid: 174be81865af1b046912a94012b228a4, type: 2}
   blackMaterial: {fileID: 2100000, guid: 6308bbf343738ba4ca1dbae414969589, type: 2}

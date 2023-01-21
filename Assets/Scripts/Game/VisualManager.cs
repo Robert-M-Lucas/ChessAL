@@ -43,8 +43,8 @@ namespace Game
 
         [SerializeField] private float pieceTravelTime;
 
-        [SerializeField] private Theme[] Themes;
-        private int currentTheme = 0;
+        [SerializeField] private Theme[] themes;
+        [SerializeField] private int currentTheme = 0;
 
         [SerializeField] private RectTransform renderBox;
 
@@ -60,7 +60,7 @@ namespace Game
         [SerializeField] private TMP_Text AIText;
 
         [SerializeField] private AppearanceTable[] AppearanceTables;
-        private Dictionary<int, PieceAppearance> internalAppearanceMap = new Dictionary<int, PieceAppearance>();
+        public Dictionary<int, PieceAppearance> InternalAppearanceMap = new Dictionary<int, PieceAppearance>();
 
         public ChessManager ChessManager;
         [SerializeField] private GameMenuManager GameMenuManager;
@@ -97,20 +97,20 @@ namespace Game
                 foreach (PieceAppearance piece_appearance in appearance_table.Appearances)
                 {
 #if UNITY_EDITOR
-                    if (internalAppearanceMap.ContainsKey(piece_appearance.ID))
+                    if (InternalAppearanceMap.ContainsKey(piece_appearance.ID))
                     {
                         throw new Exception("Duplicate appearance ID");
                     }
 #endif
 
-                    internalAppearanceMap[piece_appearance.ID] = piece_appearance;
+                    InternalAppearanceMap[piece_appearance.ID] = piece_appearance;
                 }
             }
 
             if (PlayerPrefs.HasKey(PLAYER_PREFS_THEME_KEY))
             {
                 currentTheme = PlayerPrefs.GetInt(PLAYER_PREFS_THEME_KEY);
-                if (currentTheme >= Themes.Length) currentTheme = 0;
+                if (currentTheme >= themes.Length) currentTheme = 0;
             }
         }
 
@@ -129,7 +129,7 @@ namespace Game
             if (boardRenderInfo.Allows3D)
             {
                 VisualManager3D.RenderBoard(boardRenderInfo);
-                VisualManager3D.UpdateTheme(Themes[currentTheme]);
+                VisualManager3D.UpdateTheme(themes[currentTheme]);
             }
             UpdateAllPieces();
             
@@ -282,7 +282,7 @@ namespace Game
         private void UpdatePiece(AbstractPiece piece)
         {
             Image image = pieces2D[piece.Position].GetComponent<Image>();
-            image.sprite = internalAppearanceMap[piece.AppearanceID].Sprite; // Get piece appearance
+            image.sprite = InternalAppearanceMap[piece.AppearanceID].Sprite; // Get piece appearance
 
             SizeGameObject(image.gameObject, piece.Position); // Resize for display scale
         }
@@ -431,8 +431,8 @@ namespace Game
         public void SelectSquare(V2 position)
         {
             // Set colour to themed select colour
-            if (IsWhite(position)) squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
-            else squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = themes[currentTheme].WhiteSelectColor;
+            else squares[position.X, position.Y].color = themes[currentTheme].BlackSelectColor;
         }
 
         /// <summary>
@@ -441,8 +441,8 @@ namespace Game
         /// <param name="position"></param>
         public void ShowPreviousMove(V2 position)
         {
-            if (IsWhite(position)) squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
-            else squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = themes[currentTheme].WhiteMoveColor;
+            else squares[position.X, position.Y].color = themes[currentTheme].BlackMoveColor;
         }
 
         /// <summary>
@@ -456,30 +456,30 @@ namespace Game
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteBlockedColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteHighlightColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteHighlightColor;
                 }
                 else
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].WhiteColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteColor;
                 }
             }
             else
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].BlackBlockedColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].BlackHighlightColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackHighlightColor;
                 }
                 else
                 {
-                    squares[position.X, position.Y].color = Themes[currentTheme].BlackColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackColor;
                 }
             }
             Color square_color = squares[position.X, position.Y].color;
@@ -558,7 +558,7 @@ namespace Game
             }
 
             if (boardRenderInfo.Allows3D)
-                VisualManager3D.UpdateTheme(Themes[currentTheme]);
+                VisualManager3D.UpdateTheme(themes[currentTheme]);
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace Game
         public void CycleTheme()
         {
             currentTheme++;
-            if (currentTheme >= Themes.Length) currentTheme = 0;
+            if (currentTheme >= themes.Length) currentTheme = 0;
             UpdateTheme();
             PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
         }
@@ -618,7 +618,7 @@ namespace Game
 
             if (!targetDimension)
             {
-                VisualManager3D.ExternalUpdate(this);
+                VisualManager3D.ExternalUpdate();
             }
 
             // Check for resolution change
