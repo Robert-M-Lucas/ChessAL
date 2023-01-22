@@ -182,8 +182,8 @@ public class VisualManagerThreeD : MonoBehaviour
 
         pieces[from].transform.SetParent(squares[to.X, to.Y].transform);
         pieces[from].GetComponent<PieceControllerThreeD>().Move(
-            new Vector3(from.X - (boardRenderInfo.BoardSize / 2f), 0.25f, from.Y - (boardRenderInfo.BoardSize / 2f)), 
-            new Vector3(to.X - (boardRenderInfo.BoardSize / 2f), 0.25f, to.Y - (boardRenderInfo.BoardSize / 2f)), 
+            pieces[from].transform.localPosition, 
+            new Vector3(0, 0.25f, 0), 
             jump, visualManager.pieceTravelTime, 2f);
 
         pieces[to] = pieces[from];

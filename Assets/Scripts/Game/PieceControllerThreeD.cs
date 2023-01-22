@@ -39,7 +39,7 @@ public class PieceControllerThreeD : MonoBehaviour
                 jump_v += Vector3.up * MathP.SmoothJump(current_progress) * jumpHeight;
             }
 
-            transform.position = Vector3.Lerp(from, to, current_progress) + jump_v;
+            transform.localPosition = Vector3.Lerp(from, to, current_progress) + jump_v;
 
             if (progress == 1f) progress = float.NaN;
         }
