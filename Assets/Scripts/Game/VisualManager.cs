@@ -486,6 +486,7 @@ namespace Game
                 }
             }
             Color square_color = squares[position.X, position.Y].color;
+            Debug.Log(alpha);
             square_color.a = alpha;
             squares[position.X, position.Y].color = square_color;
         }
