@@ -34,6 +34,9 @@ namespace Game
         [Space(7)]
         public Color White3DHighlightColor;
         public Color Black3DHighlightColor;
+        [Space(7)]
+        public Color White3DTakeHighlightColor;
+        public Color Black3DTakeHighlightColor;
     }
 
     [RequireComponent(typeof(GameMenuManager))]
@@ -41,7 +44,7 @@ namespace Game
     {
         public VisualManagerThreeD VisualManager3D;
 
-        [SerializeField] private float pieceTravelTime;
+        public float pieceTravelTime;
 
         [SerializeField] private Theme[] themes;
         [SerializeField] private int currentTheme = 0;

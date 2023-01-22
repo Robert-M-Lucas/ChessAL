@@ -8,6 +8,14 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+public class RippleData
+{
+    public V2 position;
+    public float time = 0;
+
+    public RippleData(V2 position) { this.position = position; }
+}
+
 public class VisualManagerThreeD : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
@@ -26,6 +34,8 @@ public class VisualManagerThreeD : MonoBehaviour
     [SerializeField] private Material blackMoveMaterial;
     [SerializeField] private Material white3DHighlightMaterial;
     [SerializeField] private Material black3DHighlightMaterial;
+    [SerializeField] private Material white3DTakeHighlightMaterial;
+    [SerializeField] private Material black3DTakeHighlightMaterial;
 
     private MeshRenderer[,] squares;
 
@@ -44,6 +54,8 @@ public class VisualManagerThreeD : MonoBehaviour
 
     private V2 hoveringOver = new V2(-1, -1);
     private V2 selected = new V2(-1, -1);
+
+    private List<RippleData> ripples = new List<RippleData>();
 
     public void RenderBoard(BoardRenderInfo boardRenderInfo)
     {
@@ -127,26 +139,62 @@ public class VisualManagerThreeD : MonoBehaviour
         blackBlockedMaterial.color = theme.BlackBlockedColor;
         white3DHighlightMaterial.color = theme.White3DHighlightColor;
         black3DHighlightMaterial.color = theme.Black3DHighlightColor;
+        white3DTakeHighlightMaterial.color = theme.White3DTakeHighlightColor;
+        black3DTakeHighlightMaterial.color = theme.Black3DTakeHighlightColor;
     }
 
     public void Create(AbstractPiece piece)
     {
         GameObject new_piece = Instantiate(visualManager.InternalAppearanceMap[piece.AppearanceID].Prefab3D);
+        new_piece.AddComponent<PieceControllerThreeD>();
         pieces.Add(piece.Position, new_piece);
         new_piece.transform.SetParent(squares[piece.Position.X, piece.Position.Y].transform);
         new_piece.transform.localPosition = new Vector3(0, 0.25f, 0);
     }
 
     public void Move(V2 from, V2 to) 
-    { 
-        DestroyPiece(from);
-        Create(visualManager.ChessManager.GameManager.Board.PieceBoard[to.X, to.Y]);
+    {
+        bool jump = false;
+        Vector2 delta = (to - from).Vector2();
+        int count = (int) delta.magnitude;
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 current_pos = from.Vector2() + (delta * (i / (float)count));
+            V2 min_pos = new V2((int) Mathf.Floor(current_pos.x), (int)Mathf.Floor(current_pos.y));
+            V2 max_pos = new V2((int)Mathf.Ceil(current_pos.x), (int)Mathf.Ceil(current_pos.y));
+            if (min_pos != from && min_pos != to)
+            {
+                if (pieces.ContainsKey(min_pos))
+                {
+                    jump = true; break;
+                }
+            }
+            if (max_pos != from && max_pos != to)
+            {
+                if (pieces.ContainsKey(max_pos))
+                {
+                    jump = true; break;
+                }
+            }
+        }
+
+
+        pieces[from].transform.SetParent(squares[to.X, to.Y].transform);
+        pieces[from].GetComponent<PieceControllerThreeD>().Move(
+            new Vector3(from.X - (boardRenderInfo.BoardSize / 2f), 0.25f, from.Y - (boardRenderInfo.BoardSize / 2f)), 
+            new Vector3(to.X - (boardRenderInfo.BoardSize / 2f), 0.25f, to.Y - (boardRenderInfo.BoardSize / 2f)), 
+            jump, visualManager.pieceTravelTime, 2f);
+
+        pieces[to] = pieces[from];
+        pieces.Remove(from);
     }
 
     public void DestroyPiece(V2 position) 
     {
         Destroy(pieces[position]);
         pieces.Remove(position);
+        ripples.Add(new RippleData(position));
     }
 
     private void HoverSquare(V2 position) { hoveringOver = position; }
@@ -174,9 +222,11 @@ public class VisualManagerThreeD : MonoBehaviour
     {
         highlightedSquares.Add(square);
         if (VisualManager.IsWhite(square))
-            squares[square.X, square.Y].material = white3DHighlightMaterial;
+            if (pieces.ContainsKey(square)) squares[square.X, square.Y].material = white3DTakeHighlightMaterial;
+            else squares[square.X, square.Y].material = white3DHighlightMaterial;
         else
-            squares[square.X, square.Y].material = black3DHighlightMaterial;
+            if (pieces.ContainsKey(square)) squares[square.X, square.Y].material = black3DTakeHighlightMaterial;
+            else squares[square.X, square.Y].material = black3DHighlightMaterial;
     }
 
     private void ClearHighlighted()
@@ -226,6 +276,17 @@ public class VisualManagerThreeD : MonoBehaviour
 
     private void UpdateDisplacements()
     {
+        for (int i = 0; i < ripples.Count; i++)
+        {
+            ripples[i].time += Time.deltaTime / 2f;
+            if (ripples[i].time >= 1f)
+            {
+                ripples.RemoveAt(i);
+                i--;
+            }
+            i++;
+        }
+
         targetDisplacement = new float[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
         highlighted = new bool[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
@@ -249,7 +310,21 @@ public class VisualManagerThreeD : MonoBehaviour
             }
         }
 
-        ClearHighlighted();
+        float max_distance = new Vector2(boardRenderInfo.BoardSize / 2f, boardRenderInfo.BoardSize / 2f).magnitude;
+        for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+        {
+            for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+            {
+                foreach (RippleData ripple in ripples)
+                {
+                    float distance = (ripple.position - new V2(x, y)).Vector2().magnitude;
+                    targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1, distance, max_distance, 6) * 0.4f;
+                }
+            }
+        }
+
+
+            ClearHighlighted();
         for (int x = 0; x < boardRenderInfo.BoardSize; x++)
         {
             for (int y = 0; y < boardRenderInfo.BoardSize; y++)
