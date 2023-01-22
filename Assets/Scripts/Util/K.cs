@@ -9,7 +9,9 @@ using UnityEngine.UI;
 public static class K
 {
     public static int PrimaryClick = 0;
+    public static int SecondaryClick = 1;
 
     public static KeyCode EscapeKey = KeyCode.Escape;
     public static KeyCode ChangeThemeKey = KeyCode.T;
+    public static KeyCode ChangeDimensionKey = KeyCode.Tab;
 }

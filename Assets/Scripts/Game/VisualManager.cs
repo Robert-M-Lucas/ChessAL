@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Gamemodes;
-using System.Net.NetworkInformation;
 using TMPro;
 using System;
+using System.Data;
 
 namespace Game
 {
@@ -31,30 +31,42 @@ namespace Game
         [Space(7)]
         public Color WhiteMoveColor;
         public Color BlackMoveColor;
+        [Space(7)]
+        public Color White3DHighlightColor;
+        public Color Black3DHighlightColor;
+        [Space(7)]
+        public Color White3DTakeHighlightColor;
+        public Color Black3DTakeHighlightColor;
     }
 
     [RequireComponent(typeof(GameMenuManager))]
     public class VisualManager : MonoBehaviour
     {
-        public Theme[] Themes;
-        private int currentTheme = 0;
+        public VisualManagerThreeD VisualManager3D;
 
-        public RectTransform renderBox;
+        public float pieceTravelTime;
 
-        public GameObject SquarePrefab;
-        public GameObject PiecePrefab;
-        public GameObject MoveOptionPrefab;
+        [SerializeField] private Theme[] themes;
+        [SerializeField] private int currentTheme = 0;
 
-        public TMP_Text TurnText;
-        public TMP_Text TeamWinText;
-        public TMP_Text TimerText;
-        public TMP_Text AIText;
+        [SerializeField] private RectTransform renderBox;
 
-        public AppearanceTable[] AppearanceTables;
-        private Dictionary<int, Sprite> internalSpriteTable = new Dictionary<int, Sprite>();
+        [SerializeField] private Image Hide3DImage;
+
+        [SerializeField] private GameObject SquarePrefab;
+        [SerializeField] private GameObject PiecePrefab;
+        [SerializeField] private GameObject MoveOptionPrefab;
+
+        [SerializeField] private TMP_Text TurnText;
+        [SerializeField] private TMP_Text TeamWinText;
+        [SerializeField] private TMP_Text TimerText;
+        [SerializeField] private TMP_Text AIText;
+
+        [SerializeField] private AppearanceTable[] AppearanceTables;
+        public Dictionary<int, PieceAppearance> InternalAppearanceMap = new Dictionary<int, PieceAppearance>();
 
         public ChessManager ChessManager;
-        public GameMenuManager GameMenuManager;
+        [SerializeField] private GameMenuManager GameMenuManager;
 
         private const string PLAYER_PREFS_THEME_KEY = "Theme";
 
@@ -62,17 +74,22 @@ namespace Game
 
         private Resolution resolution = new Resolution();
 
-        private Dictionary<AbstractPiece, Image> piece_images = new Dictionary<AbstractPiece, Image>();
-
-        private List<Move> possibleMoves = new List<Move>();
+        public List<Move> possibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
-        private List<GameObject> pieces = new List<GameObject>();
 
-        private Image[,] Squares;
+        private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
+
+        private Image[,] squares;
 
         private V2? currentlyShowing = null;
 
         private List<V2> greyscaled = new List<V2>();
+
+        private int[,] currentBoardHash;
+
+        private float transitionProgress = float.NaN;
+        private bool targetDimension = true; // true = 2D
+        [SerializeField] private float transitionTime = 2f;
 
         // Run once
         private void Awake()
@@ -80,23 +97,23 @@ namespace Game
             // Populate sprite table
             foreach (AppearanceTable appearance_table in AppearanceTables)
             {
-                foreach (PieceSprite piece_sprite in appearance_table.Appearances)
+                foreach (PieceAppearance piece_appearance in appearance_table.Appearances)
                 {
 #if UNITY_EDITOR
-                    if (internalSpriteTable.ContainsKey(piece_sprite.ID))
+                    if (InternalAppearanceMap.ContainsKey(piece_appearance.ID))
                     {
                         throw new Exception("Duplicate appearance ID");
                     }
 #endif
 
-                    internalSpriteTable[piece_sprite.ID] = piece_sprite.Sprite;
+                    InternalAppearanceMap[piece_appearance.ID] = piece_appearance;
                 }
             }
 
             if (PlayerPrefs.HasKey(PLAYER_PREFS_THEME_KEY))
             {
                 currentTheme = PlayerPrefs.GetInt(PLAYER_PREFS_THEME_KEY);
-                if (currentTheme >= Themes.Length) currentTheme = 0;
+                if (currentTheme >= themes.Length) currentTheme = 0;
             }
         }
 
@@ -105,13 +122,20 @@ namespace Game
         {   
             // Get information for how board should be displayed
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
+            currentBoardHash = new int[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
-            Squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
+            squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
             // Initial update
             OnResolutionChange();
             RenderBoardBackground();
+            if (boardRenderInfo.Allows3D)
+            {
+                VisualManager3D.RenderBoard(boardRenderInfo);
+                VisualManager3D.UpdateTheme(themes[currentTheme]);
+            }
             UpdateAllPieces();
+            
         }
 
         /// <summary>
@@ -136,18 +160,98 @@ namespace Game
         /// <summary>
         /// Renders all pieces in BoardManager
         /// </summary>
-        public void UpdateAllPieces()
-        {
-            // Remove all pieces
-            foreach (GameObject g in pieces) Destroy(g);
-            pieces.Clear();
+        public void UpdateAllPieces(Move move) => UpdateAllPieces(move, true);
 
-            // Create all pieces
+        /// <summary>
+        /// Renders all pieces in BoardManager
+        /// </summary>
+        public void UpdateAllPieces() => UpdateAllPieces(new Move(new V2(-1, -1), new V2(-1, -1)), false);
+
+        /// <summary>
+        /// Renders all pieces in BoardManager
+        /// </summary>
+        private void UpdateAllPieces(Move move, bool hasMove)
+        {
+            void CheckSlide(V2 from, V2 to)
+            {
+                if (ChessManager.GameManager.Board.PieceBoard[to.X, to.Y] is not null &&
+                    currentBoardHash[from.X, from.Y] == ChessManager.GameManager.Board.PieceBoard[to.X, to.Y].GetHashCode())
+                {
+                    GameObject piece = pieces2D[from];
+                    piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
+
+                    if (boardRenderInfo.Allows3D)
+                    {
+                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to);
+                        VisualManager3D.Move(from, to);
+                    }
+
+                    pieces2D.Remove(from);
+
+                    if (currentBoardHash[to.X, to.Y] != 0)
+                    {
+                        currentBoardHash[to.X, to.Y] = 0;
+                        Destroy(pieces2D[new V2(to.X, to.Y)]);
+                        pieces2D.Remove(new V2(to.X, to.Y));
+                    }
+                    pieces2D.Add(to, piece);
+                    currentBoardHash[to.X, to.Y] = currentBoardHash[from.X, from.Y];
+                    currentBoardHash[from.X, from.Y] = 0;
+                }
+            }
+
+            // Check for sliding moves
+            if (hasMove) CheckSlide(move.From, move.To);
+
+            // Check for more sliding moves
+            for (int x1 = 0; x1 < boardRenderInfo.BoardSize; x1++)
+            {
+                for (int y1 = 0; y1 < boardRenderInfo.BoardSize; y1++)
+                {
+                    if (currentBoardHash[x1, y1] == 0 ||
+                        currentBoardHash[x1, y1] == (ChessManager.GameManager.Board.PieceBoard[x1, y1]?.GetHashCode() ?? 0))
+                            continue;
+
+                    for (int x2 = 0; x2 < boardRenderInfo.BoardSize; x2++)
+                    {
+                        for (int y2 = 0; y2 < boardRenderInfo.BoardSize; y2++)
+                        {
+                            CheckSlide(new V2(x1, y1), new V2(x2, y2));
+                        }
+                    }
+                }
+            }
+
+            // Resolve difference between previous and current board state
+            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            {
+                for (int y = 0; y < boardRenderInfo.BoardSize; y++) {
+                    if (currentBoardHash[x, y] != (ChessManager.GameManager.Board.PieceBoard[x, y]?.GetHashCode() ?? 0))
+                    {
+                        if (currentBoardHash[x, y] != 0)
+                        {
+                            Destroy(pieces2D[new V2(x, y)]);
+                            pieces2D.Remove(new V2(x, y));
+                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y));
+                        }
+                        if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
+                        {
+                            AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                            if (boardRenderInfo.Allows3D) VisualManager3D.Create(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                        }
+                    }
+                }
+            }
+
+            // Rebuild hash table
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null) AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                    if (ChessManager.GameManager.Board.PieceBoard[x, y] is null)
+                        currentBoardHash[x, y] = 0;
+                    else
+                        currentBoardHash[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].GetHashCode();
                 }
             }
         }
@@ -160,14 +264,16 @@ namespace Game
         {
             // Duplicate piece
             GameObject new_gameobject = Instantiate(PiecePrefab);
-            pieces.Add(new_gameobject);
+            pieces2D.Add(piece.Position, new_gameobject);
             Image image = new_gameobject.GetComponent<Image>();
+
+            if (boardRenderInfo.Allows3D)
+            {
+                // new_gameobject = Instantiate(internalAppearanceMap[piece.AppearanceID].Prefab3D);
+            }
 
             // Show
             new_gameobject.SetActive(true);
-
-            // Set image
-            piece_images[piece] = image;
 
             UpdatePiece(piece);
         }
@@ -178,8 +284,8 @@ namespace Game
         /// <param name="piece"></param>
         private void UpdatePiece(AbstractPiece piece)
         {
-            Image image = piece_images[piece];
-            image.sprite = internalSpriteTable[piece.AppearanceID]; // Get piece appearance
+            Image image = pieces2D[piece.Position].GetComponent<Image>();
+            image.sprite = InternalAppearanceMap[piece.AppearanceID].Sprite; // Get piece appearance
 
             SizeGameObject(image.gameObject, piece.Position); // Resize for display scale
         }
@@ -209,7 +315,7 @@ namespace Game
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        private bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
+        public static bool IsWhite(V2 position) => (position.X + position.Y) % 2 == 0;
 
         /// <summary>
         /// Renders the board's cells
@@ -228,7 +334,7 @@ namespace Game
                     rendered_piece_data.Position = new V2(x, y); // Set position data
 
                     Image image = new_square.GetComponent<Image>();
-                    Squares[x, y] = image;
+                    squares[x, y] = image;
 
                     ResetSquareColor(new V2(x, y)); // Set to default colour
 
@@ -237,19 +343,21 @@ namespace Game
             }
         }
 
+        public void SizeGameObject(GameObject gameObject, V2 position) => SizeGameObject(gameObject, position.Vector2());
+
         // Gives a GameObject the correct size, scale and position
-        private void SizeGameObject(GameObject gameObject, V2 position)
+        public void SizeGameObject(GameObject gameObject, Vector2 position)
         {
             RectTransform rect = gameObject.GetComponent<RectTransform>();
             rect.SetParent(renderBox); // Set as a child of the render box
             
             // Set min and max anchors to corners of square
-            rect.anchorMin = new Vector2((float)position.X / boardRenderInfo.BoardSize, (float)position.Y / boardRenderInfo.BoardSize);
-            rect.anchorMax = new Vector2((float)(position.X + 1) / boardRenderInfo.BoardSize, (float)(position.Y + 1) / boardRenderInfo.BoardSize);
+            rect.anchorMin = new Vector2((float)position.x / boardRenderInfo.BoardSize, (float)position.y / boardRenderInfo.BoardSize);
+            rect.anchorMax = new Vector2((float)(position.x + 1) / boardRenderInfo.BoardSize, (float)(position.y + 1) / boardRenderInfo.BoardSize);
 
             // Set position to that square
-            rect.localPosition = new Vector2((position.X + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
-                (position.Y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+            rect.localPosition = new Vector2((position.x + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
+                (position.y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
 
             // Resize
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
@@ -326,18 +434,18 @@ namespace Game
         public void SelectSquare(V2 position)
         {
             // Set colour to themed select colour
-            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteSelectColor;
-            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackSelectColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = themes[currentTheme].WhiteSelectColor;
+            else squares[position.X, position.Y].color = themes[currentTheme].BlackSelectColor;
         }
 
         /// <summary>
         /// Marks a square as having had a piece move there last turn
         /// </summary>
         /// <param name="position"></param>
-        public void ShowMove(V2 position)
+        public void ShowPreviousMove(V2 position)
         {
-            if (IsWhite(position)) Squares[position.X, position.Y].color = Themes[currentTheme].WhiteMoveColor;
-            else Squares[position.X, position.Y].color = Themes[currentTheme].BlackMoveColor;
+            if (IsWhite(position)) squares[position.X, position.Y].color = themes[currentTheme].WhiteMoveColor;
+            else squares[position.X, position.Y].color = themes[currentTheme].BlackMoveColor;
         }
 
         /// <summary>
@@ -346,36 +454,40 @@ namespace Game
         /// <param name="position"></param>
         public void ResetSquareColor(V2 position)
         {
+            float alpha = squares[position.X, position.Y].color.a;
             if (IsWhite(position))
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteBlockedColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteHighlightColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteHighlightColor;
                 }
                 else
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].WhiteColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].WhiteColor;
                 }
             }
             else
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackBlockedColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackBlockedColor;
                 }
                 else if (boardRenderInfo.HighlightedSquares.Contains(position))
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackHighlightColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackHighlightColor;
                 }
                 else
                 {
-                    Squares[position.X, position.Y].color = Themes[currentTheme].BlackColor;
+                    squares[position.X, position.Y].color = themes[currentTheme].BlackColor;
                 }
             }
+            Color square_color = squares[position.X, position.Y].color;
+            square_color.a = alpha;
+            squares[position.X, position.Y].color = square_color;
         }
 
         /// <summary>
@@ -389,10 +501,12 @@ namespace Game
             greyscaled.Clear();
 
             // Show new move
-            ShowMove(from);
-            ShowMove(to);
+            ShowPreviousMove(from);
+            ShowPreviousMove(to);
             greyscaled.Add(from);
             greyscaled.Add(to);
+
+            if (boardRenderInfo.Allows3D) VisualManager3D.ShowLastMove(from, to);
         }
 
         /// <summary>
@@ -445,6 +559,9 @@ namespace Game
                     ResetSquareColor(new V2(x, y));
                 }
             }
+
+            if (boardRenderInfo.Allows3D)
+                VisualManager3D.UpdateTheme(themes[currentTheme]);
         }
 
         /// <summary>
@@ -453,7 +570,7 @@ namespace Game
         public void CycleTheme()
         {
             currentTheme++;
-            if (currentTheme >= Themes.Length) currentTheme = 0;
+            if (currentTheme >= themes.Length) currentTheme = 0;
             UpdateTheme();
             PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
         }
@@ -464,6 +581,47 @@ namespace Game
             if (I.GetKeyDown(K.ChangeThemeKey) && !GameMenuManager.ShowingEscapeMenu)
             {
                 CycleTheme();
+            }
+
+            // Transition between 2D and 3D
+            if (I.GetKeyDown(K.ChangeDimensionKey) && transitionProgress is float.NaN && boardRenderInfo.Allows3D)
+            {
+                targetDimension = !targetDimension;
+                transitionProgress = 0f;
+                if (targetDimension) renderBox.gameObject.SetActive(true);
+            }
+
+            if (transitionProgress is not float.NaN)
+            {
+                transitionProgress += Time.deltaTime / transitionTime;
+                if (transitionProgress >= 1f) transitionProgress = 1f;
+
+                float progress = transitionProgress;
+                if (targetDimension == false) progress = 1f - progress;
+
+                progress = MathP.CosSmooth(progress);
+
+                Hide3DImage.color = new Color(Hide3DImage.color.r, Hide3DImage.color.g, Hide3DImage.color.b, progress);
+
+                Image[] children = renderBox.transform.GetComponentsInChildren<Image>();
+                Color newColor;
+                foreach (Image child in children)
+                {
+                    newColor = child.color;
+                    newColor.a = progress;
+                    child.color = newColor;
+                }
+
+                if (transitionProgress == 1f)
+                {
+                    transitionProgress = float.NaN;
+                    if (!targetDimension) renderBox.gameObject.SetActive(false);
+                }
+            }
+
+            if (!targetDimension)
+            {
+                VisualManager3D.ExternalUpdate();
             }
 
             // Check for resolution change

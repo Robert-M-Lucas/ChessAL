@@ -53,7 +53,7 @@ namespace Gamemodes.VikingChess
             PieceBoard[5, 7] = new VikingPiece(new V2(5, 7), 1, this);
         }
 
-        public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10), CENTRE });
+        public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10), CENTRE }, true);
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {

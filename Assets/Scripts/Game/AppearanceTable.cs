@@ -8,11 +8,12 @@ using UnityEngine;
 /// Stores a single mapping from a piece ID to its sprite
 /// </summary>
 [System.Serializable]
-public class PieceSprite
+public class PieceAppearance
 {
     public string Name;
     public int ID;
     public Sprite Sprite;
+    public GameObject Prefab3D;
 }
 
 
@@ -22,7 +23,7 @@ public class PieceSprite
 [CreateAssetMenu(fileName = "AppearanceTable", menuName = "AppearanceTable", order = 1)]
 public class AppearanceTable: ScriptableObject
 {
-    public PieceSprite[] Appearances;
+    public PieceAppearance[] Appearances;
 }
 
 /*
