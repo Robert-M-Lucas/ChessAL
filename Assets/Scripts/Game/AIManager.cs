@@ -24,7 +24,7 @@ namespace AI
 
         private static Stopwatch Timer = new Stopwatch();
 
-        public static int MAX_SEARCH_TIME = 12;
+        public static int MAX_SEARCH_TIME = 10;
 
         private static Thread searchThread = null;
 

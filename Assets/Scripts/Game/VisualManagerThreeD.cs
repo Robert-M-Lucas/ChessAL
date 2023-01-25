@@ -190,12 +190,20 @@ public class VisualManagerThreeD : MonoBehaviour
         pieces.Remove(from);
     }
 
-    public void DestroyPiece(V2 position) 
+    public void UpdateAppearance(V2 position)
+    {
+        DestroyPiece(position, false);
+        Create(visualManager.ChessManager.GameManager.Board.GetPiece(position));
+    }
+
+    public void DestroyPiece(V2 position, bool taken=true) 
     {
         Destroy(pieces[position]);
         pieces.Remove(position);
-        ripples.Add(new RippleData(position));
+        if (taken) ripples.Add(new RippleData(position));
     }
+
+    public void ClearRipples() => ripples.Clear();
 
     private void HoverSquare(V2 position) { hoveringOver = position; }
 
@@ -279,12 +287,12 @@ public class VisualManagerThreeD : MonoBehaviour
         for (int i = 0; i < ripples.Count; i++)
         {
             ripples[i].time += Time.deltaTime / 2f;
+
             if (ripples[i].time >= 1f)
             {
                 ripples.RemoveAt(i);
                 i--;
             }
-            i++;
         }
 
         targetDisplacement = new float[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
@@ -324,7 +332,7 @@ public class VisualManagerThreeD : MonoBehaviour
         }
 
 
-            ClearHighlighted();
+        ClearHighlighted();
         for (int x = 0; x < boardRenderInfo.BoardSize; x++)
         {
             for (int y = 0; y < boardRenderInfo.BoardSize; y++)

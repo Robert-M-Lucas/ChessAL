@@ -30,7 +30,7 @@ public static class MathP
         }
         else
         {
-            overall_amplitude = -1 * ((time-0.2f) / 0.8f) + 1;
+            overall_amplitude = (-1 * ((time-0.2f) / 0.8f)) + 1;
         }
 
         return ripple * amplitude_falloff * overall_amplitude;
