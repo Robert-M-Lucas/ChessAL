@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Gamemodes;
 using TMPro;
 using System;
+using Game.ThreeD;
+using Game.UI;
 
 namespace Game
 {

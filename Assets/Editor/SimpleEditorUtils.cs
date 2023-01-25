@@ -7,10 +7,13 @@ using UnityEditor;
 
 namespace EditorAddons
 {
+    /// <summary>
+    /// Contains Unity Editor addons
+    /// </summary>
     [InitializeOnLoad]
-    public static class SimpleEditorUtils
+    public static class EditorUtils
     {
-        static SimpleEditorUtils()
+        static EditorUtils()
         {
             // Add method to event
             EditorApplication.playModeStateChanged += ModeChanged;

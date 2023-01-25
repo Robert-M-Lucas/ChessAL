@@ -7,9 +7,7 @@ using System;
 using Random = System.Random;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
-using UnityEngine.SocialPlatforms.Impl;
-using JetBrains.Annotations;
-using System.Linq;
+using Game;
 
 namespace AI
 {

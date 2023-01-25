@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace Game
+namespace Game.UI
 {
     public class GameMenuManager : MonoBehaviour
     {

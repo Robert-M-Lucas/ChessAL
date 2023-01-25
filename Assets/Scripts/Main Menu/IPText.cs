@@ -10,6 +10,9 @@ using System;
 
 namespace MainMenu
 {
+    /// <summary>
+    /// Finds public and private IP and displays it on a font asset
+    /// </summary>
     public class IPText : MonoBehaviour
     {
         public TMP_Text Text;
@@ -19,7 +22,7 @@ namespace MainMenu
 
         void Start()
         {
-            // Start looking for IP
+            // Start looking for IP on thread
             new Thread(GetIP).Start();
         }
 

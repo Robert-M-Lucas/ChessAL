@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Class that makes text's font size tied to another font asset
+/// </summary>
 [RequireComponent(typeof(TMP_Text))]
 public class InheritFontSize : MonoBehaviour
 {
-    public TMP_Text InheritFrom;
+    [SerializeField] private TMP_Text InheritFrom;
 
     private TMP_Text _text = null;
+
+    // Copy and update font size
 
     private void OnEnable()
     {
@@ -18,7 +23,8 @@ public class InheritFontSize : MonoBehaviour
 
     private void Start()
     {
-        _text = GetComponent<TMP_Text>();
+        if (_text is null) _text = GetComponent<TMP_Text>();
+        _text.enableAutoSizing = false;
     }
 
     private void OnValidate()
