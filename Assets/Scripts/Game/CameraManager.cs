@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.ThreeD
 {
@@ -18,7 +19,7 @@ namespace Game.ThreeD
         [SerializeField] private float normalFov = 60;
         [SerializeField] private float fov2D = 2;
         [SerializeField] private float orthographicWidth = 11;
-        [SerializeField] private Vector2 mouseSensitivity = Vector2.one;
+        [SerializeField] private Slider mouseSensitivity;
         [SerializeField] private LayerMask square3DMask;
 
         [Header("References")]
@@ -120,7 +121,7 @@ namespace Game.ThreeD
 
             if (I.GetMouseButton(K.SecondaryClick))
             {
-                RotateCamera(new Vector2(mouse_x * mouseSensitivity.x, mouse_y * mouseSensitivity.y));
+                RotateCamera(new Vector2(mouse_x * (mouseSensitivity.value + 0.05f) * 10f, mouse_y * (mouseSensitivity.value + 0.05f) * 10f));
                 return HandleNoHit();
             }
             else

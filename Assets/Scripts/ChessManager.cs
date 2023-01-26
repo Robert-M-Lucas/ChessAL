@@ -47,7 +47,7 @@ public class ChessManager : MonoBehaviour
     public Stopwatch Timer = new Stopwatch();
 
     // Local play
-    public bool localPlay = false;
+    public bool LocalPlay = false;
     private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
     public List<int> LocalAIPlayers = new List<int>();
     private HostSettings localSettings = default!;
@@ -163,6 +163,24 @@ public class ChessManager : MonoBehaviour
         mainThreadActions.Enqueue(menuUIManager.OnGamemodeDataRecieve);
     }
 
+    public int FindNextNonFullTeam(int currentTeam, TeamSize[] teamSizes)
+    {
+        if (!LocalPlay)
+        {
+            return networkManager.FindNextNonFullTeam(currentTeam, teamSizes);
+        }
+        else
+        {
+            while (true)
+            {
+                currentTeam++;
+                if (currentTeam >= teamSizes.Length) return -1;
+
+                if (teamSizes[currentTeam].Max > localPlayerList.Where((o) => o.Value.Team == currentTeam).Count()) return currentTeam;
+            }
+        }
+    }
+
     /// <summary>
     /// Sets the team and playerOnTeam of a player (Available to host only)
     /// </summary>
@@ -171,7 +189,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="playerOnTeam"></param>
     public void HostSetTeam(int playerID, int team, int playerOnTeam)
     {
-        if (!localPlay)
+        if (!LocalPlay)
         {
             // Must go through network manager if game isn't local
             networkManager.HostSetTeam(playerID, team, playerOnTeam);
@@ -199,7 +217,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="settings"></param>
     public void PrepLocal(HostSettings settings)
     {
-        localPlay = true;
+        LocalPlay = true;
         localSettings = settings;
         CurrentGameManager = settings.GameMode;
         saveData = settings.SaveData;
@@ -242,6 +260,11 @@ public class ChessManager : MonoBehaviour
 
     public void AddLocalPlayer() 
     {
+        TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
+        int max_players = 0;
+        foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
+        if (localPlayerList.Count + LocalAIPlayers.Count >= max_players) return;
+
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
         IDCounter++;
         menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
@@ -249,6 +272,11 @@ public class ChessManager : MonoBehaviour
 
     public void AddLocalAI() 
     {
+        TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
+        int max_players = 0;
+        foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
+        if (localPlayerList.Count + LocalAIPlayers.Count >= max_players) return;
+
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
         LocalAIPlayers.Add(IDCounter);
         IDCounter++;
@@ -303,7 +331,7 @@ public class ChessManager : MonoBehaviour
         IDCounter = 0;
         saveData = new byte[0];
         localSettings = default!;
-        localPlay = false;
+        LocalPlay = false;
     }
 
     #endregion
@@ -341,7 +369,7 @@ public class ChessManager : MonoBehaviour
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
 
-            if (!localPlay)
+            if (!LocalPlay)
             {
                 if (GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn) == GetLocalPlayerID()) MyTurn = true;
                 else MyTurn = false;
@@ -356,7 +384,7 @@ public class ChessManager : MonoBehaviour
         {
             int team_start = 0;
             int player_in_team_start = 0;
-            if (!localPlay)
+            if (!LocalPlay)
             {
                 ClientPlayerData local_player = GetPlayerList()[GetLocalPlayerID()];
                 if (local_player.Team == team_start && local_player.PlayerInTeam == player_in_team_start) MyTurn = true;
@@ -376,7 +404,7 @@ public class ChessManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded; // Remove on scene loaded call on scene change
         AIManager.Reset();
-        if (!localPlay)
+        if (!LocalPlay)
         {
             DestroyImmediate(networkManager.gameObject);
             networkManager.Stop();
@@ -393,12 +421,12 @@ public class ChessManager : MonoBehaviour
     public bool IsHost() => networkManager.IsHost;
     public int GetLocalPlayerID()
     {
-        if (!localPlay) return networkManager.GetLocalPlayerID();
+        if (!LocalPlay) return networkManager.GetLocalPlayerID();
         else return CurrentPlayer;
     }
     public int GetLocalPlayerTeam()
     {
-        if (!localPlay) return GetPlayerList()[GetLocalPlayerID()].Team;
+        if (!LocalPlay) return GetPlayerList()[GetLocalPlayerID()].Team;
         else return localPlayerList[GetLocalPlayerID()].Team;
     }
     public int GetPlayerByTeam(int team, int playerInTeam)
@@ -415,7 +443,7 @@ public class ChessManager : MonoBehaviour
 
     public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList()
     {
-        if (!localPlay)
+        if (!LocalPlay)
         {
             return networkManager.GetPlayerList();
         }
@@ -526,7 +554,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void MOnForeignMove(int nextPlayer, V2 from, V2 to)
     {
-        if (prevPlayer != GetLocalPlayerID() && !localPlay) GameManager.OnMove(new Move(from, to), GetLiveGameData()); // Make sure move was not made locally
+        if (prevPlayer != GetLocalPlayerID() && !LocalPlay) GameManager.OnMove(new Move(from, to), GetLiveGameData()); // Make sure move was not made locally
         
         // Show and make move sound
         VisualManager.OnMove(from, to);
@@ -543,7 +571,7 @@ public class ChessManager : MonoBehaviour
 
         CurrentPlayer = nextPlayer;
 
-        if (nextPlayer == GetLocalPlayerID() || localPlay) // My Turn next
+        if (nextPlayer == GetLocalPlayerID() || LocalPlay) // My Turn next
         {
             VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, true, LocalAIPlayers.Contains(CurrentPlayer));
 
@@ -576,7 +604,7 @@ public class ChessManager : MonoBehaviour
     public void MOnLocalMove(int nextPlayer, V2 from, V2 to)
     {
         MyTurn = false;
-        if (!localPlay)
+        if (!LocalPlay)
         {
             networkManager.OnLocalMove(nextPlayer, from, to);
         }

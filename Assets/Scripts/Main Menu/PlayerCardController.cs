@@ -38,7 +38,7 @@ namespace MainMenu
             }
             else
             {
-                if (ChessManager.IsHost() || ChessManager.localPlay)
+                if (ChessManager.IsHost() || ChessManager.LocalPlay)
                     TeamText.text = "[Click to set team]";
                 else
                     TeamText.text = "[Unset]";
@@ -47,7 +47,7 @@ namespace MainMenu
             if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
             else
             {
-                if (ChessManager.IsHost() || ChessManager.localPlay)
+                if (ChessManager.IsHost() || ChessManager.LocalPlay)
                     PlayerOnTeamText.text = "[Unset]";
                 else
                     PlayerOnTeamText.text = "[Unset]";
@@ -56,17 +56,14 @@ namespace MainMenu
 
         public void OnTeamClick()
         {
-            if (!ChessManager.IsHost() && !ChessManager.localPlay) return; // Player is not host
+            if (!ChessManager.IsHost() && !ChessManager.LocalPlay) return; // Player is not host
 
             TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
 
-            Team++;
-            if (Team >= team_sizes.Length) Team = -1;
+            Team = ChessManager.FindNextNonFullTeam(Team, team_sizes);
 
-            if (Team == -1)
-                PlayerOnTeam = -1;
-            else if (PlayerOnTeam == -1)
-                PlayerOnTeam = 0;
+            if (Team == -1) PlayerOnTeam = -1;
+            else PlayerOnTeam = 0;
 
             ChessManager.HostSetTeam(PlayerID, Team, PlayerOnTeam);
             UpdateFields();
@@ -74,7 +71,7 @@ namespace MainMenu
 
         public void OnPlayerOnTeamClick()
         {
-            if (!ChessManager.IsHost() && !ChessManager.localPlay) return; // Player is not host
+            if (!ChessManager.IsHost() && !ChessManager.LocalPlay) return; // Player is not host
             if (Team == -1) return; // Player is spectator
 
             TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
