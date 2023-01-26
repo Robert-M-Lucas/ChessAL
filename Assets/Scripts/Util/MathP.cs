@@ -35,15 +35,15 @@ public static class MathP
     /// <param name="cycles">How many ripples should be created</param>
     /// <param name="distance">How far the point is from the origin</param>
     /// <param name="max_distance">The furthest point the ripples can reach</param>
-    /// <param name="ripple_Length">How long each ripple should be</param>
+    /// <param name="ripple_length">How long each ripple should be</param>
     /// <returns>Height at given distance</returns>
-    public static float Ripple(float time, float cycles, float distance, float max_distance, float ripple_Length)
+    public static float Ripple(float time, float cycles, float distance, float max_distance, float ripple_length)
     {
         // y = -(1 / max_distance)x + 1
         float amplitude_falloff = -(1 / max_distance) * distance + 1;
 
-        // y = sin(2pi * (1/spr) * x - 2pi * (t * c))
-        float ripple = Mathf.Sin(2 * Mathf.PI * (1 / ripple_Length) * distance - 2 * Mathf.PI * (time * cycles));
+        // y = sin(2pi * (1/ripple_length) * x - 2pi * (t * c))
+        float ripple = Mathf.Sin(2 * Mathf.PI * (1 / ripple_length) * distance - 2 * Mathf.PI * (time * cycles));
 
         float overall_amplitude;
         if (time < 0.2f)

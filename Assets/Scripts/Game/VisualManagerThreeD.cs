@@ -175,12 +175,13 @@ namespace Game.ThreeD
             Vector2 delta = (to - from).Vector2();
             int count = (int)delta.magnitude;
 
+
             // Iterate through squares between start and end. If piece found between, jump
             for (int i = 0; i < count; i++)
             {
                 Vector2 current_pos = from.Vector2() + (delta * (i / (float)count));
                 V2 min_pos = new V2((int)Mathf.Floor(current_pos.x), (int)Mathf.Floor(current_pos.y));
-                V2 max_pos = new V2((int)Mathf.Ceil(current_pos.x), (int)Mathf.Ceil(current_pos.y));
+                V2 max_pos = new V2((int)Mathf.RoundToInt(current_pos.x), (int)Mathf.RoundToInt(current_pos.y));
                 if (min_pos != from && min_pos != to && pieces.ContainsKey(min_pos))
                 {
                     jump = true; break;
@@ -393,10 +394,13 @@ namespace Game.ThreeD
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
+                    // Smoothly move to target position using log function
                     float target_delta = targetDisplacement[x, y] + 1 - squares[x, y].transform.position.y;
                     if (target_delta == 0) { return; }
                     squares[x, y].transform.position += Vector3.up * Mathf.Log(target_delta, 2) * Time.deltaTime * 10;
                     squares[x, y].transform.position = new Vector3(squares[x, y].transform.position.x, Mathf.Clamp(squares[x, y].transform.position.y, -10, 10), squares[x, y].transform.position.z);
+                    
+                    // Highlight squares
                     if (highlighted[x, y]) HighlightSquare(new V2(x, y));
                 }
             }
