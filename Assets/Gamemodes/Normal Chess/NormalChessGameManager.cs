@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Game;
+using Game.ThreeD;
 
 namespace Gamemodes.NormalChess
 {

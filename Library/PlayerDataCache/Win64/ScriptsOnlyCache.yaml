@@ -3,14 +3,16 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - AppearanceTable
     - ButtonSoundScript
-    - CameraManager
     - ChessManager
-    - Game.GameMenuManager
     - Game.InputManager
+    - Game.PieceController2D
     - Game.RenderedCellData
+    - Game.ThreeD.CameraManager
+    - Game.ThreeD.VisualManagerThreeD
+    - Game.UI.GameMenuManager
+    - Game.UI.PerspectiveTextController
     - Game.VisualManager
     - InheritFontSize
-    - InputManagerThreeD
     - MainMenu.GamemodeSelector
     - MainMenu.IPText
     - MainMenu.MenuUIManager
@@ -20,16 +22,7 @@ ScriptsOnlyBuild:
     - MainMenu.SaveSelectorItem
     - MainMenu.VersionTextDisplay
     - NetworkManager
-    - PerspectiveTextController
-    - PieceController2D
     - SoundMananger
-    - VisualManagerThreeD
-    DualPlay.Editor.dll:
-    - DualPlay.Editor.DualPlayEditor
-    DualPlay.Settings:
-    - DualPlay.Settings.DualPlaySettings
-    DualPlay.Settings.dll:
-    - DualPlay.Settings.DualPlaySettings
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro:
@@ -63,6 +56,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.RectMask2D
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
+    - UnityEngine.UI.Slider
     - UnityEngine.UI.VerticalLayoutGroup
     Wooshii.HierarchyDecorator.Editor.dll:
     - HierarchyDecorator.Settings
@@ -96,9 +90,6 @@ ScriptsOnlyBuild:
     - UnityEngine.Events.PersistentCallGroup
     - UnityEngine.Events.PersistentListenerMode
     - UnityEngine.RectOffset
-    UnityEngine.IMGUIModule:
-    - UnityEngine.GUISettings
-    - UnityEngine.GUIStyle
     UnityEngine.TextCoreFontEngineModule:
     - UnityEngine.TextCore.FaceInfo
     - UnityEngine.TextCore.Glyph
@@ -114,14 +105,9 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Navigation
     - UnityEngine.UI.ScrollRect/ScrollRectEvent
     - UnityEngine.UI.Scrollbar/ScrollEvent
+    - UnityEngine.UI.Slider/SliderEvent
     - UnityEngine.UI.SpriteState
   methodsToPreserve:
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -139,31 +125,88 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelJoin
+    methodName: RemoveLocalPlayer
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: Quit
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.PlayerCardController
-    methodName: OnPlayerOnTeamClick
+    methodName: LocalPlayShowGamemodeHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: FullJoin
+    methodName: LoadSaveAndFullLocalPlay
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelectorItem
+    methodName: OnClickCall
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelector
+    methodName: ExpandOrCollapse
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: HostConfig
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: AddLocalPlayer
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.PlayerCardController
     methodName: OnTeamClick
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelectorItem
+    methodName: OnClickCall
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.SaveSelector
+    methodName: ExpandOrCollapse
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.GamemodeSelector
+    methodName: Next
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.GamemodeSelector
+    methodName: Prev
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: ShowHelp
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelHost
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -175,19 +218,13 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelLocalPlay
+    methodName: AddLocalAI
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: WhichIPHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: LoadSaveAndFullLocalPlay
+    methodName: ShowJoinHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -205,43 +242,13 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: HostConfig
+    methodName: FullJoin
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: RemoveLocalAI
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.GamemodeSelector
-    methodName: Next
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.GamemodeSelector
-    methodName: Prev
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelectorItem
-    methodName: OnClickCall
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelector
-    methodName: ExpandOrCollapse
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: AddLocalPlayer
+    methodName: CancelLocalPlay
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -253,43 +260,13 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: WhichIPHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: AddLocalAI
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: ShowHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: FullLocalPlay
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelectorItem
-    methodName: OnClickCall
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.SaveSelector
-    methodName: ExpandOrCollapse
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
     methodName: LoadSaveAndFullHost
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.PlayerCardController
+    methodName: OnPlayerOnTeamClick
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -301,19 +278,19 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: CancelHost
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
-    methodName: ShowJoinHelp
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: MainMenu.MenuUIManager
     methodName: ShowGamemodeHelp
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: RemoveLocalAI
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: WhichIPHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -324,11 +301,26 @@ ScriptsOnlyBuild:
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: FullLocalPlay
+  - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: RemoveLocalPlayer
+    methodName: CancelLocalPlay
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: CancelJoin
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenu.MenuUIManager
+    methodName: WhichIPHelp
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
@@ -340,7 +332,7 @@ ScriptsOnlyBuild:
     methodName: OnClick
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
-    methodName: LocalPlayShowGamemodeHelp
+    methodName: Quit
   - assembly: Assembly-CSharp
     fullTypeName: MainMenu.MenuUIManager
     methodName: HostStartGame
@@ -348,32 +340,35 @@ ScriptsOnlyBuild:
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
-    methodName: Resume
-  - assembly: Assembly-CSharp
-    fullTypeName: ButtonSoundScript
-    methodName: OnClick
-  - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
+    fullTypeName: Game.UI.GameMenuManager
     methodName: OpenSaveLocation
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
+    fullTypeName: Game.UI.GameMenuManager
+    methodName: ShowHelp
+  - assembly: Assembly-CSharp
+    fullTypeName: ButtonSoundScript
+    methodName: OnClick
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.UI.GameMenuManager
     methodName: ExitToMenu
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
-    methodName: Save
+    fullTypeName: Game.UI.GameMenuManager
+    methodName: Resume
   - assembly: Assembly-CSharp
     fullTypeName: ButtonSoundScript
     methodName: OnClick
   - assembly: Assembly-CSharp
-    fullTypeName: Game.GameMenuManager
-    methodName: ShowHelp
+    fullTypeName: Game.UI.GameMenuManager
+    methodName: Save
+  - assembly: Assembly-CSharp
+    fullTypeName: Game.VisualManager
+    methodName: CycleTheme
   - assembly: Assembly-CSharp
     fullTypeName: Game.VisualManager
     methodName: CycleTheme
@@ -414,55 +409,55 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1534}
+      Script: {instanceID: 1532}
     - Class: 114
-      Script: {instanceID: 1718}
+      Script: {instanceID: 1716}
     - Class: 114
-      Script: {instanceID: 2686}
+      Script: {instanceID: 2684}
     - Class: 114
-      Script: {instanceID: 2916}
+      Script: {instanceID: 2914}
     - Class: 114
-      Script: {instanceID: 3238}
+      Script: {instanceID: 3232}
     - Class: 114
-      Script: {instanceID: 3332}
+      Script: {instanceID: 3326}
     - Class: 114
-      Script: {instanceID: 3414}
+      Script: {instanceID: 3408}
     - Class: 114
-      Script: {instanceID: 4142}
+      Script: {instanceID: 4132}
     - Class: 114
-      Script: {instanceID: 4374}
+      Script: {instanceID: 4364}
     - Class: 114
-      Script: {instanceID: 4978}
+      Script: {instanceID: 4968}
     - Class: 114
-      Script: {instanceID: 5274}
+      Script: {instanceID: 5264}
     - Class: 114
-      Script: {instanceID: 5340}
+      Script: {instanceID: 5330}
     - Class: 114
-      Script: {instanceID: 5348}
+      Script: {instanceID: 5400}
     - Class: 114
-      Script: {instanceID: 5504}
+      Script: {instanceID: 5492}
     - Class: 114
-      Script: {instanceID: 6172}
+      Script: {instanceID: 6160}
     - Class: 114
-      Script: {instanceID: 6262}
+      Script: {instanceID: 6250}
     - Class: 114
-      Script: {instanceID: 6276}
+      Script: {instanceID: 6264}
     - Class: 114
-      Script: {instanceID: 6330}
+      Script: {instanceID: 6318}
     - Class: 114
-      Script: {instanceID: 6690}
+      Script: {instanceID: 6678}
     - Class: 114
-      Script: {instanceID: 7494}
+      Script: {instanceID: 7482}
     - Class: 114
-      Script: {instanceID: 7628}
+      Script: {instanceID: 7616}
     - Class: 114
-      Script: {instanceID: 7816}
+      Script: {instanceID: 7804}
     - Class: 114
-      Script: {instanceID: 7856}
+      Script: {instanceID: 7844}
     - Class: 114
-      Script: {instanceID: 8290}
+      Script: {instanceID: 7956}
     - Class: 114
-      Script: {instanceID: 90136}
+      Script: {instanceID: 8280}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -505,77 +500,73 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 624}
+      Script: {instanceID: 1532}
     - Class: 114
-      Script: {instanceID: 1534}
+      Script: {instanceID: 1716}
     - Class: 114
-      Script: {instanceID: 1718}
+      Script: {instanceID: 2224}
     - Class: 114
-      Script: {instanceID: 2226}
+      Script: {instanceID: 2342}
     - Class: 114
-      Script: {instanceID: 2344}
+      Script: {instanceID: 2618}
     - Class: 114
-      Script: {instanceID: 2620}
+      Script: {instanceID: 2684}
     - Class: 114
-      Script: {instanceID: 2686}
+      Script: {instanceID: 2914}
     - Class: 114
-      Script: {instanceID: 2916}
+      Script: {instanceID: 3232}
     - Class: 114
-      Script: {instanceID: 3202}
+      Script: {instanceID: 3424}
     - Class: 114
-      Script: {instanceID: 3238}
+      Script: {instanceID: 3918}
     - Class: 114
-      Script: {instanceID: 3430}
+      Script: {instanceID: 4102}
     - Class: 114
-      Script: {instanceID: 3926}
+      Script: {instanceID: 4132}
     - Class: 114
-      Script: {instanceID: 4110}
+      Script: {instanceID: 4238}
     - Class: 114
-      Script: {instanceID: 4142}
+      Script: {instanceID: 4364}
     - Class: 114
-      Script: {instanceID: 4248}
+      Script: {instanceID: 4378}
     - Class: 114
-      Script: {instanceID: 4374}
+      Script: {instanceID: 4666}
     - Class: 114
-      Script: {instanceID: 4388}
+      Script: {instanceID: 4930}
     - Class: 114
-      Script: {instanceID: 4676}
+      Script: {instanceID: 5102}
     - Class: 114
-      Script: {instanceID: 4940}
+      Script: {instanceID: 5264}
     - Class: 114
-      Script: {instanceID: 5112}
+      Script: {instanceID: 5348}
     - Class: 114
-      Script: {instanceID: 5274}
+      Script: {instanceID: 5492}
     - Class: 114
-      Script: {instanceID: 5360}
+      Script: {instanceID: 6160}
     - Class: 114
-      Script: {instanceID: 5504}
+      Script: {instanceID: 6250}
     - Class: 114
-      Script: {instanceID: 6172}
+      Script: {instanceID: 6264}
     - Class: 114
-      Script: {instanceID: 6262}
+      Script: {instanceID: 6318}
     - Class: 114
-      Script: {instanceID: 6276}
+      Script: {instanceID: 6652}
     - Class: 114
-      Script: {instanceID: 6330}
-    - Class: 114
-      Script: {instanceID: 6664}
+      Script: {instanceID: 6678}
     - Class: 114
       Script: {instanceID: 6690}
     - Class: 114
-      Script: {instanceID: 6702}
+      Script: {instanceID: 6784}
     - Class: 114
-      Script: {instanceID: 6796}
+      Script: {instanceID: 7144}
     - Class: 114
-      Script: {instanceID: 7156}
+      Script: {instanceID: 7302}
     - Class: 114
-      Script: {instanceID: 7314}
+      Script: {instanceID: 7482}
     - Class: 114
-      Script: {instanceID: 7494}
+      Script: {instanceID: 7654}
     - Class: 114
-      Script: {instanceID: 7666}
-    - Class: 114
-      Script: {instanceID: 7862}
+      Script: {instanceID: 7850}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -956,12 +947,6 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
-    assemblyName: Assembly-CSharp-firstpass
-    namespaceName: 
-    className: LogClientID
-  - hash:
-      serializedVersion: 2
-      Hash: 751e5bae2a317288c2ab58d66687092b
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: ButtonSoundScript
@@ -1059,7 +1044,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
     assemblyName: Assembly-CSharp
-    namespaceName: 
+    namespaceName: Game.ThreeD
     className: PieceControllerThreeD
   - hash:
       serializedVersion: 2
@@ -1077,7 +1062,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: bf165e841f9a152a4a57137c7e37f0a5
     assemblyName: Assembly-CSharp
-    namespaceName: Game
+    namespaceName: Game.UI
     className: GameMenuManager
   - hash:
       serializedVersion: 2
@@ -1163,12 +1148,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: Toggle
-  - hash:
-      serializedVersion: 2
-      Hash: 751e5bae2a317288c2ab58d66687092b
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: InputManagerThreeD
   - hash:
       serializedVersion: 2
       Hash: 27a6983e01b071ec1af11015548422bb
@@ -1477,9 +1456,9 @@ ScriptsOnlyBuild:
     className: Dropdown
   - hash:
       serializedVersion: 2
-      Hash: cd80c26b1cab1686af106a8d42648e91
+      Hash: 46564b589c909e243f22f00b3f48de69
     assemblyName: Assembly-CSharp
-    namespaceName: 
+    namespaceName: Game.ThreeD
     className: CameraManager
   - hash:
       serializedVersion: 2
@@ -1489,7 +1468,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: b6b7b6214b4b5e55905db9f77a6b6c60
+      Hash: 078bc55bb98babf73174dd4dd2a0c720
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: ChessManager
@@ -1503,7 +1482,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 7f166ab338785a5bc6d619b00f5cdfde
     assemblyName: Assembly-CSharp
-    namespaceName: 
+    namespaceName: Game
     className: PieceController2D
   - hash:
       serializedVersion: 2
@@ -1523,6 +1502,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: ScrollRect
+  - hash:
+      serializedVersion: 2
+      Hash: 751e5bae2a317288c2ab58d66687092b
+    assemblyName: Assembly-CSharp
+    namespaceName: Game.UI
+    className: PerspectiveTextController
   - hash:
       serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
@@ -1563,7 +1548,7 @@ ScriptsOnlyBuild:
       serializedVersion: 2
       Hash: 6289174aefce3213cbfb8f7346a77e11
     assemblyName: Assembly-CSharp
-    namespaceName: 
+    namespaceName: Game.ThreeD
     className: VisualManagerThreeD
   - hash:
       serializedVersion: 2
@@ -1601,12 +1586,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 751e5bae2a317288c2ab58d66687092b
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: PerspectiveTextController
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main Menu.unity

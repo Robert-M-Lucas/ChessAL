@@ -117,16 +117,7 @@ namespace HierarchyDecorator
                 labelStyle = style.style;
 
                 int len = style.prefix.Length;
-                try
-                {
-                    name = style.FormatString(name.Substring(len + 1, name.Length - len - 1));
-                }
-                catch 
-                {
-                    // Robert Lucas added error handling
-                    Debug.LogError($"Invalid name: {name}");
-                    name = style.FormatString(name);
-                }
+                name = style.FormatString(name.Substring (len + 1, name.Length - len - 1));
             }
             else
             {

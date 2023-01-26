@@ -136,5 +136,6 @@ public class NetworkManager : MonoBehaviour
     public void OnGameStart() => chessManager.OnGameStart();
     public void OnForeignMove(int nextPlayer, V2 from, V2 to) => chessManager.OnForeignMoveUpdate(nextPlayer, from, to);
     public void HostSetTeam(int playerID, int team, int playerInTeam) => server?.SetTeam(playerID, team, playerInTeam);
+    public int FindNextNonFullTeam(int currentTeam, TeamSize[] teamSizes) => server!.FindNextNonFullTeam(currentTeam, teamSizes);
     #endregion
 }

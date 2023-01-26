@@ -3,39 +3,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PieceController2D : MonoBehaviour
+namespace Game
 {
-    [SerializeField] private VisualManager visualManager = null;
-
-    private Vector2 target;
-    private Vector2 origin;
-    float progress = float.NaN;
-    float totalTime = 0f;
-
-    public void Start()
+    public class PieceController2D : MonoBehaviour
     {
-        visualManager ??= FindObjectOfType<VisualManager>();
-    }
+        [SerializeField] private VisualManager visualManager = null;
 
-    public void MoveTo(V2 target, V2 origin, float time)
-    {
-        this.origin = origin.Vector2();
-        this.target = target.Vector2();
-        progress = 0f;
-        totalTime = time;
-    }
+        private Vector2 target;
+        private Vector2 origin;
+        float progress = float.NaN;
+        float totalTime = 0f;
 
-    public void Update()
-    {
-        if (progress is not float.NaN)
+        public void Start()
         {
-            progress += Time.deltaTime / totalTime;
+            visualManager ??= FindObjectOfType<VisualManager>();
+        }
 
-            if (progress > 1f) progress = 1f;
+        public void MoveTo(V2 target, V2 origin, float time)
+        {
+            this.origin = origin.Vector2();
+            this.target = target.Vector2();
+            progress = 0f;
+            totalTime = time;
+        }
 
-            visualManager.SizeGameObject(gameObject, origin + ((target - origin) * MathP.CosSmooth(progress)));
+        public void Update()
+        {
+            if (progress is not float.NaN)
+            {
+                progress += Time.deltaTime / totalTime;
 
-            if (progress == 1f) progress = float.NaN;
+                if (progress > 1f) progress = 1f;
+
+                visualManager.SizeGameObject(gameObject, origin + ((target - origin) * MathP.CosSmooth(progress)));
+
+                if (progress == 1f) progress = float.NaN;
+            }
         }
     }
 }

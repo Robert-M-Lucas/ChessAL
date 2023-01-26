@@ -155,6 +155,17 @@ namespace Networking.Server
             else return false;
         }
 
+        public int FindNextNonFullTeam(int currentTeam, TeamSize[] teamSizes)
+        {
+            while (true)
+            {
+                currentTeam++;
+                if (currentTeam >= teamSizes.Length) return -1;
+
+                if (teamSizes[currentTeam].Max > PlayerData.Where((o) => o.Value.Team == currentTeam).Count()) return currentTeam;
+            }
+        }
+
         /// <summary>
         /// Changes the team and player in team of a player
         /// </summary>

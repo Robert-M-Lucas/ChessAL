@@ -7,9 +7,7 @@ using System;
 using Random = System.Random;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
-using UnityEngine.SocialPlatforms.Impl;
-using JetBrains.Annotations;
-using System.Linq;
+using Game;
 
 namespace AI
 {
@@ -24,7 +22,7 @@ namespace AI
 
         private static Stopwatch Timer = new Stopwatch();
 
-        public static int MAX_SEARCH_TIME = 12;
+        public static int MAX_SEARCH_TIME = 10;
 
         private static Thread searchThread = null;
 

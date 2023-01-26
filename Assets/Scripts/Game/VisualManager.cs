@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using Gamemodes;
 using TMPro;
 using System;
-using System.Data;
+using Game.ThreeD;
+using Game.UI;
 
 namespace Game
 {
@@ -86,6 +87,7 @@ namespace Game
         private List<V2> greyscaled = new List<V2>();
 
         private int[,] currentBoardHash;
+        private int[,] currentBoardAppearance;
 
         private float transitionProgress = float.NaN;
         private bool targetDimension = true; // true = 2D
@@ -123,6 +125,7 @@ namespace Game
             // Get information for how board should be displayed
             boardRenderInfo = ChessManager.GameManager.Board.GetBoardRenderInfo();
             currentBoardHash = new int[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
+            currentBoardAppearance = new int[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
             squares = new Image[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
@@ -197,6 +200,8 @@ namespace Game
                     pieces2D.Add(to, piece);
                     currentBoardHash[to.X, to.Y] = currentBoardHash[from.X, from.Y];
                     currentBoardHash[from.X, from.Y] = 0;
+                    currentBoardAppearance[to.X, to.Y] = currentBoardAppearance[from.X, from.Y];
+                    currentBoardAppearance[from.X, from.Y] = 0;
                 }
             }
 
@@ -237,6 +242,7 @@ namespace Game
                         if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
                         {
                             AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                            currentBoardAppearance[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID;
                             if (boardRenderInfo.Allows3D) VisualManager3D.Create(ChessManager.GameManager.Board.PieceBoard[x, y]);
                         }
                     }
@@ -249,9 +255,21 @@ namespace Game
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     if (ChessManager.GameManager.Board.PieceBoard[x, y] is null)
+                    {
                         currentBoardHash[x, y] = 0;
+                        currentBoardAppearance[x, y] = 0;
+                    }
                     else
+                    {
                         currentBoardHash[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].GetHashCode();
+
+                        if (currentBoardAppearance[x, y] != ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID)
+                        {
+                            VisualManager3D.UpdateAppearance(new V2(x, y));
+                            UpdatePiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
+                        }
+                        currentBoardAppearance[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID;
+                    }
                 }
             }
         }
@@ -486,7 +504,6 @@ namespace Game
                 }
             }
             Color square_color = squares[position.X, position.Y].color;
-            Debug.Log(alpha);
             square_color.a = alpha;
             squares[position.X, position.Y].color = square_color;
         }
@@ -616,7 +633,11 @@ namespace Game
                 if (transitionProgress == 1f)
                 {
                     transitionProgress = float.NaN;
-                    if (!targetDimension) renderBox.gameObject.SetActive(false);
+                    if (!targetDimension)
+                    {
+                        renderBox.gameObject.SetActive(false);
+                        VisualManager3D.ClearRipples();
+                    }
                 }
             }
 

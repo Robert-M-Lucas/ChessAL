@@ -2,6 +2,7 @@ using Gamemodes.NormalChess;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game;
 using UnityEngine;
 
 namespace Gamemodes.AtomicChess
