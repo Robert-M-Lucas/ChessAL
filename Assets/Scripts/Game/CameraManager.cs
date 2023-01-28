@@ -114,13 +114,14 @@ namespace Game.ThreeD
         /// <returns>Square mouse is hovering over</returns>
         public V2? ExternalUpdate(int boardSize)
         {
+            // Apply zoom
             cameraPosition.localPosition = new Vector3(0, 0, -Mathf.Clamp((-cameraPosition.localPosition.z) + (-Input.mouseScrollDelta.y * scrollSensitivity), minDist, maxDist));
-
-            float mouse_x = Input.GetAxis("Mouse X");
-            float mouse_y = Input.GetAxis("Mouse Y");
 
             if (I.GetMouseButton(K.SecondaryClick))
             {
+                // Pan camera
+                float mouse_x = Input.GetAxis("Mouse X");
+                float mouse_y = Input.GetAxis("Mouse Y");
                 RotateCamera(new Vector2(mouse_x * (mouseSensitivity.value + 0.05f) * 10f, mouse_y * (mouseSensitivity.value + 0.05f) * 10f));
                 return HandleNoHit();
             }

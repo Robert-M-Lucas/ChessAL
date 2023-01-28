@@ -12,7 +12,9 @@ public static class HelpSystem
     /// </summary>
     public static void OpenHelp()
     {
+#if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
         Process.Start(Application.dataPath + "/StreamingAssets/Help/index.html");
+#endif
     }
 
     /// <summary>
@@ -21,7 +23,9 @@ public static class HelpSystem
     /// <param name="gamemodeID"></param>
     public static void OpenHelp(int gamemodeID)
     {
+#if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
         Process.Start(Application.dataPath + "/StreamingAssets/Help/" + gamemodeID + ".html");
+#endif
     }
 
     /// <summary>
@@ -30,6 +34,8 @@ public static class HelpSystem
     /// <param name="pageName"></param>
     public static void OpenHelp(string pageName)
     {
+#if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
         Process.Start(Application.dataPath + "/StreamingAssets/Help/" + pageName + ".html");
+#endif
     }
 }
