@@ -112,6 +112,7 @@ namespace Game
                 }
             }
 
+            // Load saved theme
             if (PlayerPrefs.HasKey(PLAYER_PREFS_THEME_KEY))
             {
                 currentTheme = PlayerPrefs.GetInt(PLAYER_PREFS_THEME_KEY);
@@ -180,24 +181,33 @@ namespace Game
                 if (ChessManager.GameManager.Board.PieceBoard[to.X, to.Y] is not null &&
                     currentBoardHash[from.X, from.Y] == ChessManager.GameManager.Board.PieceBoard[to.X, to.Y].GetHashCode())
                 {
+                    // 2D Move
                     GameObject piece = pieces2D[from];
                     piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
 
                     if (boardRenderInfo.Allows3D)
                     {
+                        // 3D destroy if destination not empty
                         if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to);
+                        // 3D Move
                         VisualManager3D.Move(from, to);
                     }
 
+                    // 2D Move
                     pieces2D.Remove(from);
 
+                    // 2D destroy if destination not empty
                     if (currentBoardHash[to.X, to.Y] != 0)
                     {
                         currentBoardHash[to.X, to.Y] = 0;
                         Destroy(pieces2D[new V2(to.X, to.Y)]);
                         pieces2D.Remove(new V2(to.X, to.Y));
                     }
+
+                    // 2D Move
                     pieces2D.Add(to, piece);
+
+                    // Hash table updates
                     currentBoardHash[to.X, to.Y] = currentBoardHash[from.X, from.Y];
                     currentBoardHash[from.X, from.Y] = 0;
                     currentBoardAppearance[to.X, to.Y] = currentBoardAppearance[from.X, from.Y];
@@ -213,6 +223,7 @@ namespace Game
             {
                 for (int y1 = 0; y1 < boardRenderInfo.BoardSize; y1++)
                 {
+                    // If empty continue
                     if (currentBoardHash[x1, y1] == 0 ||
                         currentBoardHash[x1, y1] == (ChessManager.GameManager.Board.PieceBoard[x1, y1]?.GetHashCode() ?? 0))
                             continue;
@@ -235,12 +246,14 @@ namespace Game
                     {
                         if (currentBoardHash[x, y] != 0)
                         {
+                            // Destroy if already occupied
                             Destroy(pieces2D[new V2(x, y)]);
                             pieces2D.Remove(new V2(x, y));
                             if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y));
                         }
                         if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
                         {
+                            // Place piece
                             AddPiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
                             currentBoardAppearance[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID;
                             if (boardRenderInfo.Allows3D) VisualManager3D.Create(ChessManager.GameManager.Board.PieceBoard[x, y]);
@@ -265,7 +278,7 @@ namespace Game
 
                         if (currentBoardAppearance[x, y] != ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID)
                         {
-                            VisualManager3D.UpdateAppearance(new V2(x, y));
+                            if (boardRenderInfo.Allows3D) VisualManager3D.UpdateAppearance(new V2(x, y));
                             UpdatePiece(ChessManager.GameManager.Board.PieceBoard[x, y]);
                         }
                         currentBoardAppearance[x, y] = ChessManager.GameManager.Board.PieceBoard[x, y].AppearanceID;
