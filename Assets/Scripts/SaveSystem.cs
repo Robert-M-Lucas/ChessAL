@@ -90,7 +90,6 @@ public static class SaveSystem
     public static void OpenSavesFolder()
     {
         string save_location = GetSaveFolderAndCreateIfDoesntExist();
-        if (!Directory.Exists(save_location)) Directory.CreateDirectory(save_location);
 
         // Windows only open file explorer
 #if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
