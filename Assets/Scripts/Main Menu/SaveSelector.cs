@@ -60,14 +60,17 @@ namespace MainMenu
         /// <param name="file"></param>
         public void SelectFile(string file)
         {
-            string shortened_filename = Path.GetFileNameWithoutExtension(file);
-            if (shortened_filename.Length > MAX_FILENAME_LENGTH)
+            if (file != "")
             {
-                shortened_filename = shortened_filename[..(MAX_FILENAME_LENGTH - 3)] + "...";
-            }
-            SelectedText.text = shortened_filename;
+                string shortened_filename = Path.GetFileNameWithoutExtension(file);
+                if (shortened_filename.Length > MAX_FILENAME_LENGTH)
+                {
+                    shortened_filename = shortened_filename[..(MAX_FILENAME_LENGTH - 3)] + "...";
+                }
+                SelectedText.text = shortened_filename;
 
-            SelectedFile = file;
+                SelectedFile = file;
+            }
 
             ExpandOrCollapse();
         }
@@ -88,6 +91,12 @@ namespace MainMenu
                 {
                     save_file_names[i] = save_file_names[i][..(MAX_FILENAME_LENGTH-3)] + "...";
                 }
+            }
+
+            if (save_file_names.Length == 0) 
+            {
+                save_file_names = new string[] { "No save files" };
+                save_files = new string[] { "" };
             }
 
             // Destroy all active children
