@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using UnityEngine.Events;
 
 namespace MainMenu
 {
@@ -15,7 +17,7 @@ namespace MainMenu
         public TMP_Text OptionText;
         public string CurrentlyShowing { get { return Options[CurrentlyShowingPos]; } }
         public int CurrentlyShowingPos { get; private set; } = 0;
-
+        public UnityEvent OnGamemodeChange;
 
         private void OnEnable()
         {
@@ -51,6 +53,7 @@ namespace MainMenu
             CurrentlyShowingPos++;
             if (CurrentlyShowingPos >= Options.Count) CurrentlyShowingPos = 0;
             OptionText.text = Options[CurrentlyShowingPos];
+            OnGamemodeChange.Invoke();
         }
 
         public void Prev()
@@ -58,6 +61,7 @@ namespace MainMenu
             CurrentlyShowingPos--;
             if (CurrentlyShowingPos < 0) CurrentlyShowingPos = Options.Count - 1;
             OptionText.text = Options[CurrentlyShowingPos];
+            OnGamemodeChange.Invoke();
         }
     }
 }

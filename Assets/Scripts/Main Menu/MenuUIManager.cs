@@ -157,6 +157,12 @@ namespace MainMenu
             HostConfigScreen.SetActive(true);
         }
 
+        public void OnHostGamemodeSwitch()
+        {
+            if (HostGamemodeSelector.CurrentlyShowingPos == 0) HostConfigHelpText.text = "";
+            HostConfigHelpText.text = gamemodes[HostGamemodeSelector.CurrentlyShowing].GetDescription();
+        }
+
         public void HostShowGamemodeHelp()
         {
             if (HostGamemodeSelector.CurrentlyShowingPos == 0) return;
@@ -353,6 +359,12 @@ namespace MainMenu
             HideAllScreens();
             showingLocalSettings = true;
             LocalConfigScreen.SetActive(true);
+        }
+
+        public void OnLocalGamemodeSwitch()
+        {
+            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) LocalConfigHelpText.text = "";
+            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LocalPlayShowGamemodeHelp()
