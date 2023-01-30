@@ -86,7 +86,7 @@ namespace Game.ThreeD
                     ResetSquareColor(new V2(x, y));
 
                     // Set square position
-                    new_square.transform.position = new Vector3(x - (boardRenderInfo.BoardSize / 2f), -0.25f, y - (boardRenderInfo.BoardSize / 2f));
+                    new_square.transform.position = new Vector3(x - (boardRenderInfo.BoardSize / 2f) + 0.5f, -0.25f, y - (boardRenderInfo.BoardSize / 2f) + 0.5f);
 
                     // Show
                     new_square.SetActive(true);
@@ -395,6 +395,9 @@ namespace Game.ThreeD
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     // Smoothly move to target position using log function
+                    if (squares[x, y].transform.position.y is float.NaN || squares[x, y].transform.position.y < -10 || squares[x, y].transform.position.y > 10)
+                        squares[x, y].transform.position = new Vector3(squares[x, y].transform.position.x, 0, squares[x, y].transform.position.z);
+
                     float target_delta = targetDisplacement[x, y] + 1 - squares[x, y].transform.position.y;
                     if (target_delta == 0) { return; }
                     squares[x, y].transform.position += Vector3.up * Mathf.Log(target_delta, 2) * Time.deltaTime * 10;

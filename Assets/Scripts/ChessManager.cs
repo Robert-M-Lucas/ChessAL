@@ -263,7 +263,7 @@ public class ChessManager : MonoBehaviour
         TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
         int max_players = 0;
         foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
-        if (localPlayerList.Count + LocalAIPlayers.Count >= max_players) return;
+        if (localPlayerList.Count >= max_players) return;
 
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
         IDCounter++;
@@ -275,7 +275,7 @@ public class ChessManager : MonoBehaviour
         TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
         int max_players = 0;
         foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
-        if (localPlayerList.Count + LocalAIPlayers.Count >= max_players) return;
+        if (localPlayerList.Count >= max_players) return;
 
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
         LocalAIPlayers.Add(IDCounter);
@@ -482,7 +482,7 @@ public class ChessManager : MonoBehaviour
         if (possible_moves.Count == 0)
         {
             // Runs on no moves event
-            MOnLocalMove(GameManager.OnNoMoves(gameData), new V2(0, 0), new V2(0, 0));
+            MOnLocalMove(GameManager.OnNoMoves(gameData), new V2(0, 0), new V2(0, 0), false);
             return;
         }
 
@@ -534,7 +534,7 @@ public class ChessManager : MonoBehaviour
 
             // Apply move
             int next_player = GameManager.OnMove((Move)move, GetLiveGameData());
-            mainThreadActions.Enqueue(() => MOnLocalMove(next_player, ((Move)move).From, ((Move)move).To));
+            mainThreadActions.Enqueue(() => MOnLocalMove(next_player, ((Move)move).From, ((Move)move).To, true));
         }
     }
 
@@ -552,14 +552,18 @@ public class ChessManager : MonoBehaviour
     /// <param name="nextPlayer"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    public void MOnForeignMove(int nextPlayer, V2 from, V2 to)
+    /// <param name="applyMove"></param>
+    public void MOnForeignMove(int nextPlayer, V2 from, V2 to, bool applyMove = true)
     {
-        if (prevPlayer != GetLocalPlayerID() && !LocalPlay) GameManager.OnMove(new Move(from, to), GetLiveGameData()); // Make sure move was not made locally
-        
-        // Show and make move sound
-        VisualManager.OnMove(from, to);
-        VisualManager.UpdateAllPieces(new Move(from, to));
-        SoundMananger.GetInstance().PlayPieceMoveSound();
+        if (prevPlayer != GetLocalPlayerID() && !LocalPlay && applyMove) GameManager.OnMove(new Move(from, to), GetLiveGameData()); // Make sure move was not made locally
+
+        if (applyMove)
+        {
+            // Show and make move sound
+            VisualManager.OnMove(from, to);
+            VisualManager.UpdateAllPieces(new Move(from, to));
+            SoundMananger.GetInstance().PlayPieceMoveSound();
+        }
 
         // If game is over
         if (nextPlayer < 0)
@@ -592,7 +596,7 @@ public class ChessManager : MonoBehaviour
     public void DoLocalMove(V2 from, V2 to)
     {
         int next_player = GameManager.OnMove(new Move(from, to), GetLiveGameData());
-        MOnLocalMove(next_player, from, to);
+        MOnLocalMove(next_player, from, to, true);
     }
 
     /// <summary>
@@ -601,7 +605,8 @@ public class ChessManager : MonoBehaviour
     /// <param name="nextPlayer"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    public void MOnLocalMove(int nextPlayer, V2 from, V2 to)
+    /// <param name="applyMove"></param>
+    public void MOnLocalMove(int nextPlayer, V2 from, V2 to, bool applyMove)
     {
         MyTurn = false;
         if (!LocalPlay)
@@ -610,7 +615,7 @@ public class ChessManager : MonoBehaviour
         }
         else
         {
-            MOnForeignMove(nextPlayer, from, to);
+            MOnForeignMove(nextPlayer, from, to, applyMove);
         }
     }
     #endregion

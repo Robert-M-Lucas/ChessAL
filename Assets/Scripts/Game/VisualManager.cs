@@ -188,7 +188,7 @@ namespace Game
                     if (boardRenderInfo.Allows3D)
                     {
                         // 3D destroy if destination not empty
-                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to);
+                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to, !targetDimension);
                         // 3D Move
                         VisualManager3D.Move(from, to);
                     }
@@ -249,7 +249,7 @@ namespace Game
                             // Destroy if already occupied
                             Destroy(pieces2D[new V2(x, y)]);
                             pieces2D.Remove(new V2(x, y));
-                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y));
+                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y), !targetDimension);
                         }
                         if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
                         {
