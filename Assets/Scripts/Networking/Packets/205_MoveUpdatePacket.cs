@@ -28,6 +28,6 @@ namespace Networking.Packets.Generated
            contents.Add(BitConverter.GetBytes(_ToX));
            contents.Add(BitConverter.GetBytes(_ToY));
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }

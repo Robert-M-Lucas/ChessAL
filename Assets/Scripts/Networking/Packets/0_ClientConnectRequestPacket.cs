@@ -22,6 +22,6 @@ namespace Networking.Packets.Generated
            contents.Add(ASCIIEncoding.ASCII.GetBytes(_Version));
            contents.Add(ASCIIEncoding.ASCII.GetBytes(_Password));
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }

@@ -19,6 +19,6 @@ namespace Networking.Packets.Generated
            contents.Add(BitConverter.GetBytes(_Gamemode));
            contents.Add(_SaveData);
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }

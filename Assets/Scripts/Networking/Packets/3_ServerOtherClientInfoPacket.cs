@@ -25,6 +25,6 @@ namespace Networking.Packets.Generated
            contents.Add(BitConverter.GetBytes(_ClientTeam));
            contents.Add(BitConverter.GetBytes(_ClientPlayerInTeam));
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }

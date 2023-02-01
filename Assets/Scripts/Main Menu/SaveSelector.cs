@@ -4,11 +4,6 @@ using UnityEngine;
 using TMPro;
 using System.IO;
 
-namespace X
-{
-
-}
-
 namespace MainMenu
 {
     /// <summary>

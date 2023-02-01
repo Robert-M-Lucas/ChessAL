@@ -131,7 +131,7 @@ namespace Networking.Packets.Generated
 
     # Add common line
     data += """           return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }"""
 

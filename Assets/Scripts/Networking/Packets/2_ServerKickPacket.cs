@@ -16,6 +16,6 @@ namespace Networking.Packets.Generated
            List<byte[]> contents = new List<byte[]>();
            contents.Add(ASCIIEncoding.ASCII.GetBytes(_Reason));
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }

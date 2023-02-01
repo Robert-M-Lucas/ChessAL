@@ -13,6 +13,6 @@ namespace Networking.Packets.Generated
        public static byte[] Build() {
            List<byte[]> contents = new List<byte[]>();
            return PacketBuilder.Build(UID, contents);
-    }
+        }
     }
 }
