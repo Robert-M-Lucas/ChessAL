@@ -6,13 +6,24 @@ using System.Text;
 namespace Networking.Packets.Generated 
 {
     public class StartGamePacket {
+        /// <summary> Unique packet type identifier for StartGame </summary>
         public const int UID = 202;
+        
+        /// <summary>
+        /// Decodes generic packet data into a StartGamePacket
+        /// </summary>
         public StartGamePacket(Packet packet){
         }
 
-       public static byte[] Build() {
-           List<byte[]> contents = new List<byte[]>();
-           return PacketBuilder.Build(UID, contents);
+        /// <summary>
+        /// Creates an encoded StartGamePacket from arguments
+        /// </summary>
+        /// <returns>byte[] containing encoded data</returns>
+        public static byte[] Build() {
+            List<byte[]> contents = new List<byte[]>
+            {
+            };
+            return PacketBuilder.Build(UID, contents);
         }
     }
 }
