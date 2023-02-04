@@ -67,7 +67,7 @@ namespace Game
         public Dictionary<int, PieceAppearance> InternalAppearanceMap = new Dictionary<int, PieceAppearance>();
 
         public ChessManager ChessManager;
-        [SerializeField] private GameMenuManager GameMenuManager;
+        public GameMenuManager GameMenuManager;
 
         private const string PLAYER_PREFS_THEME_KEY = "Theme";
 
@@ -90,7 +90,9 @@ namespace Game
         private int[,] currentBoardAppearance;
 
         private float transitionProgress = float.NaN;
-        private bool targetDimension = true; // true = 2D
+        private enum Dimension { _2D, _3D }
+
+        private Dimension targetDimension = Dimension._2D; // true = 2D
         [SerializeField] private float transitionTime = 2f;
 
         // Run once
@@ -188,7 +190,7 @@ namespace Game
                     if (boardRenderInfo.Allows3D)
                     {
                         // 3D destroy if destination not empty
-                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to, !targetDimension);
+                        if (currentBoardHash[to.X, to.Y] != 0) VisualManager3D.DestroyPiece(to, targetDimension == Dimension._3D);
                         // 3D Move
                         VisualManager3D.Move(from, to);
                     }
@@ -249,7 +251,7 @@ namespace Game
                             // Destroy if already occupied
                             Destroy(pieces2D[new V2(x, y)]);
                             pieces2D.Remove(new V2(x, y));
-                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y), !targetDimension);
+                            if (boardRenderInfo.Allows3D) VisualManager3D.DestroyPiece(new V2(x, y), targetDimension == Dimension._3D);
                         }
                         if (ChessManager.GameManager.Board.PieceBoard[x, y] is not null)
                         {
@@ -617,9 +619,11 @@ namespace Game
             // Transition between 2D and 3D
             if (I.GetKeyDown(K.ChangeDimensionKey) && transitionProgress is float.NaN && boardRenderInfo.Allows3D)
             {
-                targetDimension = !targetDimension;
+                if (targetDimension == Dimension._2D) targetDimension = Dimension._3D;
+                else targetDimension = Dimension._2D;
+
                 transitionProgress = 0f;
-                if (targetDimension) renderBox.gameObject.SetActive(true);
+                if (targetDimension == Dimension._2D) renderBox.gameObject.SetActive(true);
             }
 
             if (transitionProgress is not float.NaN)
@@ -628,7 +632,7 @@ namespace Game
                 if (transitionProgress >= 1f) transitionProgress = 1f;
 
                 float progress = transitionProgress;
-                if (targetDimension == false) progress = 1f - progress;
+                if (targetDimension == Dimension._3D) progress = 1f - progress;
 
                 progress = MathP.CosSmooth(progress);
 
@@ -646,7 +650,7 @@ namespace Game
                 if (transitionProgress == 1f)
                 {
                     transitionProgress = float.NaN;
-                    if (!targetDimension)
+                    if (targetDimension == Dimension._3D)
                     {
                         renderBox.gameObject.SetActive(false);
                         VisualManager3D.ClearRipples();
@@ -654,7 +658,7 @@ namespace Game
                 }
             }
 
-            if (!targetDimension)
+            if (targetDimension == Dimension._3D)
             {
                 VisualManager3D.ExternalUpdate();
             }

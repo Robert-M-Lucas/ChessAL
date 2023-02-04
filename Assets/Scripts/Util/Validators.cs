@@ -66,6 +66,11 @@ public static class Validators
         return null;
     }
 
+    /// <summary>
+    /// Validates a file name
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     public static string? ValidateFileName(string fileName)
     {
         if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)

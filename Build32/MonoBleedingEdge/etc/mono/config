@@ -39,10 +39,10 @@
 		<dllentry dll="__Internal" name="MoveMemory" target="mono_win32_compat_MoveMemory"/>
 		<dllentry dll="__Internal" name="ZeroMemory" target="mono_win32_compat_ZeroMemory"/>
 	</dllmap>
-	<dllmap dll="gdiplus" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
-	<dllmap dll="gdiplus.dll" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib"  os="!windows"/>
-	<dllmap dll="gdi32" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
-	<dllmap dll="gdi32.dll" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdiplus" target="libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdiplus.dll" target="libgdiplus.dylib"  os="!windows"/>
+	<dllmap dll="gdi32" target="libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdi32.dll" target="libgdiplus.dylib" os="!windows"/>
 
     <!-- Some .net base class library code pinvokes into api-ms-win-core-threadpool-l1-2-0.dll. The only thing this library does is forward the call
 	to kernel32.dll (on windows desktop, versions on other platforms might forward elsewhere.  Unfortunately this library did not ship with windows7.

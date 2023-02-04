@@ -318,6 +318,7 @@ namespace Game.ThreeD
         public void ExternalUpdate()
         {
             V2? currentPosition = cameraManager.ExternalUpdate(boardRenderInfo.BoardSize);
+            if (visualManager.GameMenuManager.ShowingEscapeMenu) currentPosition = null;
             if (currentPosition is not null && !I.GetMouseButton(K.SecondaryClick))
             {
                 if (I.GetMouseButtonDown(K.PrimaryClick)) SelectSquare((V2)currentPosition, visualManager);

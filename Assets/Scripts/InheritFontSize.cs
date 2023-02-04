@@ -14,7 +14,6 @@ public class InheritFontSize : MonoBehaviour
     private TMP_Text _text = null;
 
     // Copy and update font size
-
     private void OnEnable()
     {
         if (_text is null) _text = GetComponent<TMP_Text>();

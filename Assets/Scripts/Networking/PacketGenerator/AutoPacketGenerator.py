@@ -60,6 +60,7 @@ using System.Text;
 namespace Networking.Packets.Generated 
 {{
     public class {packet_name}Packet {{
+        /// <summary> Unique packet type identifier for {packet_name} </summary>
 """
 
     # Add UID attribute
@@ -71,7 +72,11 @@ namespace Networking.Packets.Generated
         data += "        public " + i[1] + " " + splitted[0] + ";" + "\n"
 
     # Add common lines
-    data += f"""        public {packet_name}Packet(Packet packet){{
+    data += f"""        
+        /// <summary>
+        /// Decodes generic packet data into a {packet_name}Packet
+        /// </summary>
+        public {packet_name}Packet(Packet packet){{
 """
 
     # Add attributes to constructor
@@ -82,7 +87,7 @@ namespace Networking.Packets.Generated
 
         # Add decoder based on type
         if i[1] == "string":
-            data += "ASCIIEncoding.ASCII.GetString"
+            data += "Encoding.ASCII.GetString"
         elif i[1] == "int":
             data += "BitConverter.ToInt32"
         elif i[1] == "double":
@@ -96,12 +101,16 @@ namespace Networking.Packets.Generated
         data += f"(packet.Contents[{j}]);\n"
 
     # Add common line
-    data += """        }
+    data += f"""        }}
 
+        /// <summary>
+        /// Creates an encoded {packet_name}Packet from arguments
+        /// </summary>
+        /// <returns>byte[] containing encoded data</returns>
 """
 
     # Add common line
-    data += """       public static byte[] Build("""
+    data += """        public static byte[] Build("""
 
     # Add attributes to build method parameters
     for i in attributes[1:]:
@@ -116,22 +125,24 @@ namespace Networking.Packets.Generated
 
     # Add common line
     data += """) {
-           List<byte[]> contents = new List<byte[]>();
+            List<byte[]> contents = new List<byte[]>
+            {
 """
 
     # Add encoded attributes to contents
     for i in attributes[1:]:
         splitted = i[0].split("=")
         if i[1] == "string":
-            data += f"           contents.Add(ASCIIEncoding.ASCII.GetBytes(_{splitted[0]}));\n"
+            data += f"                Encoding.ASCII.GetBytes(_{splitted[0]}),\n"
         elif i[1] == "byte[]":
-            data += f"           contents.Add(_{splitted[0]});\n"
+            data += f"                _{splitted[0]},\n"
         else:
-            data += f"           contents.Add(BitConverter.GetBytes(_{splitted[0]}));\n"
+            data += f"                BitConverter.GetBytes(_{splitted[0]}),\n"
 
     # Add common line
-    data += """           return PacketBuilder.Build(UID, contents);
-    }
+    data += """            };
+            return PacketBuilder.Build(UID, contents);
+        }
     }
 }"""
 

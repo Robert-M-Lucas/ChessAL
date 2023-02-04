@@ -22,16 +22,16 @@ namespace Networking.Client
             this.client = client;
 
             UIDtoAction = new Dictionary<int, Action<Packet>>
-        {
-            { 1,  ServerAccept },
-            { 2, ServerKick },
-            { 3, PlayerInformationUpdate },
-            { 6, PlayerDisconnect },
-            { 5, PingResponse },
-            { 201, GamemodeDataRecieve},
-            { 202, OnGameStart },
-            { 205, OnMoveUpdate },
-        };
+            {
+                { 1,  ServerAccept },
+                { 2, ServerKick },
+                { 3, PlayerInformationUpdate },
+                { 6, PlayerDisconnect },
+                { 5, PingResponse },
+                { 201, GamemodeDataRecieve},
+                { 202, OnGameStart },
+                { 205, OnMoveUpdate },
+            };
         }
 
         /// <summary>

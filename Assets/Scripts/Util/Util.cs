@@ -23,7 +23,7 @@ public static class Util
         foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractGameManagerData))))
         {
-            game_managers_data.Add((AbstractGameManagerData)Activator.CreateInstance(type));
+            game_managers_data.Add((AbstractGameManagerData)Activator.CreateInstance(type)); // Create instance
         }
         
         // Order

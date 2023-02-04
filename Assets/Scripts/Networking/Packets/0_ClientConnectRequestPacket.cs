@@ -6,22 +6,33 @@ using System.Text;
 namespace Networking.Packets.Generated 
 {
     public class ClientConnectRequestPacket {
+        /// <summary> Unique packet type identifier for ClientConnectRequest </summary>
         public const int UID = 0;
         public string Name;
         public string Version;
         public string Password;
+        
+        /// <summary>
+        /// Decodes generic packet data into a ClientConnectRequestPacket
+        /// </summary>
         public ClientConnectRequestPacket(Packet packet){
-            Name = ASCIIEncoding.ASCII.GetString(packet.Contents[0]);
-            Version = ASCIIEncoding.ASCII.GetString(packet.Contents[1]);
-            Password = ASCIIEncoding.ASCII.GetString(packet.Contents[2]);
+            Name = Encoding.ASCII.GetString(packet.Contents[0]);
+            Version = Encoding.ASCII.GetString(packet.Contents[1]);
+            Password = Encoding.ASCII.GetString(packet.Contents[2]);
         }
 
-       public static byte[] Build(string _Name, string _Version, string _Password="") {
-           List<byte[]> contents = new List<byte[]>();
-           contents.Add(ASCIIEncoding.ASCII.GetBytes(_Name));
-           contents.Add(ASCIIEncoding.ASCII.GetBytes(_Version));
-           contents.Add(ASCIIEncoding.ASCII.GetBytes(_Password));
-           return PacketBuilder.Build(UID, contents);
-    }
+        /// <summary>
+        /// Creates an encoded ClientConnectRequestPacket from arguments
+        /// </summary>
+        /// <returns>byte[] containing encoded data</returns>
+        public static byte[] Build(string _Name, string _Version, string _Password="") {
+            List<byte[]> contents = new List<byte[]>
+            {
+                Encoding.ASCII.GetBytes(_Name),
+                Encoding.ASCII.GetBytes(_Version),
+                Encoding.ASCII.GetBytes(_Password),
+            };
+            return PacketBuilder.Build(UID, contents);
+        }
     }
 }
