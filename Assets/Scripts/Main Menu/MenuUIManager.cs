@@ -110,7 +110,6 @@ namespace MainMenu
             LocalStartFailText.text = string.Empty;
             HostNameDisallowedReason.text = string.Empty;
             JoinNameDisallowedReason.text = string.Empty;
-            
         }
 
         public void OpenSavesFolder() => SaveSystem.OpenSavesFolder();
