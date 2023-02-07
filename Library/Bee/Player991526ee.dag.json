@@ -234,7 +234,13 @@
         226,
         227,
         228,
-        229
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235
       ],
       "OverwriteOutputs": false,
       "DebugActionIndex": 0
@@ -448,7 +454,7 @@
       "DisplayName": "Writing boot.config_tyr4.info",
       "ActionType": "WriteFile",
       "PayloadOffset": 83,
-      "PayloadLength": 16014,
+      "PayloadLength": 16306,
       "PayloadDebugContentSnippet": "{\"System.Object\":null,\"Bee.Tun",
       "Inputs": [],
       "Outputs": [
@@ -556,7 +562,9 @@
         "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/Unity.Timeline.dll",
         "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/Unity.TextMeshPro.dll",
         "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/Unity.VisualScripting.State.dll",
+        "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/SingularityGroup.HotReload.Runtime.dll",
         "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/Wooshii.HierarchyDecorator.dll",
+        "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Runtime/SingularityGroup.HotReload.RuntimeDependencies.dll",
         "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/PackageCache/com.unity.visualscripting@1.8.0/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll",
         "C:/Program Files/Unity/Hub/Editor/2022.2.5f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32/Facades/netstandard.dll",
         "C:/Program Files/Unity/Hub/Editor/2022.2.5f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32/Mono.Security.dll",
@@ -1639,6 +1647,54 @@
       "DebugActionIndex": 103
     },
     {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Plugins/x86_64/libssl-1_1-x64.dll",
+      "DisplayName": "Copying libssl-1_1-x64.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/libssl-1_1-x64.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Plugins/x86_64/libssl-1_1-x64.dll"
+      ],
+      "DebugActionIndex": 104
+    },
+    {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Plugins/x86_64/VCRUNTIME140.dll",
+      "DisplayName": "Copying VCRUNTIME140.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/VCRUNTIME140.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Plugins/x86_64/VCRUNTIME140.dll"
+      ],
+      "DebugActionIndex": 105
+    },
+    {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Plugins/x86_64/python37.dll",
+      "DisplayName": "Copying python37.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/python37.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Plugins/x86_64/python37.dll"
+      ],
+      "DebugActionIndex": 106
+    },
+    {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Plugins/x86_64/libcrypto-1_1-x64.dll",
+      "DisplayName": "Copying libcrypto-1_1-x64.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/libcrypto-1_1-x64.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Plugins/x86_64/libcrypto-1_1-x64.dll"
+      ],
+      "DebugActionIndex": 107
+    },
+    {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AIModule.dll",
       "DisplayName": "Copying UnityEngine.AIModule.dll",
       "ActionType": "CopyFiles",
@@ -1648,7 +1704,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AIModule.dll"
       ],
-      "DebugActionIndex": 104
+      "DebugActionIndex": 108
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ARModule.dll",
@@ -1660,7 +1716,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ARModule.dll"
       ],
-      "DebugActionIndex": 105
+      "DebugActionIndex": 109
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AccessibilityModule.dll",
@@ -1672,7 +1728,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AccessibilityModule.dll"
       ],
-      "DebugActionIndex": 106
+      "DebugActionIndex": 110
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AndroidJNIModule.dll",
@@ -1684,7 +1740,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AndroidJNIModule.dll"
       ],
-      "DebugActionIndex": 107
+      "DebugActionIndex": 111
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AnimationModule.dll",
@@ -1696,7 +1752,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AnimationModule.dll"
       ],
-      "DebugActionIndex": 108
+      "DebugActionIndex": 112
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AssetBundleModule.dll",
@@ -1708,7 +1764,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AssetBundleModule.dll"
       ],
-      "DebugActionIndex": 109
+      "DebugActionIndex": 113
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.AudioModule.dll",
@@ -1720,7 +1776,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.AudioModule.dll"
       ],
-      "DebugActionIndex": 110
+      "DebugActionIndex": 114
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ClothModule.dll",
@@ -1732,7 +1788,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ClothModule.dll"
       ],
-      "DebugActionIndex": 111
+      "DebugActionIndex": 115
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ClusterInputModule.dll",
@@ -1744,7 +1800,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ClusterInputModule.dll"
       ],
-      "DebugActionIndex": 112
+      "DebugActionIndex": 116
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ClusterRendererModule.dll",
@@ -1756,7 +1812,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ClusterRendererModule.dll"
       ],
-      "DebugActionIndex": 113
+      "DebugActionIndex": 117
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ContentLoadModule.dll",
@@ -1768,7 +1824,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ContentLoadModule.dll"
       ],
-      "DebugActionIndex": 114
+      "DebugActionIndex": 118
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.CoreModule.dll",
@@ -1780,7 +1836,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.CoreModule.dll"
       ],
-      "DebugActionIndex": 115
+      "DebugActionIndex": 119
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.CrashReportingModule.dll",
@@ -1792,7 +1848,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.CrashReportingModule.dll"
       ],
-      "DebugActionIndex": 116
+      "DebugActionIndex": 120
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.DSPGraphModule.dll",
@@ -1804,7 +1860,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.DSPGraphModule.dll"
       ],
-      "DebugActionIndex": 117
+      "DebugActionIndex": 121
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.DirectorModule.dll",
@@ -1816,7 +1872,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.DirectorModule.dll"
       ],
-      "DebugActionIndex": 118
+      "DebugActionIndex": 122
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.GIModule.dll",
@@ -1828,7 +1884,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.GIModule.dll"
       ],
-      "DebugActionIndex": 119
+      "DebugActionIndex": 123
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.GameCenterModule.dll",
@@ -1840,7 +1896,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.GameCenterModule.dll"
       ],
-      "DebugActionIndex": 120
+      "DebugActionIndex": 124
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.GridModule.dll",
@@ -1852,7 +1908,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.GridModule.dll"
       ],
-      "DebugActionIndex": 121
+      "DebugActionIndex": 125
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.HotReloadModule.dll",
@@ -1864,7 +1920,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.HotReloadModule.dll"
       ],
-      "DebugActionIndex": 122
+      "DebugActionIndex": 126
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.IMGUIModule.dll",
@@ -1876,7 +1932,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.IMGUIModule.dll"
       ],
-      "DebugActionIndex": 123
+      "DebugActionIndex": 127
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ImageConversionModule.dll",
@@ -1888,7 +1944,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ImageConversionModule.dll"
       ],
-      "DebugActionIndex": 124
+      "DebugActionIndex": 128
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.InputLegacyModule.dll",
@@ -1900,7 +1956,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.InputLegacyModule.dll"
       ],
-      "DebugActionIndex": 125
+      "DebugActionIndex": 129
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.InputModule.dll",
@@ -1912,7 +1968,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.InputModule.dll"
       ],
-      "DebugActionIndex": 126
+      "DebugActionIndex": 130
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.JSONSerializeModule.dll",
@@ -1924,7 +1980,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.JSONSerializeModule.dll"
       ],
-      "DebugActionIndex": 127
+      "DebugActionIndex": 131
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.LocalizationModule.dll",
@@ -1936,7 +1992,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.LocalizationModule.dll"
       ],
-      "DebugActionIndex": 128
+      "DebugActionIndex": 132
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.NVIDIAModule.dll",
@@ -1948,7 +2004,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.NVIDIAModule.dll"
       ],
-      "DebugActionIndex": 129
+      "DebugActionIndex": 133
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ParticleSystemModule.dll",
@@ -1960,7 +2016,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ParticleSystemModule.dll"
       ],
-      "DebugActionIndex": 130
+      "DebugActionIndex": 134
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.PerformanceReportingModule.dll",
@@ -1972,7 +2028,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.PerformanceReportingModule.dll"
       ],
-      "DebugActionIndex": 131
+      "DebugActionIndex": 135
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.Physics2DModule.dll",
@@ -1984,7 +2040,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.Physics2DModule.dll"
       ],
-      "DebugActionIndex": 132
+      "DebugActionIndex": 136
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.PhysicsModule.dll",
@@ -1996,7 +2052,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.PhysicsModule.dll"
       ],
-      "DebugActionIndex": 133
+      "DebugActionIndex": 137
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ProfilerModule.dll",
@@ -2008,7 +2064,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ProfilerModule.dll"
       ],
-      "DebugActionIndex": 134
+      "DebugActionIndex": 138
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.PropertiesModule.dll",
@@ -2020,7 +2076,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.PropertiesModule.dll"
       ],
-      "DebugActionIndex": 135
+      "DebugActionIndex": 139
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll",
@@ -2032,7 +2088,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll"
       ],
-      "DebugActionIndex": 136
+      "DebugActionIndex": 140
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.ScreenCaptureModule.dll",
@@ -2044,7 +2100,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.ScreenCaptureModule.dll"
       ],
-      "DebugActionIndex": 137
+      "DebugActionIndex": 141
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.SharedInternalsModule.dll",
@@ -2056,7 +2112,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.SharedInternalsModule.dll"
       ],
-      "DebugActionIndex": 138
+      "DebugActionIndex": 142
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.SpriteMaskModule.dll",
@@ -2068,7 +2124,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.SpriteMaskModule.dll"
       ],
-      "DebugActionIndex": 139
+      "DebugActionIndex": 143
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.SpriteShapeModule.dll",
@@ -2080,7 +2136,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.SpriteShapeModule.dll"
       ],
-      "DebugActionIndex": 140
+      "DebugActionIndex": 144
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.StreamingModule.dll",
@@ -2092,7 +2148,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.StreamingModule.dll"
       ],
-      "DebugActionIndex": 141
+      "DebugActionIndex": 145
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.SubstanceModule.dll",
@@ -2104,7 +2160,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.SubstanceModule.dll"
       ],
-      "DebugActionIndex": 142
+      "DebugActionIndex": 146
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.SubsystemsModule.dll",
@@ -2116,7 +2172,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.SubsystemsModule.dll"
       ],
-      "DebugActionIndex": 143
+      "DebugActionIndex": 147
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TLSModule.dll",
@@ -2128,7 +2184,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TLSModule.dll"
       ],
-      "DebugActionIndex": 144
+      "DebugActionIndex": 148
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TerrainModule.dll",
@@ -2140,7 +2196,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TerrainModule.dll"
       ],
-      "DebugActionIndex": 145
+      "DebugActionIndex": 149
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TerrainPhysicsModule.dll",
@@ -2152,7 +2208,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TerrainPhysicsModule.dll"
       ],
-      "DebugActionIndex": 146
+      "DebugActionIndex": 150
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TextCoreFontEngineModule.dll",
@@ -2164,7 +2220,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TextCoreFontEngineModule.dll"
       ],
-      "DebugActionIndex": 147
+      "DebugActionIndex": 151
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll",
@@ -2176,7 +2232,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll"
       ],
-      "DebugActionIndex": 148
+      "DebugActionIndex": 152
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TextRenderingModule.dll",
@@ -2188,7 +2244,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TextRenderingModule.dll"
       ],
-      "DebugActionIndex": 149
+      "DebugActionIndex": 153
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.TilemapModule.dll",
@@ -2200,7 +2256,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.TilemapModule.dll"
       ],
-      "DebugActionIndex": 150
+      "DebugActionIndex": 154
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UIElementsModule.dll",
@@ -2212,7 +2268,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UIElementsModule.dll"
       ],
-      "DebugActionIndex": 151
+      "DebugActionIndex": 155
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UIModule.dll",
@@ -2224,7 +2280,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UIModule.dll"
       ],
-      "DebugActionIndex": 152
+      "DebugActionIndex": 156
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UmbraModule.dll",
@@ -2236,7 +2292,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UmbraModule.dll"
       ],
-      "DebugActionIndex": 153
+      "DebugActionIndex": 157
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll",
@@ -2248,7 +2304,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll"
       ],
-      "DebugActionIndex": 154
+      "DebugActionIndex": 158
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityAnalyticsModule.dll",
@@ -2260,7 +2316,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityAnalyticsModule.dll"
       ],
-      "DebugActionIndex": 155
+      "DebugActionIndex": 159
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityConnectModule.dll",
@@ -2272,7 +2328,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityConnectModule.dll"
       ],
-      "DebugActionIndex": 156
+      "DebugActionIndex": 160
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityCurlModule.dll",
@@ -2284,7 +2340,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityCurlModule.dll"
       ],
-      "DebugActionIndex": 157
+      "DebugActionIndex": 161
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityTestProtocolModule.dll",
@@ -2296,7 +2352,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityTestProtocolModule.dll"
       ],
-      "DebugActionIndex": 158
+      "DebugActionIndex": 162
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll",
@@ -2308,7 +2364,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll"
       ],
-      "DebugActionIndex": 159
+      "DebugActionIndex": 163
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll",
@@ -2320,7 +2376,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll"
       ],
-      "DebugActionIndex": 160
+      "DebugActionIndex": 164
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestModule.dll",
@@ -2332,7 +2388,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestModule.dll"
       ],
-      "DebugActionIndex": 161
+      "DebugActionIndex": 165
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll",
@@ -2344,7 +2400,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll"
       ],
-      "DebugActionIndex": 162
+      "DebugActionIndex": 166
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll",
@@ -2356,7 +2412,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll"
       ],
-      "DebugActionIndex": 163
+      "DebugActionIndex": 167
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.VFXModule.dll",
@@ -2368,7 +2424,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.VFXModule.dll"
       ],
-      "DebugActionIndex": 164
+      "DebugActionIndex": 168
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.VRModule.dll",
@@ -2380,7 +2436,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.VRModule.dll"
       ],
-      "DebugActionIndex": 165
+      "DebugActionIndex": 169
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.VehiclesModule.dll",
@@ -2392,7 +2448,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.VehiclesModule.dll"
       ],
-      "DebugActionIndex": 166
+      "DebugActionIndex": 170
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.VideoModule.dll",
@@ -2404,7 +2460,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.VideoModule.dll"
       ],
-      "DebugActionIndex": 167
+      "DebugActionIndex": 171
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.VirtualTexturingModule.dll",
@@ -2416,7 +2472,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.VirtualTexturingModule.dll"
       ],
-      "DebugActionIndex": 168
+      "DebugActionIndex": 172
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.WindModule.dll",
@@ -2428,7 +2484,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.WindModule.dll"
       ],
-      "DebugActionIndex": 169
+      "DebugActionIndex": 173
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.XRModule.dll",
@@ -2440,7 +2496,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.XRModule.dll"
       ],
-      "DebugActionIndex": 170
+      "DebugActionIndex": 174
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.dll",
@@ -2452,7 +2508,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.dll"
       ],
-      "DebugActionIndex": 171
+      "DebugActionIndex": 175
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Assembly-CSharp.dll",
@@ -2464,7 +2520,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Assembly-CSharp.dll"
       ],
-      "DebugActionIndex": 172
+      "DebugActionIndex": 176
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.AI.Navigation.dll",
@@ -2476,7 +2532,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.AI.Navigation.dll"
       ],
-      "DebugActionIndex": 173
+      "DebugActionIndex": 177
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.VisualScripting.Core.dll",
@@ -2488,7 +2544,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.VisualScripting.Core.dll"
       ],
-      "DebugActionIndex": 174
+      "DebugActionIndex": 178
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/UnityEngine.UI.dll",
@@ -2500,7 +2556,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/UnityEngine.UI.dll"
       ],
-      "DebugActionIndex": 175
+      "DebugActionIndex": 179
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.VisualScripting.Flow.dll",
@@ -2512,7 +2568,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.VisualScripting.Flow.dll"
       ],
-      "DebugActionIndex": 176
+      "DebugActionIndex": 180
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.Timeline.dll",
@@ -2524,7 +2580,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.Timeline.dll"
       ],
-      "DebugActionIndex": 177
+      "DebugActionIndex": 181
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.TextMeshPro.dll",
@@ -2536,7 +2592,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.TextMeshPro.dll"
       ],
-      "DebugActionIndex": 178
+      "DebugActionIndex": 182
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.VisualScripting.State.dll",
@@ -2548,7 +2604,19 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.VisualScripting.State.dll"
       ],
-      "DebugActionIndex": 179
+      "DebugActionIndex": 183
+    },
+    {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Managed/SingularityGroup.HotReload.Runtime.dll",
+      "DisplayName": "Copying SingularityGroup.HotReload.Runtime.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/Bee/PlayerScriptAssemblies/SingularityGroup.HotReload.Runtime.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Managed/SingularityGroup.HotReload.Runtime.dll"
+      ],
+      "DebugActionIndex": 184
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Wooshii.HierarchyDecorator.dll",
@@ -2560,7 +2628,19 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Wooshii.HierarchyDecorator.dll"
       ],
-      "DebugActionIndex": 180
+      "DebugActionIndex": 185
+    },
+    {
+      "Annotation": "CopyFiles Build/ChessAL_Data/Managed/SingularityGroup.HotReload.RuntimeDependencies.dll",
+      "DisplayName": "Copying SingularityGroup.HotReload.RuntimeDependencies.dll",
+      "ActionType": "CopyFiles",
+      "Inputs": [
+        "C:/Users/rober/Documents/$ CS Project/ChessAL/Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Runtime/SingularityGroup.HotReload.RuntimeDependencies.dll"
+      ],
+      "Outputs": [
+        "Build/ChessAL_Data/Managed/SingularityGroup.HotReload.RuntimeDependencies.dll"
+      ],
+      "DebugActionIndex": 186
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Unity.VisualScripting.Antlr3.Runtime.dll",
@@ -2572,7 +2652,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Unity.VisualScripting.Antlr3.Runtime.dll"
       ],
-      "DebugActionIndex": 181
+      "DebugActionIndex": 187
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/netstandard.dll",
@@ -2584,7 +2664,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/netstandard.dll"
       ],
-      "DebugActionIndex": 182
+      "DebugActionIndex": 188
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/Mono.Security.dll",
@@ -2596,7 +2676,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/Mono.Security.dll"
       ],
-      "DebugActionIndex": 183
+      "DebugActionIndex": 189
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.ComponentModel.Composition.dll",
@@ -2608,7 +2688,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.ComponentModel.Composition.dll"
       ],
-      "DebugActionIndex": 184
+      "DebugActionIndex": 190
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Configuration.dll",
@@ -2620,7 +2700,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Configuration.dll"
       ],
-      "DebugActionIndex": 185
+      "DebugActionIndex": 191
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Core.dll",
@@ -2632,7 +2712,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Core.dll"
       ],
-      "DebugActionIndex": 186
+      "DebugActionIndex": 192
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Data.DataSetExtensions.dll",
@@ -2644,7 +2724,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Data.DataSetExtensions.dll"
       ],
-      "DebugActionIndex": 187
+      "DebugActionIndex": 193
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Data.dll",
@@ -2656,7 +2736,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Data.dll"
       ],
-      "DebugActionIndex": 188
+      "DebugActionIndex": 194
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Drawing.dll",
@@ -2668,7 +2748,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Drawing.dll"
       ],
-      "DebugActionIndex": 189
+      "DebugActionIndex": 195
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.EnterpriseServices.dll",
@@ -2680,7 +2760,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.EnterpriseServices.dll"
       ],
-      "DebugActionIndex": 190
+      "DebugActionIndex": 196
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.IO.Compression.FileSystem.dll",
@@ -2692,7 +2772,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.IO.Compression.FileSystem.dll"
       ],
-      "DebugActionIndex": 191
+      "DebugActionIndex": 197
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.IO.Compression.dll",
@@ -2704,7 +2784,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.IO.Compression.dll"
       ],
-      "DebugActionIndex": 192
+      "DebugActionIndex": 198
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Net.Http.dll",
@@ -2716,7 +2796,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Net.Http.dll"
       ],
-      "DebugActionIndex": 193
+      "DebugActionIndex": 199
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Numerics.dll",
@@ -2728,7 +2808,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Numerics.dll"
       ],
-      "DebugActionIndex": 194
+      "DebugActionIndex": 200
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Runtime.Serialization.dll",
@@ -2740,7 +2820,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Runtime.Serialization.dll"
       ],
-      "DebugActionIndex": 195
+      "DebugActionIndex": 201
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Security.dll",
@@ -2752,7 +2832,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Security.dll"
       ],
-      "DebugActionIndex": 196
+      "DebugActionIndex": 202
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.ServiceModel.Internals.dll",
@@ -2764,7 +2844,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.ServiceModel.Internals.dll"
       ],
-      "DebugActionIndex": 197
+      "DebugActionIndex": 203
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Transactions.dll",
@@ -2776,7 +2856,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Transactions.dll"
       ],
-      "DebugActionIndex": 198
+      "DebugActionIndex": 204
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Xml.Linq.dll",
@@ -2788,7 +2868,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Xml.Linq.dll"
       ],
-      "DebugActionIndex": 199
+      "DebugActionIndex": 205
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.Xml.dll",
@@ -2800,7 +2880,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.Xml.dll"
       ],
-      "DebugActionIndex": 200
+      "DebugActionIndex": 206
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/System.dll",
@@ -2812,7 +2892,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/System.dll"
       ],
-      "DebugActionIndex": 201
+      "DebugActionIndex": 207
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Managed/mscorlib.dll",
@@ -2824,20 +2904,20 @@
       "Outputs": [
         "Build/ChessAL_Data/Managed/mscorlib.dll"
       ],
-      "DebugActionIndex": 202
+      "DebugActionIndex": 208
     },
     {
       "Annotation": "WriteText Library/Bee/artifacts/WinPlayerBuildProgram/Data/app.info",
       "DisplayName": "Writing app.info",
       "ActionType": "WriteFile",
-      "PayloadOffset": 16186,
+      "PayloadOffset": 16478,
       "PayloadLength": 19,
       "PayloadDebugContentSnippet": "RobertLucas\nChessAL",
       "Inputs": [],
       "Outputs": [
         "Library/Bee/artifacts/WinPlayerBuildProgram/Data/app.info"
       ],
-      "DebugActionIndex": 203
+      "DebugActionIndex": 209
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/app.info",
@@ -2850,9 +2930,9 @@
         "Build/ChessAL_Data/app.info"
       ],
       "ToBuildDependencies": [
-        203
+        209
       ],
-      "DebugActionIndex": 204
+      "DebugActionIndex": 210
     },
     {
       "Annotation": "CopyFiles Build/ChessAL_Data/Resources/unity default resources",
@@ -2864,7 +2944,7 @@
       "Outputs": [
         "Build/ChessAL_Data/Resources/unity default resources"
       ],
-      "DebugActionIndex": 205
+      "DebugActionIndex": 211
     },
     {
       "Annotation": "CopyFiles Build/ChessAL.exe",
@@ -2876,7 +2956,7 @@
       "Outputs": [
         "Build/ChessAL.exe"
       ],
-      "DebugActionIndex": 206
+      "DebugActionIndex": 212
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll",
@@ -2888,7 +2968,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll"
       ],
-      "DebugActionIndex": 207
+      "DebugActionIndex": 213
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll",
@@ -2900,7 +2980,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll"
       ],
-      "DebugActionIndex": 208
+      "DebugActionIndex": 214
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser",
@@ -2912,7 +2992,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser"
       ],
-      "DebugActionIndex": 209
+      "DebugActionIndex": 215
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx",
@@ -2924,7 +3004,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx"
       ],
-      "DebugActionIndex": 210
+      "DebugActionIndex": 216
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/2.0/machine.config",
@@ -2936,7 +3016,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/2.0/machine.config"
       ],
-      "DebugActionIndex": 211
+      "DebugActionIndex": 217
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/2.0/settings.map",
@@ -2948,7 +3028,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/2.0/settings.map"
       ],
-      "DebugActionIndex": 212
+      "DebugActionIndex": 218
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/2.0/web.config",
@@ -2960,7 +3040,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/2.0/web.config"
       ],
-      "DebugActionIndex": 213
+      "DebugActionIndex": 219
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser",
@@ -2972,7 +3052,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser"
       ],
-      "DebugActionIndex": 214
+      "DebugActionIndex": 220
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx",
@@ -2984,7 +3064,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx"
       ],
-      "DebugActionIndex": 215
+      "DebugActionIndex": 221
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.0/machine.config",
@@ -2996,7 +3076,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.0/machine.config"
       ],
-      "DebugActionIndex": 216
+      "DebugActionIndex": 222
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.0/settings.map",
@@ -3008,7 +3088,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.0/settings.map"
       ],
-      "DebugActionIndex": 217
+      "DebugActionIndex": 223
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.0/web.config",
@@ -3020,7 +3100,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.0/web.config"
       ],
-      "DebugActionIndex": 218
+      "DebugActionIndex": 224
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser",
@@ -3032,7 +3112,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser"
       ],
-      "DebugActionIndex": 219
+      "DebugActionIndex": 225
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx",
@@ -3044,7 +3124,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx"
       ],
-      "DebugActionIndex": 220
+      "DebugActionIndex": 226
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.5/machine.config",
@@ -3056,7 +3136,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.5/machine.config"
       ],
-      "DebugActionIndex": 221
+      "DebugActionIndex": 227
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.5/settings.map",
@@ -3068,7 +3148,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.5/settings.map"
       ],
-      "DebugActionIndex": 222
+      "DebugActionIndex": 228
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/4.5/web.config",
@@ -3080,7 +3160,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/4.5/web.config"
       ],
-      "DebugActionIndex": 223
+      "DebugActionIndex": 229
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/browscap.ini",
@@ -3092,7 +3172,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/browscap.ini"
       ],
-      "DebugActionIndex": 224
+      "DebugActionIndex": 230
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/config",
@@ -3104,7 +3184,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/config"
       ],
-      "DebugActionIndex": 225
+      "DebugActionIndex": 231
     },
     {
       "Annotation": "CopyFiles Build/MonoBleedingEdge/etc/mono/mconfig/config.xml",
@@ -3116,7 +3196,7 @@
       "Outputs": [
         "Build/MonoBleedingEdge/etc/mono/mconfig/config.xml"
       ],
-      "DebugActionIndex": 226
+      "DebugActionIndex": 232
     },
     {
       "Annotation": "CopyFiles Build/UnityCrashHandler64.exe",
@@ -3128,7 +3208,7 @@
       "Outputs": [
         "Build/UnityCrashHandler64.exe"
       ],
-      "DebugActionIndex": 227
+      "DebugActionIndex": 233
     },
     {
       "Annotation": "CopyFiles Build/UnityPlayer.dll",
@@ -3140,7 +3220,7 @@
       "Outputs": [
         "Build/UnityPlayer.dll"
       ],
-      "DebugActionIndex": 228
+      "DebugActionIndex": 234
     },
     {
       "Annotation": "Player",
@@ -3348,12 +3428,12 @@
         200,
         201,
         202,
+        203,
         204,
         205,
         206,
         207,
         208,
-        209,
         210,
         211,
         212,
@@ -3372,10 +3452,16 @@
         225,
         226,
         227,
-        228
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234
       ],
       "OverwriteOutputs": false,
-      "DebugActionIndex": 229
+      "DebugActionIndex": 235
     }
   ],
   "FileSignatures": [
@@ -3515,6 +3601,18 @@
     },
     {
       "File": "Library/Bee/Player991526ee-inputdata.json"
+    },
+    {
+      "File": "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/libcrypto-1_1-x64.dll"
+    },
+    {
+      "File": "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/libssl-1_1-x64.dll"
+    },
+    {
+      "File": "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/python37.dll"
+    },
+    {
+      "File": "Library/PackageCache/com.singularitygroup.hotreload@9ee47a89af/Server/win-x64/watchman-wait/VCRUNTIME140.dll"
     }
   ],
   "GlobSignatures": [
@@ -3576,7 +3674,7 @@
   "EmitDataForBeeWhy": 0,
         "NamedNodes": {
           "all_tundra_nodes": 0,
-          "Player": 229
+          "Player": 235
         }
 ,  "DefaultNodes": [
     0
