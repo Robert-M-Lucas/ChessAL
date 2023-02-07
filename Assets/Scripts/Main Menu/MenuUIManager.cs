@@ -86,7 +86,7 @@ namespace MainMenu
 
             HideAllScreens();
         }
-        
+
         /// <summary>
         /// Hides all currently showing main menu screens
         /// </summary>
@@ -363,7 +363,7 @@ namespace MainMenu
         public void OnLocalGamemodeSwitch()
         {
             if (LocalGamemodeSelector.CurrentlyShowingPos == 0) LocalConfigHelpText.text = "";
-            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
+            else LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LocalPlayShowGamemodeHelp()
