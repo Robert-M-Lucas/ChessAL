@@ -10,11 +10,8 @@ namespace Gamemodes.ConnectFour
         {
             return new GameManager(this);
         }
-
         public override int GetUID() => 900;
-
         public override string GetName() => "Connect Four";
-
         public override string GetDescription()
         {
             return @"Connect Four
@@ -23,9 +20,7 @@ Drop counters onto piles. First person to get four in a row wins
 
 Requires 2 teams";
         }
-
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
-
         public override string[] TeamAliases() => new string[] { "Red", "Yellow" };
     }
 

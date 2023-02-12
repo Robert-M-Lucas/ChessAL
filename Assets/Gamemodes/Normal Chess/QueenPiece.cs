@@ -26,13 +26,6 @@ namespace Gamemodes.NormalChess
             return moves;
         }
 
-        /*
-        public override void OnMove(V2 from, V2 to)
-        {
-
-        }
-        */
-
         public override AbstractPiece Clone(AbstractBoard newBoard) => new QueenPiece(Position, Team, newBoard);
 
         public override int GetUID() => 105;

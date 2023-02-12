@@ -10,11 +10,8 @@ namespace Gamemodes.Checkers
         {
             return new GameManager(this);
         }
-
         public override int GetUID() => 700;
-
         public override string GetName() => "Checkers";
-
         public override string GetDescription()
         {
             return @"Checkers
@@ -23,15 +20,13 @@ Must have one player on both the black and white team
 
 Traditional checkers played on an 8x8 board";
         }
-
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
-
         public override string[] TeamAliases() => new string[] { "Black", "White" };
     }
 
     public class GameManager : AbstractGameManager
     {
-        
+        // Tracks whether a piece was taken to allow double takes
         public bool PieceTaken;
 
         public GameManager(AbstractGameManagerData d) : base(d)
@@ -104,9 +99,10 @@ Traditional checkers played on an 8x8 board";
             Board.PieceBoard[move.To.X, move.To.Y].Position = move.To;
             Board.PieceBoard[move.From.X, move.From.Y] = null;
 
+            // If piece was taken and double take available make it the same player's turn again
             if (PieceTaken) {
                 List<Move> next_moves = GetMoves(gameData, move.To);
-                if (next_moves.Count > 0 && Mathf.Abs((next_moves[0].To - next_moves[0].From).X) == 2) return gameData.LocalPlayerID;
+                if (next_moves.Count > 0 && Mathf.Abs((next_moves[0].To - next_moves[0].From).X) == 2) return gameData.LocalPlayerID; 
             }
 
             return base_return;

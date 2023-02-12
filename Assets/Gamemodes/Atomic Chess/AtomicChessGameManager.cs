@@ -39,7 +39,7 @@ When a piece is taken a 3x3 area around it is destroyed";
 
         public override int OnMove(Move move, LiveGameData gameData)
         {
-            bool explode = Board.GetPiece(move.To) is not null;
+            bool explode = Board.GetPiece(move.To) is not null; // Was piece taken
 
             int default_return = FalseOnMove(Board, move, gameData);
 
@@ -57,11 +57,11 @@ When a piece is taken a 3x3 area around it is destroyed";
                 }
             }
 
-            KingAlive kings_alive = CheckForKings(Board);
+            KingsAlive kings_alive = CheckForKings(Board);
 
-            if (kings_alive == KingAlive.None) return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
-            if (kings_alive == KingAlive.Black) return GUtil.TurnEncodeTeam(1);
-            if (kings_alive == KingAlive.White) return GUtil.TurnEncodeTeam(0);
+            if (kings_alive == KingsAlive.None) return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
+            if (kings_alive == KingsAlive.Black) return GUtil.TurnEncodeTeam(1);
+            if (kings_alive == KingsAlive.White) return GUtil.TurnEncodeTeam(0);
 
             return default_return;
         }

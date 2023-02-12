@@ -400,8 +400,6 @@ namespace Networking.Server
             }
             catch (ThreadAbortException)
             {
-                // TODO: Figure out which of these are needed
-
                 Debug.Log("Shutting down listener");
                 Debug.Log(listener);
                 try { listener?.Shutdown(SocketShutdown.Both); } catch (SocketException) {  }

@@ -341,7 +341,7 @@ namespace Game.ThreeD
             // Set new ripple progress
             for (int i = 0; i < ripples.Count; i++)
             {
-                ripples[i].time += Time.deltaTime / 2f;
+                ripples[i].time += Time.deltaTime / 2.5f;
 
                 if (ripples[i].time >= 1f)
                 {
@@ -376,7 +376,7 @@ namespace Game.ThreeD
             }
 
             // Apply ripple height
-            float max_distance = new Vector2(boardRenderInfo.BoardSize / 2f, boardRenderInfo.BoardSize / 2f).magnitude;
+            float max_distance = new Vector2(boardRenderInfo.BoardSize / 2f, boardRenderInfo.BoardSize / 2f).magnitude * 2f;
             for (int x = 0; x < boardRenderInfo.BoardSize; x++)
             {
                 for (int y = 0; y < boardRenderInfo.BoardSize; y++)
@@ -384,7 +384,7 @@ namespace Game.ThreeD
                     foreach (RippleData ripple in ripples)
                     {
                         float distance = (ripple.position - new V2(x, y)).Vector2().magnitude;
-                        targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1, distance, max_distance, 6) * 0.4f;
+                        targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1.5f, distance, max_distance, 6) * 0.5f;
                     }
                 }
             }

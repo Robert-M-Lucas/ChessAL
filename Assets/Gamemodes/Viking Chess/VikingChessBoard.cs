@@ -44,8 +44,8 @@ namespace Gamemodes.VikingChess
 
             PieceBoard[5, 1] = new VikingPiece(new V2(5, 1), 0, this);
             PieceBoard[1, 5] = new VikingPiece(new V2(1, 5), 0, this);
-            PieceBoard[10, 5] = new VikingPiece(new V2(10, 5), 0, this);
-            PieceBoard[5, 10] = new VikingPiece(new V2(5, 10), 0, this);
+            PieceBoard[9, 5] = new VikingPiece(new V2(9, 5), 0, this);
+            PieceBoard[5, 9] = new VikingPiece(new V2(5, 9), 0, this);
 
             PieceBoard[5, 3] = new VikingPiece(new V2(5, 3), 1, this);
             PieceBoard[3, 5] = new VikingPiece(new V2(3, 5), 1, this);
@@ -53,7 +53,8 @@ namespace Gamemodes.VikingChess
             PieceBoard[5, 7] = new VikingPiece(new V2(5, 7), 1, this);
         }
 
-        public override BoardRenderInfo GetBoardRenderInfo() => new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10), CENTRE }, true);
+        public override BoardRenderInfo GetBoardRenderInfo() => 
+            new BoardRenderInfo(11, null, new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10), CENTRE }, true);
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {

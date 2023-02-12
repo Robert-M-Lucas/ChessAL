@@ -11,11 +11,8 @@ namespace Gamemodes.VikingChess
         {
             return new GameManager(this);
         }
-
         public override int GetUID() => 800;
-
         public override string GetName() => "Viking Chess";
-
         public override string GetDescription()
         {
             return @"Viking Chess
@@ -24,9 +21,7 @@ Must have one player on both the black and white team
 
 Get your king to a corner of the board. Surround a piece on two sides to take it or surround the king on all sides to win the game.";
         }
-
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1) };
-
         public override string[] TeamAliases() => new string[] { "Black", "White" };
     }
 
@@ -41,6 +36,7 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
         {
             List<V2> winning_squares = new List<V2>() { new V2(0, 0), new V2(10, 0), new V2(0, 10), new V2(10, 10) };
 
+            // If king is in winning square
             foreach (V2 square in winning_squares)
             {
                 if (Board.GetPiece(square) is not null && Board.GetPiece(square).GetUID() == PieceUIDs.King) return GUtil.TurnEncodeTeam(1);
@@ -60,11 +56,16 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                 if (found_king) break;
             }
 
-            if (!found_king) return GUtil.TurnEncodeTeam(0);
+            if (!found_king) return GUtil.TurnEncodeTeam(0); // If king not found
 
             return 0;
         }
 
+        /// <summary>
+        /// Checks for a piece being taken
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="gameData"></param>
         private void CheckForTake(V2 to, LiveGameData gameData)
         {
             int turn = gameData.GetPlayerList()[gameData.CurrentPlayer].Team;
@@ -102,7 +103,9 @@ Get your king to a corner of the board. Surround a piece on two sides to take it
                                 continue;
                             }
 
-                            if (Board.GetPiece(current_pos + pos) is not null && Board.GetPiece(current_pos + pos).Team == turn && Board.GetPiece(current_pos+pos).GetUID() == PieceUIDs.Piece)
+                            if (Board.GetPiece(current_pos + pos) is not null && 
+                                Board.GetPiece(current_pos + pos).Team == turn && 
+                                Board.GetPiece(current_pos+pos).GetUID() == PieceUIDs.Piece)
                             {
                                 if (to == current_pos + pos) active = true;
                                 neigbours.Add(pos);
