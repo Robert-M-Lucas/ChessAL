@@ -13,7 +13,14 @@ namespace Gamemodes.NormalChess
     /// </summary>
     public class Board : AbstractBoard
     {
+        /// <summary>
+        /// Counts how many moves have happened this game. Used for en passant as that can only happen immediately after dash
+        /// </summary>
         public int MoveCounter;
+
+        /// <summary>
+        /// Board is seen from this team's perspective
+        /// </summary>
         public int VirtualTeam;
 
         public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
@@ -67,13 +74,13 @@ namespace Gamemodes.NormalChess
         public override SerialisationData GetData()
         {
             SerialisationData data = base.GetData();
-            data.BoardData = BitConverter.GetBytes(MoveCounter);
+            data.BoardData = BitConverter.GetBytes(MoveCounter); // Save custom data
             return data;
         }
 
         public override void LoadData(SerialisationData data)
         {
-            MoveCounter = BitConverter.ToInt32(data.BoardData);
+            MoveCounter = BitConverter.ToInt32(data.BoardData); // Load custom data
             base.LoadData(data);
         }
 

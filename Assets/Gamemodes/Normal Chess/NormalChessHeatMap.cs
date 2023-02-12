@@ -6,6 +6,9 @@ using Game;
 
 namespace Gamemodes.NormalChess
 {
+    /// <summary>
+    /// Adds scores to pieces based on their positions
+    /// </summary>
     public static class Heatmap
     {
         /// <summary>
@@ -18,6 +21,7 @@ namespace Gamemodes.NormalChess
         {
             float total = 0;
 
+            // Float arrays represent value of piece in given position. Top is current player.
             Dictionary<Type, float[,]> heatmaps = new Dictionary<Type, float[,]>
             {
                 {
@@ -115,17 +119,17 @@ namespace Gamemodes.NormalChess
                     if (heatmaps.ContainsKey(board.PieceBoard[x, y].GetType()))
                     {
                         int true_y = y;
+
+                        // Uses multiplier to add or subtract points based on whose side the pieces belong to
                         int multiplier = 1;
                         if (board.PieceBoard[x, y].Team != gameData.LocalPlayerTeam)
-                        {
                             multiplier = -1;
-                        }
 
+                        // Flip board if on other team
                         if (board.PieceBoard[x, y].Team != 0)
-                        {
                             true_y = 7 - y;
-                        }
 
+                        // Add heatmap score
                         total += heatmaps[board.PieceBoard[x, y].GetType()][true_y, x] * multiplier;
                     }
                 }

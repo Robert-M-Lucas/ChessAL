@@ -8,6 +8,9 @@ namespace Gamemodes.NormalChess
 {
     public class RookPiece : NormalChessPiece
     {
+        /// <summary>
+        /// Stores whether piece has moved. Used for castling.
+        /// </summary>
         public bool HasMoved;
 
         public RookPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
@@ -49,7 +52,7 @@ namespace Gamemodes.NormalChess
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();
-            data.Data = BitConverter.GetBytes(HasMoved);
+            data.Data = BitConverter.GetBytes(HasMoved); // Add HasMoved to normal save data
             return data;
         }
 
@@ -57,7 +60,7 @@ namespace Gamemodes.NormalChess
         {
             Position = data.Position;
             Team = data.Team;
-            HasMoved = BitConverter.ToBoolean(data.Data);
+            HasMoved = BitConverter.ToBoolean(data.Data); // Load value of HasMoved from save data
         }
 
         public override int GetUID() => 104;

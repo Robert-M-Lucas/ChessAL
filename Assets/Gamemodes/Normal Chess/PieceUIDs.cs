@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
+    /// <summary>
+    /// Enum mapping piece names to UIDs
+    /// </summary>
     public static class PieceUIDs
     {
         public const int PAWN = 100;

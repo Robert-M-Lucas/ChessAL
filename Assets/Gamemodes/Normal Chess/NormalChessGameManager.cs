@@ -6,6 +6,9 @@ using Game.ThreeD;
 
 namespace Gamemodes.NormalChess
 {
+    /// <summary>
+    /// Game Manager Data for Normal Chess
+    /// </summary>
     public class GameManagerData : AbstractGameManagerData
     {
         public override AbstractGameManager Instantiate()
@@ -31,7 +34,10 @@ Traditional chess played on an 8x8 board";
         public override string[] TeamAliases() => new string[] { "White", "Black" };
     }
 
-    public enum KingAlive
+    /// <summary>
+    /// Represents the state of the kings
+    /// </summary>
+    public enum KingsAlive
     {
         None = 0,
         White = 1,
@@ -39,9 +45,14 @@ Traditional chess played on an 8x8 board";
         Both = 3,
     }
 
+    /// <summary>
+    /// Game Manager for Normal Chess
+    /// </summary>
     public class GameManager : AbstractGameManager
     {
-        
+        /// <summary>
+        /// Set to true when normal movement is cancelled e.g. promoting a pawn
+        /// </summary>
         public bool CancelDefaultMove;
 
         public GameManager(AbstractGameManagerData d) : base(d)
@@ -77,10 +88,12 @@ Traditional chess played on an 8x8 board";
                         }
                     }
 
+                    // Remove illegal move
                     if (failed)
                     {
                         possible_moves.RemoveAt(i);
                     }
+
                     else i++;
                 }
             }
@@ -93,7 +106,7 @@ Traditional chess played on an 8x8 board";
         /// </summary>
         /// <param name="board"></param>
         /// <returns></returns>
-        protected KingAlive CheckForKings(AbstractBoard board)
+        protected KingsAlive CheckForKings(AbstractBoard board)
         {
             bool white_king = false;
             bool black_king = false;
@@ -112,18 +125,26 @@ Traditional chess played on an 8x8 board";
                 }
             }
 
-            if (white_king && black_king) return KingAlive.Both;
-            else if (white_king) return KingAlive.White;
-            else if (black_king) return KingAlive.Black;
-            else return KingAlive.None;
+            if (white_king && black_king) return KingsAlive.Both;
+            else if (white_king) return KingsAlive.White;
+            else if (black_king) return KingsAlive.Black;
+            else return KingsAlive.None;
         }
 
+        /// <summary>
+        /// Replacement for OnMove that can take any AbstractBoard state, not just the active one
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="move"></param>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
         protected int FalseOnMove(AbstractBoard board, Move move, LiveGameData gameData)
         {
             CancelDefaultMove = false;
 
             board.OnMove(move);
 
+            // Default movement
             if (!CancelDefaultMove)
             {
                 board.PieceBoard[move.To.X, move.To.Y] = board.PieceBoard[move.From.X, move.From.Y];
@@ -133,18 +154,15 @@ Traditional chess played on an 8x8 board";
 
             (board as Board).MoveCounter++;
 
-            KingAlive kings_alive = CheckForKings(board);
+            KingsAlive kings_alive = CheckForKings(board);
 
-            if (kings_alive == KingAlive.Black) return GUtil.TurnEncodeTeam(1);
-            if (kings_alive == KingAlive.White || kings_alive == KingAlive.None) return GUtil.TurnEncodeTeam(0);
+            if (kings_alive == KingsAlive.Black) return GUtil.TurnEncodeTeam(1);
+            if (kings_alive == KingsAlive.White || kings_alive == KingsAlive.None) return GUtil.TurnEncodeTeam(0);
 
             return GUtil.SwitchPlayerTeam(gameData);
         }
 
-        public override int OnMove(Move move, LiveGameData gameData)
-        {
-            return FalseOnMove(Board, move, gameData);
-        }
+        public override int OnMove(Move move, LiveGameData gameData) => FalseOnMove(Board, move, gameData);
 
         public override AbstractGameManager Clone()
         {
@@ -162,6 +180,7 @@ Traditional chess played on an 8x8 board";
             {
                 score += Heatmap.GetHeatmapScore(gameData, Board as Board);
             }
+
             return score;
         }
     }
