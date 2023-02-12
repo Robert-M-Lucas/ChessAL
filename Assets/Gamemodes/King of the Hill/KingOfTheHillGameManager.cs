@@ -37,7 +37,7 @@ First king to the 2x2 square in the center of the board wins. Normal check and c
 
         public override int OnMove(Move move, LiveGameData gameData)
         {
-            int default_return = FalseOnMove(Board, move, gameData);
+            int default_return = FalseOnMove(Board, move, gameData); // Get normal return value from NormalChess
 
             // Check for centre winner
             List<V2> centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };

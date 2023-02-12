@@ -91,13 +91,13 @@ namespace Gamemodes.Checkers
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();
-            data.Data = BitConverter.GetBytes(Queen);
+            data.Data = BitConverter.GetBytes(Queen); // Save custom data
             return data;
         }
 
         public override void LoadData(PieceSerialisationData data)
         {
-            Queen = BitConverter.ToBoolean(data.Data);
+            Queen = BitConverter.ToBoolean(data.Data); // Load custom data
             if (Queen) AppearanceID += 2;
             base.LoadData(data);
         }

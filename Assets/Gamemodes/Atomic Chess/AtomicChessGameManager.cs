@@ -39,7 +39,7 @@ When a piece is taken a 3x3 area around it is destroyed";
 
         public override int OnMove(Move move, LiveGameData gameData)
         {
-            bool explode = Board.GetPiece(move.To) is not null;
+            bool explode = Board.GetPiece(move.To) is not null; // Was piece taken
 
             int default_return = FalseOnMove(Board, move, gameData);
 

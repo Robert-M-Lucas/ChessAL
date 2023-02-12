@@ -28,6 +28,9 @@ namespace Gamemodes.NormalChess
             if (initialise) Initialise();
         }
 
+        /// <summary>
+        /// Places all pieces in starting positions
+        /// </summary>
         protected void Initialise()
         {
             PieceBoard = new AbstractPiece[8, 8];
