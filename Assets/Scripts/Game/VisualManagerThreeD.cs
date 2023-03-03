@@ -384,7 +384,7 @@ namespace Game.ThreeD
                     foreach (RippleData ripple in ripples)
                     {
                         float distance = (ripple.position - new V2(x, y)).Vector2().magnitude;
-                        targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1.5f, distance, max_distance, 6) * 0.5f;
+                        targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1.5f, distance, max_distance, 6) * 0.4f;
                     }
                 }
             }
