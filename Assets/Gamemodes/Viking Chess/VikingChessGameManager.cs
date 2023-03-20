@@ -7,7 +7,7 @@ namespace Gamemodes.VikingChess
 {
     public class GameManagerData : AbstractGameManagerData
     {
-        public override AbstractGameManager Instantiate()
+        public override AbstractGameManager Instantiate(LiveGameData initialData)
         {
             return new GameManager(this);
         }

@@ -32,7 +32,7 @@ namespace Gamemodes
 
         public virtual string GetDescription() => "No description";
 
-        public abstract AbstractGameManager Instantiate();
+        public abstract AbstractGameManager Instantiate(LiveGameData initialData);
     }
 
     /// <summary>

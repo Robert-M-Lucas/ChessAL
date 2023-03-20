@@ -176,7 +176,7 @@ namespace Gamemodes
             if (team == 0) team = 1;
             else team = 0;
 
-            return gameData.GetPlayerByTeam(team, 0);
+            return (int)gameData.GetPlayerByTeam(team, 0);
         }
 
         /// <summary>

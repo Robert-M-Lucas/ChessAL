@@ -1,3 +1,4 @@
+using Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ namespace Gamemodes.MegaChess
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate()
+        public override AbstractGameManager Instantiate(LiveGameData initialData)
         {
             return new GameManager(this);
         }
