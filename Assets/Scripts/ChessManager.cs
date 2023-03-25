@@ -364,7 +364,6 @@ public class ChessManager : MonoBehaviour
     private void MLoadGame()
     {
         SceneManager.LoadScene(1); // Load main scene
-        GameManager = CurrentGameManager.Instantiate(); // Instantiate GameManager
         if (saveData.Length > 0)
         {
             SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
@@ -375,10 +374,12 @@ public class ChessManager : MonoBehaviour
                 else MyTurn = false;
             }
             else MyTurn = true;
-
-            GameManager.LoadData(data);
-            CurrentPlayer = GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
+   
+            CurrentPlayer = (int)GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
             TimerOffset = data.EllapsedTime; // Initialise timer to savegame's timer
+
+            GameManager = CurrentGameManager.Instantiate(GetLiveGameData()); // Instantiate GameManager
+            GameManager.LoadData(data);
         }
         else
         {
@@ -392,7 +393,8 @@ public class ChessManager : MonoBehaviour
             }
             else MyTurn = true;
 
-            CurrentPlayer = GetPlayerByTeam(team_start, player_in_team_start);
+            CurrentPlayer = (int)GetPlayerByTeam(team_start, player_in_team_start);
+            GameManager = CurrentGameManager.Instantiate(GetLiveGameData()); // Instantiate GameManager
         }
         Timer.Start();
     }
@@ -429,7 +431,7 @@ public class ChessManager : MonoBehaviour
         if (!LocalPlay) return GetPlayerList()[GetLocalPlayerID()].Team;
         else return localPlayerList[GetLocalPlayerID()].Team;
     }
-    public int GetPlayerByTeam(int team, int playerInTeam)
+    public int? GetPlayerByTeam(int team, int playerInTeam)
     {
         var playerList = GetPlayerList();
 
@@ -438,7 +440,7 @@ public class ChessManager : MonoBehaviour
             if (player_data.Team == team && player_data.PlayerInTeam == playerInTeam) return player_data.PlayerID;
         }
 
-        throw new Exception("Player not found");
+        return null;
     }
 
     public ConcurrentDictionary<int, ClientPlayerData> GetPlayerList()

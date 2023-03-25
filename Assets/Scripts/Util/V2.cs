@@ -12,6 +12,11 @@ public struct V2: IEquatable<V2>
     public int X;
     public int Y;
 
+    public static V2 UP { get { return new V2(0, 1); } }
+    public static V2 DOWN { get { return new V2(0, -1); } }
+    public static V2 LEFT { get { return new V2(-1, 0); } }
+    public static V2 RIGHT { get { return new V2(1, 0); } }
+
     public V2(int x, int y)
     {
         X = x;

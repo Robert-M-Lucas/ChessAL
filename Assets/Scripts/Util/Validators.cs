@@ -153,13 +153,18 @@ public static class Validators
 
         TeamSize[] teamSizes = gameData.GameMode.GetTeamSizes();
 
-        if (max_team != teamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
+        // if (max_team != teamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
 
         for (int i = 0; i < max_team; i++)
         {
             if (!team_dict.ContainsKey(i) && teamSizes[i].Min > 0) return "Team missing"; // Team missing
+            if (!team_dict.ContainsKey(i) && teamSizes[i].Min == 0) continue;
 
-            if (team_dict[i] < teamSizes[i].Min) return "Team too small"; // Team too small
+            if (team_dict[i] < teamSizes[i].Min)
+            {
+                if (teamSizes[i].Min == 0) return "Wrong number of teams";
+                return "Team too small"; // Team too small
+            }
             if (team_dict[i] > teamSizes[i].Max) return "Team too big"; // Team too big
         }
 

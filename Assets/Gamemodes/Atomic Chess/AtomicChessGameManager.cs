@@ -9,7 +9,7 @@ namespace Gamemodes.AtomicChess
 {
     public class GameManagerData : NormalChess.GameManagerData
     {
-        public override AbstractGameManager Instantiate()
+        public override AbstractGameManager Instantiate(LiveGameData initialData)
         {
             return new GameManager(this);
         }

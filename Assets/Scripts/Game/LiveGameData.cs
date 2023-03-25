@@ -37,7 +37,7 @@ namespace Game
             CurrentTeam = GetPlayerList()[CurrentPlayer].Team;
         }
 
-        public int GetPlayerByTeam(int team, int playerInTeam) => chessManager.GetPlayerByTeam(team, playerInTeam);
+        public int? GetPlayerByTeam(int team, int playerInTeam) => chessManager.GetPlayerByTeam(team, playerInTeam);
 
         public ConcurrentDictionary<int, Networking.Client.ClientPlayerData> GetPlayerList() => chessManager.GetPlayerList();
     }
