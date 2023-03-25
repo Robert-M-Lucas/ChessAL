@@ -15,7 +15,11 @@ namespace Gamemodes.Othello
         public override string GetName() => "Othello";
         public override string GetDescription()
         {
-            return @"Othello - WIP";
+            return @"Othello
+
+Supports 2, 3 and 4 teams with one player on each
+
+Classic Othello";
         }
         public override TeamSize[] GetTeamSizes() => new TeamSize[] { new TeamSize(1, 1), new TeamSize(1, 1), new TeamSize(0, 1), new TeamSize(0, 1) };
         public override string[] TeamAliases() => new string[] { "Black", "White", "Red", "Yellow" };

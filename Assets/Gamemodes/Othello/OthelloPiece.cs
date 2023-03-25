@@ -15,10 +15,10 @@ namespace Gamemodes.Othello
             switch (team)
             {
                 case 0:
-                    AppearanceID = 700;
+                    AppearanceID = 701;
                     break;
                 case 1:
-                    AppearanceID = 701;
+                    AppearanceID = 700;
                     break;
                 case 2:
                     AppearanceID = 900;
