@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -31,15 +30,11 @@ public static class I
     /// <summary>
     /// Is player holding one of these key combinations
     /// </summary>
-    /// <param name="key_combinations"></param>
+    /// <param name="keyCombinations"></param>
     /// <returns></returns>
-    public static bool GetKey(KeyCode[][] key_combinations)
+    public static bool GetKey(KeyCode[][] keyCombinations)
     {
-        foreach (var key_combination in key_combinations)
-        {
-            if (GetKey(key_combination)) return true;
-        }
-        return false;
+        return keyCombinations.Any(keyCombination => GetKey(keyCombination));
     }
 
     /// <summary>
@@ -59,7 +54,7 @@ public static class I
     /// <returns></returns>
     public static bool GetKeyDown(KeyCode[] keys)
     {
-        for (int i = 0; i < keys.Length - 1; i++)
+        for (var i = 0; i < keys.Length - 1; i++)
         {
             if (!Input.GetKey(keys[i])) return false;
         }
@@ -70,15 +65,11 @@ public static class I
     /// <summary>
     /// Is client pressing one of these combinations and pressed the last key this frame
     /// </summary>
-    /// <param name="key_combinations"></param>
+    /// <param name="keyCombinations"></param>
     /// <returns></returns>
-    public static bool GetKeyDown(KeyCode[][] key_combinations)
+    public static bool GetKeyDown(KeyCode[][] keyCombinations)
     {
-        foreach (var key_combination in key_combinations)
-        {
-            if (GetKeyDown(key_combination)) return true;
-        }
-        return false;
+        return keyCombinations.Any(keyCombination => GetKeyDown(keyCombination));
     }
 
     /// <summary>
@@ -98,7 +89,7 @@ public static class I
     /// <returns></returns>
     public static bool GetKeyUp(KeyCode[] keys)
     {
-        for (int i = 0; i < keys.Length - 1; i++)
+        for (var i = 0; i < keys.Length - 1; i++)
         {
             if (!Input.GetKey(keys[i])) return false;
         }
@@ -109,15 +100,11 @@ public static class I
     /// <summary>
     /// Is client pressing one of these combinations and let go of the last key this frame
     /// </summary>
-    /// <param name="key_combinations"></param>
+    /// <param name="keyCombinations"></param>
     /// <returns></returns>
-    public static bool GetKeyUp(KeyCode[][] key_combinations)
+    public static bool GetKeyUp(KeyCode[][] keyCombinations)
     {
-        foreach (var key_combination in key_combinations)
-        {
-            if (GetKeyUp(key_combination)) return true;
-        }
-        return false;
+        return keyCombinations.Any(keyCombination => GetKeyUp(keyCombination));
     }
 
     /// <summary>

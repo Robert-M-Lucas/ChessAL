@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Gamemodes
 {
@@ -44,7 +42,7 @@ namespace Gamemodes
         /// <returns></returns>
         public virtual PieceSerialisationData GetData()
         {
-            PieceSerialisationData data = new PieceSerialisationData();
+            var data = new PieceSerialisationData();
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();

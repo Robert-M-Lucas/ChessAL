@@ -1,5 +1,4 @@
 using Gamemodes;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -20,9 +19,9 @@ namespace AI
 
         private static Move? foundMove = null;
 
-        private static Stopwatch Timer = new Stopwatch();
+        private static readonly Stopwatch TIMER = new Stopwatch();
 
-        public static int MAX_SEARCH_TIME = 10;
+        private const int MAX_SEARCH_TIME = 10;
 
         private static Thread searchThread = null;
 
@@ -33,13 +32,13 @@ namespace AI
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception">Throws exception if move finding is already in progress</exception>
-        public static void SearchMove(List<Move> possible_moves, LiveGameData initialGameData, AbstractGameManager gameManager)
+        public static void SearchMove(List<Move> possibleMoves, LiveGameData initialGameData, AbstractGameManager gameManager)
         {
             if (Progress >= 0f) throw new Exception("Move finding already in progress!");
 
             Progress = 0;
 
-            searchThread = new Thread(() => StartMoveSearch(possible_moves, initialGameData, gameManager));
+            searchThread = new Thread(() => StartMoveSearch(possibleMoves, initialGameData, gameManager));
             searchThread.Start();
         }
 
@@ -50,7 +49,7 @@ namespace AI
         {
             Progress = -1f;
             foundMove = null;
-            Timer.Reset();
+            TIMER.Reset();
             if (searchThread is not null && searchThread.IsAlive) searchThread.Abort();
             searchThread = null;
         }
@@ -61,7 +60,7 @@ namespace AI
         /// <returns></returns>
         private static bool IsOverTime()
         {
-            bool result = Timer.Elapsed.Seconds > MAX_SEARCH_TIME;
+            var result = TIMER.Elapsed.Seconds > MAX_SEARCH_TIME;
             return result;
         }
 
@@ -71,7 +70,7 @@ namespace AI
         private static void UpdateProgress()
         {
             // Convert to percentage
-            Progress = Mathf.Clamp((float) (Timer.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
+            Progress = Mathf.Clamp((float) (TIMER.Elapsed.TotalMilliseconds / (MAX_SEARCH_TIME * 1000f)) * 100f, 0, 100);
         }
 
         /*
@@ -103,29 +102,29 @@ namespace AI
         /// <summary>
         /// Starts looking for a move
         /// </summary>
-        /// <param name="possible_moves"></param>
+        /// <param name="possibleMoves"></param>
         /// <param name="initialGameData"></param>
         /// <param name="gameManager"></param>
-        private static void StartMoveSearch(List<Move> possible_moves, LiveGameData initialGameData, AbstractGameManager gameManager)
+        private static void StartMoveSearch(List<Move> possibleMoves, LiveGameData initialGameData, AbstractGameManager gameManager)
         {
             try
             {
                 Debug.Log($"Starting with search time {MAX_SEARCH_TIME}");
 
-                Timer.Restart();
+                TIMER.Restart();
 
                 // Select random move by default
-                Move current_best_move = possible_moves[new Random().Next(0, possible_moves.Count - 1)];
+                var current_best_move = possibleMoves[new Random().Next(0, possibleMoves.Count - 1)];
 
                 // Only one possible move
-                if (possible_moves.Count == 1)
+                if (possibleMoves.Count == 1)
                 {
                     foundMove = current_best_move;
                     Progress = -1f;
                     return;
                 }
 
-                int max_depth = 2;
+                var max_depth = 2;
 
                 while (true)
                 {
@@ -139,23 +138,23 @@ namespace AI
                         return;
                     }
 
-                    float best_score = float.MinValue;
-                    Move best_move = possible_moves[0];
-                    bool cancelled = false;
+                    var best_score = float.MinValue;
+                    var best_move = possibleMoves[0];
+                    var cancelled = false;
 
                     // threadResults = new float?[possible_moves.Count];
                     // for (int i = 0; i < possible_moves.Count; i++) { threadResults[i] = null; }
                     // int id = -1;
 
-                    foreach (Move move in possible_moves)
+                    foreach (var move in possibleMoves)
                     {
                         // id++;
                         UpdateProgress();
                         
                         
                         // Test new move
-                        AbstractGameManager new_manager = gameManager.Clone();
-                        int next_turn = new_manager.OnMove(move, initialGameData);
+                        var new_manager = gameManager.Clone();
+                        var next_turn = new_manager.OnMove(move, initialGameData);
                         float score;
 
                         if (next_turn < 0) // If a team has won
@@ -166,6 +165,7 @@ namespace AI
                             }
                             else
                             {
+                                // ReSharper disable once RedundantAssignment
                                 best_score = float.MaxValue;
                                 best_move = move;
                                 break;
@@ -174,7 +174,7 @@ namespace AI
                         else
                         {
                             // Clone game state
-                            LiveGameData new_game_data = initialGameData.Clone();
+                            var new_game_data = initialGameData.Clone();
                             new_game_data.CurrentPlayer = next_turn; // Set new player
 
                             // ThreadPool.QueueUserWorkItem(new WaitCallback(RunMiniMax),
@@ -193,11 +193,9 @@ namespace AI
                         }
                         // continue;
 
-                        if (score >= best_score)
-                        {
-                            best_score = score;
-                            best_move = move;
-                        }
+                        if (!(score >= best_score)) continue;
+                        best_score = score;
+                        best_move = move;
                     }
 
                     /*
@@ -261,15 +259,15 @@ namespace AI
         /// <param name="gameManager"></param>
         /// <param name="gameData"></param>
         /// <param name="moves"></param>
-        /// <param name="current_depth"></param>
-        /// <param name="max_depth"></param>
-        /// <param name="prev_best"></param>
-        /// <param name="prev_maximising"></param>
+        /// <param name="currentDepth"></param>
+        /// <param name="maxDepth"></param>
+        /// <param name="prevBest"></param>
+        /// <param name="prevMaximising"></param>
         /// <returns></returns>
-        private static float MiniMax(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int current_depth, int max_depth, float prev_best, bool prev_maximising)
+        private static float MiniMax(AbstractGameManager gameManager, LiveGameData gameData, List<Move> moves, int currentDepth, int maxDepth, float prevBest, bool prevMaximising)
         {
             // Return if at max depth
-            if (current_depth == max_depth) return gameManager.GetScore(gameData);
+            if (currentDepth == maxDepth) return gameManager.GetScore(gameData);
 
             float best_score;
             bool maximising;
@@ -286,14 +284,14 @@ namespace AI
                 maximising = false;
             }
 
-            foreach (Move move in moves)
+            foreach (var move in moves)
             {
                 // Exit if over time
-                if ((current_depth == max_depth - 1 || current_depth == max_depth) && IsOverTime()) return float.NaN;
+                if ((currentDepth == maxDepth - 1 || currentDepth == maxDepth) && IsOverTime()) return float.NaN;
 
                 // Apply move
-                AbstractGameManager new_manager = gameManager.Clone();       
-                int next_player = new_manager.OnMove(move, gameData);
+                var new_manager = gameManager.Clone();       
+                var next_player = new_manager.OnMove(move, gameData);
 
                 float move_score;
 
@@ -301,25 +299,25 @@ namespace AI
                 {
                     if (GUtil.TurnDecodeTeam(next_player) != gameData.LocalPlayerTeam)
                     {
-                        if (maximising) move_score = float.MinValue + current_depth;
-                        else return float.MinValue + current_depth; // Best possible value for minimiser so instantly return
+                        if (maximising) move_score = float.MinValue + currentDepth;
+                        else return float.MinValue + currentDepth; // Best possible value for minimiser so instantly return
                     }
                     else
                     {
-                        if (maximising) return float.MaxValue - current_depth; // Best possible value for maximiser so instantly return
-                        else move_score = float.MaxValue - current_depth;
+                        if (maximising) return float.MaxValue - currentDepth; // Best possible value for maximiser so instantly return
+                        else move_score = float.MaxValue - currentDepth;
                     }
                 }
                 else
                 {
                     // Set move to next player
-                    LiveGameData new_game_data = gameData.Clone();
+                    var new_game_data = gameData.Clone();
                     new_game_data.CurrentPlayer = next_player;
 
-                    List<Move> new_moves = new_manager.GetMoves(new_game_data, fastMode: true);
+                    var new_moves = new_manager.GetMoves(new_game_data, fastMode: true);
 
                     // Recursion
-                    move_score = MiniMax(new_manager, new_game_data, new_moves, current_depth + 1, max_depth, best_score, maximising);
+                    move_score = MiniMax(new_manager, new_game_data, new_moves, currentDepth + 1, maxDepth, best_score, maximising);
                 }
 
                 
@@ -332,7 +330,7 @@ namespace AI
 
                 
                 // AB Pruning
-                if ((best_score > prev_best && !prev_maximising && maximising) || (best_score <  prev_best && prev_maximising && !maximising))
+                if ((best_score > prevBest && !prevMaximising && maximising) || (best_score <  prevBest && prevMaximising && !maximising))
                 {
                     return best_score;
                 }
@@ -352,7 +350,7 @@ namespace AI
             {
                 Debug.Log("Found move returned");
 
-                Move new_move = new Move(((Move)foundMove).From, ((Move)foundMove).To); // Copy move
+                var new_move = new Move(((Move)foundMove).From, ((Move)foundMove).To); // Copy move
                 foundMove = null;
                 return new_move;
             }

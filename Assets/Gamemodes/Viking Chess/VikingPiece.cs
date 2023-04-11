@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.VikingChess
 {
@@ -9,16 +7,15 @@ namespace Gamemodes.VikingChess
     {
         public VikingPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
-            if (team == 0) AppearanceID = 110;
-            else AppearanceID = 104;
+            AppearanceID = team == 0 ? 110 : 104;
         }
 
-        public override int GetUID() => PieceUIDs.Piece;
+        public override int GetUID() => PieceUIDs.PIECE;
 
         public override List<Move> GetMoves()
         {
             // Rook like moves
-            List<Move> moves = GUtil.RaycastMoves(this, new V2(1, 0), Board)
+            var moves = GUtil.RaycastMoves(this, new V2(1, 0), Board)
                 .Concat(GUtil.RaycastMoves(this, new V2(-1, 0), Board))
                 .Concat(GUtil.RaycastMoves(this, new V2(0, 1), Board))
                 .Concat(GUtil.RaycastMoves(this, new V2(0, -1), Board))
@@ -28,17 +25,13 @@ namespace Gamemodes.VikingChess
             moves = GUtil.RemoveNonEmpty(moves, Board);
 
             // Don't allow stopping in centre
-            if (GetUID() == PieceUIDs.Piece)
+            if (GetUID() != PieceUIDs.PIECE) return moves;
+            for (var i = 0; i < moves.Count; i++)
             {
-                for (int i = 0; i < moves.Count; i++)
-                {
-                    if ((moves[i].To.X == 0 || moves[i].To.X == 10) && (moves[i].To.Y == 0 || moves[i].To.Y == 10) ||
-                        moves[i].To == VikingChess.Board.CENTRE)
-                    {
-                        moves.RemoveAt(i);
-                        i--;
-                    }
-                }
+                if (((moves[i].To.X != 0 && moves[i].To.X != 10) || (moves[i].To.Y != 0 && moves[i].To.Y != 10)) &&
+                    moves[i].To != VikingChess.Board.CENTRE) continue;
+                moves.RemoveAt(i);
+                i--;
             }
 
             return moves;

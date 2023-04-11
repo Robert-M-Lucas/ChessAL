@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
+using UnityEngine.Serialization;
 
 namespace MainMenu
 {
@@ -13,18 +11,19 @@ namespace MainMenu
     /// </summary>
     public class SaveSelectorItem : MonoBehaviour
     {
-        [SerializeField] private SaveSelector SaveSelector;
+        [FormerlySerializedAs("SaveSelector")] [SerializeField] private SaveSelector saveSelector;
 
          public string Filename;
 
-        [SerializeField] private Button Button;
+         // ReSharper disable once NotAccessedField.Local
+         [FormerlySerializedAs("Button")] [SerializeField] private Button button;
         public TMP_Text Text;
 
         /*
         public Action OnClick = () => Debug.LogWarning("No action set");
         */
 
-        public void OnClickCall() => SaveSelector.SelectFile(Filename);
+        public void OnClickCall() => saveSelector.SelectFile(Filename);
     }
 }
 

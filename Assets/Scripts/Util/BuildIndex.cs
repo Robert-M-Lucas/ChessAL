@@ -3,6 +3,6 @@
 /// </summary>
 public static class BuildIndex
 {
-    public const int MainMenu = 0;
-    public const int MainScene = 1;
+    public const int MAIN_MENU = 0;
+    public const int MAIN_SCENE = 1;
 }

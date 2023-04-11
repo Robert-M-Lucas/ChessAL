@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.ConnectFour
 {
@@ -18,9 +14,9 @@ namespace Gamemodes.ConnectFour
         {
             if (Position.X != 8) return new List<Move>();
 
-            List<Move> moves = new List<Move>();
+            var moves = new List<Move>();
 
-            for (int x = 0; x < 7; x++)
+            for (var x = 0; x < 7; x++)
             {
                 if (Board.GetPiece(new V2(x, 8)) is null) moves.Add(new Move(Position, new V2(x, 8)));
             }
@@ -33,14 +29,12 @@ namespace Gamemodes.ConnectFour
             if (thisPiece)
             {
                 // Make piece 'fall'
-                for (int y = 8; y >= -1; y--)
+                for (var y = 8; y >= -1; y--)
                 {
-                    if (y == -1 || Board.GetPiece(new V2(move.To.X, y)) is not null)
-                    {
-                        Board.PieceBoard[move.To.X, y + 1] = new ConnectFourPiece(Position, Team, Board);
-                        Board.PieceBoard[move.To.X, y + 1].Position = new V2(move.To.X, y + 1);
-                        break;
-                    }
+                    if (y != -1 && Board.GetPiece(new V2(move.To.X, y)) is null) continue;
+                    Board.PieceBoard[move.To.X, y + 1] = new ConnectFourPiece(Position, Team, Board);
+                    Board.PieceBoard[move.To.X, y + 1].Position = new V2(move.To.X, y + 1);
+                    break;
                 }
                 
             }

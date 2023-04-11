@@ -1,9 +1,5 @@
 using Gamemodes.NormalChess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Game;
-using UnityEngine;
 
 namespace Gamemodes.AtomicChess
 {
@@ -34,36 +30,38 @@ When a piece is taken a 3x3 area around it is destroyed";
     {
         public GameManager(AbstractGameManagerData d) : base(d)
         {
-            Board = new NormalChess.Board(this);
+            Board = new Board(this);
         }
 
         public override int OnMove(Move move, LiveGameData gameData)
         {
-            bool explode = Board.GetPiece(move.To) is not null; // Was piece taken
+            var explode = Board.GetPiece(move.To) is not null; // Was piece taken
 
-            int default_return = FalseOnMove(Board, move, gameData);
+            var default_return = FalseOnMove(Board, move, gameData);
 
             // Removes pieces around explosion
             if (explode)
             {
-                for (int x = -1; x <= 1; x++)
+                for (var x = -1; x <= 1; x++)
                 {
-                    for (int y = -1; y <= 1; y++)
+                    for (var y = -1; y <= 1; y++)
                     {
                         // if (x == 0 && y == 0) continue;
-                        V2 new_pos = new V2(x, y) + move.To;
+                        var new_pos = new V2(x, y) + move.To;
                         if (GUtil.IsOnBoard(new_pos, Board)) Board.PieceBoard[new_pos.X, new_pos.Y] = null;
                     }
                 }
             }
 
-            KingsAlive kings_alive = CheckForKings(Board);
+            var kings_alive = CheckForKings(Board);
 
-            if (kings_alive == KingsAlive.None) return GUtil.TurnEncodeTeam(gameData.CurrentPlayer);
-            if (kings_alive == KingsAlive.Black) return GUtil.TurnEncodeTeam(1);
-            if (kings_alive == KingsAlive.White) return GUtil.TurnEncodeTeam(0);
-
-            return default_return;
+            return kings_alive switch
+            {
+                KingsAlive.None => GUtil.TurnEncodeTeam(gameData.CurrentPlayer),
+                KingsAlive.Black => GUtil.TurnEncodeTeam(1),
+                KingsAlive.White => GUtil.TurnEncodeTeam(0),
+                _ => default_return
+            };
         }
     }
 }

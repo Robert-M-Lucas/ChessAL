@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MainMenu
 {
@@ -33,18 +30,19 @@ namespace MainMenu
 
         private bool paused = true;
 
-        private Material m_renderMaterial = null;
+        private Material mRenderMaterial = null;
+        private static readonly int ALPHA = Shader.PropertyToID("_Alpha");
 
 
         // Start is called before the first frame update
         void Start()
         {
-            m_renderMaterial = new Material(FadeShader);
+            mRenderMaterial = new Material(FadeShader);
         }
 
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            Graphics.Blit(source, destination, m_renderMaterial);
+            Graphics.Blit(source, destination, mRenderMaterial);
         }
 
         // Update is called once per frame
@@ -52,7 +50,7 @@ namespace MainMenu
         {
             if (paused)
             {
-                Shader.SetGlobalFloat("_Alpha", 0);
+                Shader.SetGlobalFloat(ALPHA, 0);
                 progress += Time.deltaTime;
                 if (progress >= PauseBetween)
                 {
@@ -74,15 +72,15 @@ namespace MainMenu
 
             if (progress < FadeInPoint)
             {
-                Shader.SetGlobalFloat("_Alpha", FadeCurve.Evaluate(progress / FadeInPoint));
+                Shader.SetGlobalFloat(ALPHA, FadeCurve.Evaluate(progress / FadeInPoint));
             }
             else if (progress >= FadeOutPoint)
             {
-                Shader.SetGlobalFloat("_Alpha", FadeCurve.Evaluate(1f - ((progress - FadeOutPoint) / (1f - FadeOutPoint))));
+                Shader.SetGlobalFloat(ALPHA, FadeCurve.Evaluate(1f - ((progress - FadeOutPoint) / (1f - FadeOutPoint))));
             }
             else
             {
-                Shader.SetGlobalFloat("_Alpha", 1);
+                Shader.SetGlobalFloat(ALPHA, 1);
             }
 
             transform.position = Vector3.Lerp(Motions[motionIndex].From, Motions[motionIndex].To, progress);

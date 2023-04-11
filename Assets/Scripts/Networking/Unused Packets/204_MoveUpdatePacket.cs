@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Networking.Packets.Unused
 {
@@ -14,10 +12,12 @@ namespace Networking.Packets.Unused
             TileUpdates = (packet.Contents[1]);
         }
 
-       public static byte[] Build(int _NextPlayerTurn, byte[] _TileUpdates) {
-           List<byte[]> contents = new List<byte[]>();
-           contents.Add(BitConverter.GetBytes(_NextPlayerTurn));
-           contents.Add(_TileUpdates);
+       public static byte[] Build(int nextPlayerTurn, byte[] tileUpdates) {
+           var contents = new List<byte[]>
+           {
+               BitConverter.GetBytes(nextPlayerTurn),
+               tileUpdates
+           };
            return PacketBuilder.Build(UID, contents);
     }
     }

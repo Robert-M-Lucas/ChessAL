@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using Game;
-using Game.ThreeD;
 
 namespace Gamemodes.NormalChess
 {
@@ -62,40 +60,30 @@ Traditional chess played on an 8x8 board";
 
         public override List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
-            (Board as Board).VirtualTeam = gameData.CurrentTeam;
-            List<Move> possible_moves = Board.GetMoves(null);
+            ((Board) Board).VirtualTeam = gameData.CurrentTeam;
+            var possible_moves = Board.GetMoves(null);
 
-            if (!fastMode)
+            if (fastMode) return possible_moves;
+            // Test if possible moves leave king in check
+            var i = 0; 
+            while (i < possible_moves.Count)
             {
-                // Test if possible moves leave king in check
-                int i = 0; 
-                while (i < possible_moves.Count)
+                var temp_board = ((Board) Board).Clone(this) as Board; // Clone
+                FalseOnMove(temp_board, possible_moves[i], gameData); // Make move
+                temp_board.VirtualTeam = GUtil.SwitchTeam(gameData); // Change team
+
+                // Check enemy moves for check
+                var possible_enemy_moves = temp_board.GetMoves(null);
+                var failed = possible_enemy_moves.Select(move => temp_board.GetPiece(move.To))
+                    .Any(piece => piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.CurrentTeam);
+
+                // Remove illegal move
+                if (failed)
                 {
-                    Board temp_board = (Board as Board).Clone(this) as Board; // Clone
-                    FalseOnMove(temp_board, possible_moves[i], gameData); // Make move
-                    temp_board.VirtualTeam = GUtil.SwitchTeam(gameData); // Change team
-
-                    // Check enemy moves for check
-                    bool failed = false;
-                    List<Move> possible_enemy_moves = temp_board.GetMoves(null);
-                    foreach (Move move in possible_enemy_moves)
-                    {
-                        AbstractPiece piece = temp_board.GetPiece(move.To);
-                        if (piece is not null && piece.GetUID() == PieceUIDs.KING && piece.Team == gameData.CurrentTeam)
-                        {
-                            failed = true;
-                            break;
-                        }
-                    }
-
-                    // Remove illegal move
-                    if (failed)
-                    {
-                        possible_moves.RemoveAt(i);
-                    }
-
-                    else i++;
+                    possible_moves.RemoveAt(i);
                 }
+
+                else i++;
             }
 
             return possible_moves;
@@ -108,20 +96,16 @@ Traditional chess played on an 8x8 board";
         /// <returns></returns>
         protected KingsAlive CheckForKings(AbstractBoard board)
         {
-            bool white_king = false;
-            bool black_king = false;
-            for (int x = 0; x < board.PieceBoard.GetLength(0); x++)
+            var white_king = false;
+            var black_king = false;
+            for (var x = 0; x < board.PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < board.PieceBoard.GetLength(1); y++)
+                for (var y = 0; y < board.PieceBoard.GetLength(1); y++)
                 {
-                    if (board.PieceBoard[x, y] is not null)
-                    {
-                        if (board.PieceBoard[x, y].GetUID() == PieceUIDs.KING)
-                        {
-                            if (board.PieceBoard[x, y].Team == 0) white_king = true;
-                            else black_king = true;
-                        }
-                    }
+                    if (board.PieceBoard[x, y] is null) continue;
+                    if (board.PieceBoard[x, y].GetUID() != PieceUIDs.KING) continue;
+                    if (board.PieceBoard[x, y].Team == 0) white_king = true;
+                    else black_king = true;
                 }
             }
 
@@ -152,28 +136,34 @@ Traditional chess played on an 8x8 board";
                 board.PieceBoard[move.From.X, move.From.Y] = null;
             }
 
-            (board as Board).MoveCounter++;
+            ((Board) board).MoveCounter++;
 
-            KingsAlive kings_alive = CheckForKings(board);
+            var kings_alive = CheckForKings(board);
 
-            if (kings_alive == KingsAlive.Black) return GUtil.TurnEncodeTeam(1);
-            if (kings_alive == KingsAlive.White || kings_alive == KingsAlive.None) return GUtil.TurnEncodeTeam(0);
-
-            return GUtil.SwitchPlayerTeam(gameData);
+            switch (kings_alive)
+            {
+                case KingsAlive.Black:
+                    return GUtil.TurnEncodeTeam(1);
+                case KingsAlive.White:
+                case KingsAlive.None:
+                    return GUtil.TurnEncodeTeam(0);
+                default:
+                    return GUtil.SwitchPlayerTeam(gameData);
+            }
         }
 
         public override int OnMove(Move move, LiveGameData gameData) => FalseOnMove(Board, move, gameData);
 
         public override AbstractGameManager Clone()
         {
-            GameManager new_game_manager = new GameManager(GameManagerData);
-            new_game_manager.Board = (Board as Board).Clone(new_game_manager);
+            var new_game_manager = new GameManager(GameManagerData);
+            new_game_manager.Board = ((Board) Board).Clone(new_game_manager);
             return new_game_manager;
         }
 
         public override float GetScore(LiveGameData gameData)
         {
-            float score = base.GetScore(gameData);
+            var score = base.GetScore(gameData);
 
             // Add heatmap only if chess is on 8x8 board
             if (Board.PieceBoard.GetLength(0) == 8)

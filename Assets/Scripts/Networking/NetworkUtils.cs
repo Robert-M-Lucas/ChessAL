@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
-using System.Net;
 using System.Net.Sockets;
-using UnityEngine;
 
 namespace Networking
 {
@@ -16,8 +13,8 @@ namespace Networking
         /// <returns></returns>
         public static bool SocketConnected(Socket s)
         {
-            bool part1 = s.Poll(1000, SelectMode.SelectRead);
-            bool part2 = (s.Available == 0);
+            var part1 = s.Poll(1000, SelectMode.SelectRead);
+            var part2 = (s.Available == 0);
             if (part1 && part2)
                 return false;
             else
@@ -31,18 +28,11 @@ namespace Networking
         /// <returns></returns>
         public static bool PortInUse(int port)
         {
-            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            IPEndPoint[] ipEndPoints = ipProperties.GetActiveTcpListeners();
+            var ip_properties = IPGlobalProperties.GetIPGlobalProperties();
+            var ip_end_points = ip_properties.GetActiveTcpListeners();
 
 
-            foreach (IPEndPoint endPoint in ipEndPoints)
-            {
-                if (endPoint.Port == port) // Port found
-                {
-                    return true;
-                }
-            }
-            return false;
+            return ip_end_points.Any(endPoint => endPoint.Port == port);
         }
     }
 }

@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using UnityEngine;
-using UnityEngine.Rendering;
 using System.Diagnostics;
 using System.Linq;
 
@@ -13,10 +10,10 @@ using System.Linq;
 public static class SaveSystem
 {
     public static string GetSaveFolderAndCreateIfDoesntExist() {
-        string save_location = Application.persistentDataPath + "\\Saves";
+        var save_location = Application.persistentDataPath + "\\Saves";
         if (!Directory.Exists(save_location))
         {
-            Directory.CreateDirectory(save_location); ;
+            Directory.CreateDirectory(save_location);
         }
         return save_location;
     }
@@ -34,7 +31,7 @@ public static class SaveSystem
     /// <returns>Null if successful or a string exception</returns>
     public static string? Save(byte[] data, string fileName)
     {
-        string save_location = GetSaveFolderAndCreateIfDoesntExist();
+        var save_location = GetSaveFolderAndCreateIfDoesntExist();
         try
         {
             File.WriteAllBytes(save_location + "\\" + fileName + ".sav", data);
@@ -52,11 +49,11 @@ public static class SaveSystem
     /// <returns></returns>
     public static string[] ListAllSaveFiles()
     {
-        string save_location = GetSaveFolderAndCreateIfDoesntExist();
-        DirectoryInfo info = new DirectoryInfo(save_location);
+        var save_location = GetSaveFolderAndCreateIfDoesntExist();
+        var info = new DirectoryInfo(save_location);
         FileInfo[] files = info.GetFiles().OrderByDescending(p => p.CreationTime).ToArray();
         string[] file_names = new string[files.Length];
-        for (int i = 0; i < files.Length; i++)
+        for (var i = 0; i < files.Length; i++)
         {
             file_names[i] = files[i].Name;
         }
@@ -78,7 +75,7 @@ public static class SaveSystem
         if (Path.GetExtension(fileName) != ".sav") fileName += ".sav";
 
         // Adds path to save folder if only filename is provided
-        string save_location = GetSaveFolderAndCreateIfDoesntExist();
+        var save_location = GetSaveFolderAndCreateIfDoesntExist();
         if (!fileName.Contains('\\') && !fileName.Contains('/')) fileName = save_location + "\\" + fileName;
 
         return File.ReadAllBytes(fileName);
@@ -89,7 +86,7 @@ public static class SaveSystem
     /// </summary>
     public static void OpenSavesFolder()
     {
-        string save_location = GetSaveFolderAndCreateIfDoesntExist();
+        var save_location = GetSaveFolderAndCreateIfDoesntExist();
 
         // Windows only open file explorer
 #if PLATFORM_STANDALONE_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,7 @@ using TMPro;
 using System;
 using Game.ThreeD;
 using Game.UI;
+using UnityEngine.Serialization;
 
 namespace Game
 {
@@ -45,25 +45,25 @@ namespace Game
     {
         public VisualManagerThreeD VisualManager3D;
 
-        public float pieceTravelTime;
+        [FormerlySerializedAs("pieceTravelTime")] public float PieceTravelTime;
 
         [SerializeField] private Theme[] themes;
         [SerializeField] private int currentTheme = 0;
 
         [SerializeField] private RectTransform renderBox;
 
-        [SerializeField] private Image Hide3DImage;
+        [FormerlySerializedAs("Hide3DImage")] [SerializeField] private Image hide3DImage;
 
-        [SerializeField] private GameObject SquarePrefab;
-        [SerializeField] private GameObject PiecePrefab;
-        [SerializeField] private GameObject MoveOptionPrefab;
+        [FormerlySerializedAs("SquarePrefab")] [SerializeField] private GameObject squarePrefab;
+        [FormerlySerializedAs("PiecePrefab")] [SerializeField] private GameObject piecePrefab;
+        [FormerlySerializedAs("MoveOptionPrefab")] [SerializeField] private GameObject moveOptionPrefab;
 
-        [SerializeField] private TMP_Text TurnText;
-        [SerializeField] private TMP_Text TeamWinText;
-        [SerializeField] private TMP_Text TimerText;
-        [SerializeField] private TMP_Text AIText;
+        [FormerlySerializedAs("TurnText")] [SerializeField] private TMP_Text turnText;
+        [FormerlySerializedAs("TeamWinText")] [SerializeField] private TMP_Text teamWinText;
+        [FormerlySerializedAs("TimerText")] [SerializeField] private TMP_Text timerText;
+        [FormerlySerializedAs("AIText")] [SerializeField] private TMP_Text aiText;
 
-        [SerializeField] private AppearanceTable[] AppearanceTables;
+        [FormerlySerializedAs("AppearanceTables")] [SerializeField] private AppearanceTable[] appearanceTables;
         public Dictionary<int, PieceAppearance> InternalAppearanceMap = new Dictionary<int, PieceAppearance>();
 
         public ChessManager ChessManager;
@@ -75,7 +75,7 @@ namespace Game
 
         private Resolution resolution = new Resolution();
 
-        public List<Move> possibleMoves = new List<Move>();
+        [FormerlySerializedAs("possibleMoves")] public List<Move> PossibleMoves = new List<Move>();
         private List<GameObject> moveIndicators = new List<GameObject>();
 
         private Dictionary<V2, GameObject> pieces2D = new Dictionary<V2, GameObject>();
@@ -99,9 +99,9 @@ namespace Game
         private void Awake()
         {
             // Populate sprite table
-            foreach (AppearanceTable appearance_table in AppearanceTables)
+            foreach (var appearance_table in appearanceTables)
             {
-                foreach (PieceAppearance piece_appearance in appearance_table.Appearances)
+                foreach (var piece_appearance in appearance_table.Appearances)
                 {
 #if UNITY_EDITOR
                     if (InternalAppearanceMap.ContainsKey(piece_appearance.ID))
@@ -153,14 +153,11 @@ namespace Game
             string team_string;
 
             // Set to team alias e.g. 'Black' if exists
-            if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
-            {
-                team_string = ChessManager.CurrentGameManager.TeamAliases()[team];
-            }
-            else team_string = $"Team {team + 1}";
+            team_string = ChessManager.CurrentGameManager.TeamAliases().Length != 0 
+                ? ChessManager.CurrentGameManager.TeamAliases()[team] : $"Team {team + 1}";
 
-            TeamWinText.text = $"{team_string} won!";
-            TeamWinText.gameObject.SetActive(true); // Show
+            teamWinText.text = $"{team_string} won!";
+            teamWinText.gameObject.SetActive(true); // Show
         }
 
         /// <summary>
@@ -184,8 +181,8 @@ namespace Game
                     currentBoardHash[from.X, from.Y] == ChessManager.GameManager.Board.PieceBoard[to.X, to.Y].GetHashCode())
                 {
                     // 2D Move
-                    GameObject piece = pieces2D[from];
-                    piece.GetComponent<PieceController2D>().MoveTo(to, from, pieceTravelTime);
+                    var piece = pieces2D[from];
+                    piece.GetComponent<PieceController2D>().MoveTo(to, from, PieceTravelTime);
 
                     if (boardRenderInfo.Allows3D)
                     {
@@ -221,18 +218,18 @@ namespace Game
             if (hasMove) CheckSlide(move.From, move.To);
 
             // Check for more sliding moves
-            for (int x1 = 0; x1 < boardRenderInfo.BoardSize; x1++)
+            for (var x1 = 0; x1 < boardRenderInfo.BoardSize; x1++)
             {
-                for (int y1 = 0; y1 < boardRenderInfo.BoardSize; y1++)
+                for (var y1 = 0; y1 < boardRenderInfo.BoardSize; y1++)
                 {
                     // If empty continue
                     if (currentBoardHash[x1, y1] == 0 ||
                         currentBoardHash[x1, y1] == (ChessManager.GameManager.Board.PieceBoard[x1, y1]?.GetHashCode() ?? 0))
-                            continue;
+                        continue;
 
-                    for (int x2 = 0; x2 < boardRenderInfo.BoardSize; x2++)
+                    for (var x2 = 0; x2 < boardRenderInfo.BoardSize; x2++)
                     {
-                        for (int y2 = 0; y2 < boardRenderInfo.BoardSize; y2++)
+                        for (var y2 = 0; y2 < boardRenderInfo.BoardSize; y2++)
                         {
                             CheckSlide(new V2(x1, y1), new V2(x2, y2));
                         }
@@ -241,9 +238,9 @@ namespace Game
             }
 
             // Resolve difference between previous and current board state
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++) {
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++) {
                     if (currentBoardHash[x, y] != (ChessManager.GameManager.Board.PieceBoard[x, y]?.GetHashCode() ?? 0))
                     {
                         if (currentBoardHash[x, y] != 0)
@@ -265,9 +262,9 @@ namespace Game
             }
 
             // Rebuild hash table
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     if (ChessManager.GameManager.Board.PieceBoard[x, y] is null)
                     {
@@ -296,9 +293,9 @@ namespace Game
         private void AddPiece(AbstractPiece piece)
         {
             // Duplicate piece
-            GameObject new_gameobject = Instantiate(PiecePrefab);
+            var new_gameobject = Instantiate(piecePrefab);
             pieces2D.Add(piece.Position, new_gameobject);
-            Image image = new_gameobject.GetComponent<Image>();
+            // var image = new_gameobject.GetComponent<Image>();
 
             if (boardRenderInfo.Allows3D)
             {
@@ -317,7 +314,7 @@ namespace Game
         /// <param name="piece"></param>
         private void UpdatePiece(AbstractPiece piece)
         {
-            Image image = pieces2D[piece.Position].GetComponent<Image>();
+            var image = pieces2D[piece.Position].GetComponent<Image>();
             image.sprite = InternalAppearanceMap[piece.AppearanceID].Sprite; // Get piece appearance
 
             SizeGameObject(image.gameObject, piece.Position); // Resize for display scale
@@ -355,18 +352,18 @@ namespace Game
         /// </summary>
         private void RenderBoardBackground()
         {
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    GameObject new_square = Instantiate(SquarePrefab);
+                    var new_square = Instantiate(squarePrefab);
 
                     SizeGameObject(new_square, new V2(x, y)); // Size for board
 
-                    RenderedCellData rendered_piece_data = new_square.GetComponent<RenderedCellData>();
+                    var rendered_piece_data = new_square.GetComponent<RenderedCellData>();
                     rendered_piece_data.Position = new V2(x, y); // Set position data
 
-                    Image image = new_square.GetComponent<Image>();
+                    var image = new_square.GetComponent<Image>();
                     squares[x, y] = image;
 
                     ResetSquareColor(new V2(x, y)); // Set to default colour
@@ -376,24 +373,27 @@ namespace Game
             }
         }
 
+        // ReSharper disable once ParameterHidesMember
         public void SizeGameObject(GameObject gameObject, V2 position) => SizeGameObject(gameObject, position.Vector2());
 
         // Gives a GameObject the correct size, scale and position
+        // ReSharper disable once ParameterHidesMember
         public void SizeGameObject(GameObject gameObject, Vector2 position)
         {
-            RectTransform rect = gameObject.GetComponent<RectTransform>();
+            var rect = gameObject.GetComponent<RectTransform>();
             rect.SetParent(renderBox); // Set as a child of the render box
             
             // Set min and max anchors to corners of square
-            rect.anchorMin = new Vector2((float)position.x / boardRenderInfo.BoardSize, (float)position.y / boardRenderInfo.BoardSize);
-            rect.anchorMax = new Vector2((float)(position.x + 1) / boardRenderInfo.BoardSize, (float)(position.y + 1) / boardRenderInfo.BoardSize);
+            rect.anchorMin = new Vector2(position.x / boardRenderInfo.BoardSize, position.y / boardRenderInfo.BoardSize);
+            rect.anchorMax = new Vector2((position.x + 1) / boardRenderInfo.BoardSize, (position.y + 1) / boardRenderInfo.BoardSize);
 
             // Set position to that square
-            rect.localPosition = new Vector2((position.x + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2),
-                (position.y + 0.5f) * (renderBox.rect.width / boardRenderInfo.BoardSize) - (renderBox.rect.width / 2));
+            var render_box_rect = renderBox.rect;
+            rect.localPosition = new Vector2((position.x + 0.5f) * (render_box_rect.width / boardRenderInfo.BoardSize) - (render_box_rect.width / 2),
+                (position.y + 0.5f) * (render_box_rect.width / boardRenderInfo.BoardSize) - (render_box_rect.width / 2));
 
             // Resize
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, renderBox.rect.width / boardRenderInfo.BoardSize);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, render_box_rect.width / boardRenderInfo.BoardSize);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, renderBox.rect.width / boardRenderInfo.BoardSize);
         }
 
@@ -403,7 +403,7 @@ namespace Game
         /// <param name="possibleMoves"></param>
         public void SetPossibleMoves(List<Move> possibleMoves)
         {
-            this.possibleMoves = possibleMoves;
+            this.PossibleMoves = possibleMoves;
         }
 
         /// <summary>
@@ -444,13 +444,13 @@ namespace Game
             currentlyShowing = clickPosition;
             SelectSquare((V2)currentlyShowing);
 
-            foreach (Move move in possibleMoves)
+            foreach (var move in PossibleMoves)
             {
                 if (move.From == clickPosition)
                 {
                     // Create new move indicator
 
-                    GameObject new_indicator = Instantiate(MoveOptionPrefab);
+                    var new_indicator = Instantiate(moveOptionPrefab);
                     SizeGameObject(new_indicator, move.To);
                     new_indicator.SetActive(true);
                     moveIndicators.Add(new_indicator);
@@ -487,7 +487,7 @@ namespace Game
         /// <param name="position"></param>
         public void ResetSquareColor(V2 position)
         {
-            float alpha = squares[position.X, position.Y].color.a;
+            var alpha = squares[position.X, position.Y].color.a;
             if (IsWhite(position))
             {
                 if (boardRenderInfo.RemovedSquares.Contains(position))
@@ -518,7 +518,7 @@ namespace Game
                     squares[position.X, position.Y].color = themes[currentTheme].BlackColor;
                 }
             }
-            Color square_color = squares[position.X, position.Y].color;
+            var square_color = squares[position.X, position.Y].color;
             square_color.a = alpha;
             squares[position.X, position.Y].color = square_color;
         }
@@ -530,7 +530,7 @@ namespace Game
         /// <param name="to"></param>
         public void OnMove(V2 from, V2 to)
         {
-            foreach (V2 grey in greyscaled) ResetSquareColor(grey); // Reset grey from prefious turn
+            foreach (var grey in greyscaled) ResetSquareColor(grey); // Reset grey from prefious turn
             greyscaled.Clear();
 
             // Show new move
@@ -548,20 +548,18 @@ namespace Game
         /// <param name="team"></param>
         /// <param name="playerOnTeam"></param>
         /// <param name="you"></param>
+        /// <param name="ai"></param>
         public void OnTurn(int team, int playerOnTeam, bool you, bool ai = false)
         {
             // Shows team alias if exists
             string team_string;
-            if (ChessManager.CurrentGameManager.TeamAliases().Length != 0)
-            {
-                team_string = ChessManager.CurrentGameManager.TeamAliases()[team];
-            }
-            else team_string = $"T{team+1}";
+            team_string = ChessManager.CurrentGameManager.TeamAliases().Length != 0 ? 
+                ChessManager.CurrentGameManager.TeamAliases()[team] : $"T{team+1}";
 
-            string str = $"Turn: {team_string}, P{playerOnTeam+1}";
+            var str = $"Turn: {team_string}, P{playerOnTeam+1}";
             if (ai) str += " (AI)";
             else if (you) str += " (You)";
-            TurnText.text = str;
+            turnText.text = str;
         }
 
         /// <summary>
@@ -571,11 +569,11 @@ namespace Game
         /// <param name="progress"></param>
         public void ShowAIInfo(bool waiting, float progress)
         {
-            if (!waiting) AIText.gameObject.SetActive(false); // Hide if inactive
+            if (!waiting) aiText.gameObject.SetActive(false); // Hide if inactive
             else
             {
-                AIText.gameObject.SetActive(true);
-                AIText.text = $"AI: {Mathf.Round(progress)}%";
+                aiText.gameObject.SetActive(true);
+                aiText.text = $"AI: {Mathf.Round(progress)}%";
             }
         }
 
@@ -585,9 +583,9 @@ namespace Game
         private void UpdateTheme() 
         {
             // Reset all squares
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     ResetSquareColor(new V2(x, y));
                 }
@@ -608,7 +606,7 @@ namespace Game
             PlayerPrefs.SetInt(PLAYER_PREFS_THEME_KEY, currentTheme); // Store theme
         }
 
-        void Update()
+        private void Update()
         {
             // Check for theme change input
             if (I.GetKeyDown(K.ChangeThemeKey) && !GameMenuManager.ShowingEscapeMenu)
@@ -619,8 +617,7 @@ namespace Game
             // Transition between 2D and 3D
             if (I.GetKeyDown(K.ChangeDimensionKey) && transitionProgress is float.NaN && boardRenderInfo.Allows3D)
             {
-                if (targetDimension == Dimension._2D) targetDimension = Dimension._3D;
-                else targetDimension = Dimension._2D;
+                targetDimension = targetDimension == Dimension._2D ? Dimension._3D : Dimension._2D;
 
                 transitionProgress = 0f;
                 if (targetDimension == Dimension._2D) renderBox.gameObject.SetActive(true);
@@ -631,22 +628,23 @@ namespace Game
                 transitionProgress += Time.deltaTime / transitionTime;
                 if (transitionProgress >= 1f) transitionProgress = 1f;
 
-                float progress = transitionProgress;
+                var progress = transitionProgress;
                 if (targetDimension == Dimension._3D) progress = 1f - progress;
 
                 progress = MathP.CosSmooth(progress);
 
-                Hide3DImage.color = new Color(Hide3DImage.color.r, Hide3DImage.color.g, Hide3DImage.color.b, progress);
+                hide3DImage.color = new Color(hide3DImage.color.r, hide3DImage.color.g, hide3DImage.color.b, progress);
 
-                Image[] children = renderBox.transform.GetComponentsInChildren<Image>();
-                Color newColor;
-                foreach (Image child in children)
+                var children = renderBox.transform.GetComponentsInChildren<Image>();
+                Color new_colour;
+                foreach (var child in children)
                 {
-                    newColor = child.color;
-                    newColor.a = progress;
-                    child.color = newColor;
+                    new_colour = child.color;
+                    new_colour.a = progress;
+                    child.color = new_colour;
                 }
 
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (transitionProgress == 1f)
                 {
                     transitionProgress = float.NaN;
@@ -668,14 +666,14 @@ namespace Game
             
             // Timer
             // TODO: Make this not run every frame
-            long time = ChessManager.Timer.ElapsedMilliseconds + ChessManager.TimerOffset;
-            long hours = time / (60 * 60 * 1000);
+            var time = ChessManager.Timer.ElapsedMilliseconds + ChessManager.TimerOffset;
+            var hours = time / (60 * 60 * 1000);
             time -= hours * (60 * 60 * 1000);
-            long minutes = time / (60 * 1000);
+            var minutes = time / (60 * 1000);
             time -= minutes * (60 * 1000);
-            long seconds = time / (1000);
+            var seconds = time / (1000);
 
-            string time_string = $"{seconds}";
+            var time_string = $"{seconds}";
             while (time_string.Length < 2) time_string = "0" + time_string;
             time_string = ":" + time_string;
             time_string = minutes + time_string;
@@ -683,7 +681,7 @@ namespace Game
             time_string = ":" + time_string;
             time_string = hours + time_string;
             while (time_string.Length < 8) time_string = "0" + time_string;
-            TimerText.text = time_string;
+            timerText.text = time_string;
         }
     }
 }

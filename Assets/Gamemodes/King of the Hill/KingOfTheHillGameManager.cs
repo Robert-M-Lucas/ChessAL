@@ -1,6 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using Game;
 
 namespace Gamemodes.KingOfTheHill
@@ -37,18 +36,14 @@ First king to the 2x2 square in the center of the board wins. Normal check and c
 
         public override int OnMove(Move move, LiveGameData gameData)
         {
-            int default_return = FalseOnMove(Board, move, gameData); // Get normal return value from NormalChess
+            var default_return = FalseOnMove(Board, move, gameData); // Get normal return value from NormalChess
 
             // Check for centre winner
-            List<V2> centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };
+            var centers = new List<V2>() { new V2(3, 3), new V2(4, 3), new V2(3, 4), new V2(4, 4) };
 
-            foreach (V2 cell in centers)
+            foreach (var cell in centers.Where(cell => Board.GetPiece(cell) is not null && Board.GetPiece(cell).GetUID() == NormalChess.PieceUIDs.KING))
             {
-                if (Board.GetPiece(cell) is not null && Board.GetPiece(cell).GetUID() == NormalChess.PieceUIDs.KING)
-                {
-                    if (Board.GetPiece(cell).Team == 0) return GUtil.TurnEncodeTeam(0);
-                    else return GUtil.TurnEncodeTeam(1);
-                }
+                return GUtil.TurnEncodeTeam(Board.GetPiece(cell).Team == 0 ? 0 : 1);
             }
 
             // Else return default

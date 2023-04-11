@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Game
 {
@@ -16,8 +13,8 @@ namespace Game
 
         public int LocalPlayerID;
 
-        private int _CurrentPlayer;
-        public int CurrentPlayer { get { return _CurrentPlayer; } set { _CurrentPlayer = value; UpdateCurrentTeam(); } }
+        private int currentPlayer;
+        public int CurrentPlayer { get { return currentPlayer; } set { currentPlayer = value; UpdateCurrentTeam(); } }
 
         public int CurrentTeam;
 
@@ -25,11 +22,11 @@ namespace Game
 
         public LiveGameData Clone()
         {
-            LiveGameData gameData = new LiveGameData(chessManager);
-            gameData.LocalPlayerTeam = LocalPlayerTeam;
-            gameData.LocalPlayerID = LocalPlayerID;
-            gameData.CurrentPlayer = CurrentPlayer;
-            return gameData;
+            var game_data = new LiveGameData(chessManager);
+            game_data.LocalPlayerTeam = LocalPlayerTeam;
+            game_data.LocalPlayerID = LocalPlayerID;
+            game_data.CurrentPlayer = CurrentPlayer;
+            return game_data;
         }
 
         private void UpdateCurrentTeam()

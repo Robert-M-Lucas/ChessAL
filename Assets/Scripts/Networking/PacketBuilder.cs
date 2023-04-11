@@ -58,11 +58,11 @@ namespace Networking.Packets
     /// </summary>
     public static class PacketBuilder
     {
-        private static Encoding _encoder = new UTF8Encoding();
+        private static Encoding encoder = new UTF8Encoding();
 
-        public const int PacketLenLen = 4;
-        public const int UIDLen = 4;
-        public const int DataLenLen = 4;
+        public const int PACKET_LEN_LEN = 4;
+        public const int UID_LEN = 4;
+        public const int DATA_LEN_LEN = 4;
 
         /// <summary>
         /// Decodes packet length from packet
@@ -71,26 +71,26 @@ namespace Networking.Packets
         /// <returns>Packet length</returns>
         public static int GetPacketLength(byte[] content)
         {
-            return BitConverter.ToInt32(ArrayExtensions.Slice(content, 0, PacketLenLen)) + PacketLenLen;
+            return BitConverter.ToInt32(ArrayExtensions.Slice(content, 0, PACKET_LEN_LEN)) + PACKET_LEN_LEN;
         }
 
         /// <summary>
         /// Builds the packet - Adds the UID and calculates lengths for each section of the packet
         /// </summary>
-        /// <param name="UID"></param>
+        /// <param name="uid"></param>
         /// <param name="contents"></param>
         /// <returns></returns>
         /// <exception cref="PacketDecodeError"></exception>
-        public static byte[] Build(int UID, List<byte[]> contents) // READ DOCUMENTATION TO SEE PACKET STRUCTURE
+        public static byte[] Build(int uid, List<byte[]> contents) // READ DOCUMENTATION TO SEE PACKET STRUCTURE
         {
             try
             {
-                byte[] buffer = new byte[1024];
-                int cursor = PacketLenLen;
-                ArrayExtensions.Merge(buffer, BitConverter.GetBytes(UID), cursor);
-                cursor += UIDLen;
+                var buffer = new byte[1024];
+                var cursor = PACKET_LEN_LEN;
+                ArrayExtensions.Merge(buffer, BitConverter.GetBytes(uid), cursor);
+                cursor += UID_LEN;
 
-                foreach (byte[] c in contents)
+                foreach (var c in contents)
                 {
                     ArrayExtensions.Merge(buffer, BitConverter.GetBytes(c.Length), cursor);
                     cursor += 4;
@@ -114,7 +114,7 @@ namespace Networking.Packets
         /// </summary>
         /// <param name="input"></param>
         /// <returns>Encoded bytes</returns>
-        public static byte[] ByteEncode(string input) => _encoder.GetBytes(input);
+        public static byte[] ByteEncode(string input) => encoder.GetBytes(input);
 
         /// <summary>
         /// Separates raw packet data into its separate components
@@ -124,26 +124,23 @@ namespace Networking.Packets
         /// <returns></returns>
         public static Packet Decode(byte[] data, int from = -1) // READ DOCUMENTATION TO SEE PACKET STRUCTURE
         {
-            int cursor = 4;
-            int UID = BitConverter.ToInt32(ArrayExtensions.Slice(data, cursor, cursor + UIDLen));
-            cursor += UIDLen;
+            var cursor = 4;
+            var uid = BitConverter.ToInt32(ArrayExtensions.Slice(data, cursor, cursor + UID_LEN));
+            cursor += UID_LEN;
 
-            List<byte[]> contents = new List<byte[]>();
+            var contents = new List<byte[]>();
             while (cursor < data.Length)
             {
-                int data_len = BitConverter.ToInt32(
-                    ArrayExtensions.Slice(data, cursor, cursor + DataLenLen)
+                var data_len = BitConverter.ToInt32(
+                    ArrayExtensions.Slice(data, cursor, cursor + DATA_LEN_LEN)
                 );
-                data_len = BitConverter.ToInt32(
-                    ArrayExtensions.Slice(data, cursor, cursor + DataLenLen)
-                );
-                cursor += DataLenLen;
-                byte[] content = ArrayExtensions.Slice(data, cursor, cursor + data_len);
+                cursor += DATA_LEN_LEN;
+                var content = ArrayExtensions.Slice(data, cursor, cursor + data_len);
                 cursor += data_len;
                 contents.Add(content);
             }
 
-            return new Packet(UID, contents, from);
+            return new Packet(uid, contents, from);
         }
     }
 }

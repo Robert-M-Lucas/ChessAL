@@ -1,7 +1,5 @@
 using Gamemodes.NormalChess;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Game;
 
 namespace Gamemodes.LastPieceStanding
@@ -39,7 +37,7 @@ Chess played until one team has no pieces remaining";
         // Override chess get moves to ignore check and king loss
         public override List<Move> GetMoves(LiveGameData gameData, bool fastMode)
         {
-            (Board as Board).VirtualTeam = gameData.CurrentTeam;
+            ((Board) Board).VirtualTeam = gameData.CurrentTeam;
             return Board.GetMoves(gameData);
         }
 
@@ -56,7 +54,7 @@ Chess played until one team has no pieces remaining";
                 Board.PieceBoard[move.From.X, move.From.Y] = null;
             }
 
-            (Board as Board).MoveCounter++;
+            ((Board) Board).MoveCounter++;
 
             return GUtil.SwitchTeam(gameData);
         }

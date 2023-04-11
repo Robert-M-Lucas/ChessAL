@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Class that makes text's font size tied to another font asset
@@ -9,34 +8,35 @@ using TMPro;
 [RequireComponent(typeof(TMP_Text))]
 public class InheritFontSize : MonoBehaviour
 {
-    [SerializeField] private TMP_Text InheritFrom;
+    [FormerlySerializedAs("InheritFrom")] [SerializeField] private TMP_Text inheritFrom;
 
-    private TMP_Text _text = null;
+    private TMP_Text text = null;
 
     // Copy and update font size
     private void OnEnable()
     {
-        if (_text is null) _text = GetComponent<TMP_Text>();
-        _text.enableAutoSizing = false;
+        text ??= GetComponent<TMP_Text>();
+        text.enableAutoSizing = false;
     }
 
     private void Start()
     {
-        if (_text is null) _text = GetComponent<TMP_Text>();
-        _text.enableAutoSizing = false;
+        if (text is null) text = GetComponent<TMP_Text>();
+        text.enableAutoSizing = false;
     }
 
     private void OnValidate()
     {
-        _text = GetComponent<TMP_Text>();
-        _text.fontSize = InheritFrom.fontSize;
+        text = GetComponent<TMP_Text>();
+        text.fontSize = inheritFrom.fontSize;
     }
 
     void Update()
     {
-        if (_text.fontSize != InheritFrom.fontSize)
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        if (text.fontSize != inheritFrom.fontSize)
         {
-            _text.fontSize = InheritFrom.fontSize;
+            text.fontSize = inheritFrom.fontSize;
         }
     }
 }

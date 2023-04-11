@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+// ReSharper disable NotAccessedField.Local
 
 namespace Game.ThreeD
 {
@@ -13,8 +13,8 @@ namespace Game.ThreeD
     {
         [Header("Settings")]
         [SerializeField] private float perspectiveSwitchTime = 1f;
-        [HideInInspector, DoNotSerialize] public float maxDist = 15;
-        [HideInInspector, DoNotSerialize] public float minDist = 10;
+        [FormerlySerializedAs("maxDist")] [HideInInspector, DoNotSerialize] public float MaxDist = 15;
+        [FormerlySerializedAs("minDist")] [HideInInspector, DoNotSerialize] public float MinDist = 10;
         [SerializeField] private float scrollSensitivity = 1;
         [SerializeField] private float normalFov = 60;
         [SerializeField] private float fov2D = 2;
@@ -25,16 +25,16 @@ namespace Game.ThreeD
         [Header("References")]
         [SerializeField] private Transform rotationalPivot;
         [SerializeField] private Transform upDownPivot;
-        public Transform cameraPosition;
-        [SerializeField] private Camera _camera;
+        [FormerlySerializedAs("cameraPosition")] [SerializeField] public Transform CameraPosition;
+        [FormerlySerializedAs("camera_")] [FormerlySerializedAs("_camera")] [SerializeField] private Camera cam;
 
-        private Vector2 camera_rotation;
+        private Vector2 cameraRotation;
 
         void Start()
         {
             // Set rotation values to current rotation
-            camera_rotation.y = rotationalPivot.localRotation.eulerAngles.y;
-            camera_rotation.x = upDownPivot.localRotation.eulerAngles.x;
+            cameraRotation.y = rotationalPivot.localRotation.eulerAngles.y;
+            cameraRotation.x = upDownPivot.localRotation.eulerAngles.x;
         }
 
         /// <summary>
@@ -43,13 +43,13 @@ namespace Game.ThreeD
         /// <param name="look"></param>
         public void RotateCamera(Vector2 look)
         {
-            camera_rotation.x -= look.y;
-            camera_rotation.y += look.x;
+            cameraRotation.x -= look.y;
+            cameraRotation.y += look.x;
 
-            camera_rotation.x = Mathf.Clamp(camera_rotation.x, 0, 90);
+            cameraRotation.x = Mathf.Clamp(cameraRotation.x, 0, 90);
 
-            rotationalPivot.transform.localRotation = Quaternion.Euler(0, camera_rotation.y, 0);
-            upDownPivot.transform.localRotation = Quaternion.Euler(camera_rotation.x, 0, 0);
+            rotationalPivot.transform.localRotation = Quaternion.Euler(0, cameraRotation.y, 0);
+            upDownPivot.transform.localRotation = Quaternion.Euler(cameraRotation.x, 0, 0);
         }
 
         /*
@@ -86,12 +86,12 @@ namespace Game.ThreeD
         /// <returns></returns>
         private V2? HandleHit(int boardSize)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 1000, square3DMask))
+            var ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hit, 1000, square3DMask))
             {
-                Vector3 position = hit.collider.gameObject.transform.position;
-                V2 intPosition = new V2((int)(position.x + (boardSize / 2f)), (int)(position.z + (boardSize / 2f)));
-                return intPosition;
+                var position = hit.collider.gameObject.transform.position;
+                var int_position = new V2((int)(position.x + (boardSize / 2f)), (int)(position.z + (boardSize / 2f)));
+                return int_position;
             }
             else
                 return HandleNoHit();
@@ -115,13 +115,13 @@ namespace Game.ThreeD
         public V2? ExternalUpdate(int boardSize)
         {
             // Apply zoom
-            cameraPosition.localPosition = new Vector3(0, 0, -Mathf.Clamp((-cameraPosition.localPosition.z) + (-Input.mouseScrollDelta.y * scrollSensitivity), minDist, maxDist));
+            CameraPosition.localPosition = new Vector3(0, 0, -Mathf.Clamp((-CameraPosition.localPosition.z) + (-Input.mouseScrollDelta.y * scrollSensitivity), MinDist, MaxDist));
 
             if (I.GetMouseButton(K.SecondaryClick))
             {
                 // Pan camera
-                float mouse_x = Input.GetAxis("Mouse X");
-                float mouse_y = Input.GetAxis("Mouse Y");
+                var mouse_x = Input.GetAxis("Mouse X");
+                var mouse_y = Input.GetAxis("Mouse Y");
                 RotateCamera(new Vector2(mouse_x * (mouseSensitivity.value + 0.05f) * 10f, mouse_y * (mouseSensitivity.value + 0.05f) * 10f));
                 return HandleNoHit();
             }

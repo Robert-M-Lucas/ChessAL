@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game
 {
     public class RenderedCellData : MonoBehaviour
     {
         public V2 Position;
-        public InputManager inputManager;
+        [FormerlySerializedAs("inputManager")] public InputManager InputManager;
 
         // Called when clicked on
         public void ActivateInputManager()
         {
-            inputManager.OnCellClick(Position);
+            InputManager.OnCellClick(Position);
         }
     }
 

@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.Checkers
 {
     public class CheckersPiece : AbstractPiece
     {
-        public bool Queen = false;
+        public bool Queen;
 
         public CheckersPiece(V2 position, int team, AbstractBoard board) : base(position, team, board)
         {
@@ -18,10 +16,10 @@ namespace Gamemodes.Checkers
 
         public override List<Move> GetMoves()
         {
-            int m = 1;
+            var m = 1;
             if (Team == 1) m = -1;
 
-            List<Move> normal_moves = new List<Move>()
+            var normal_moves = new List<Move>()
             {
                 new Move(Position, Position + new V2(1, 1 * m)),
                 new Move(Position, Position + new V2(-1, 1 * m))
@@ -37,7 +35,7 @@ namespace Gamemodes.Checkers
             normal_moves = GUtil.RemoveNonEmpty(GUtil.RemoveBlocked(normal_moves, Board), Board);
 
             // Create list of squares around piece
-            List<Move> jump_moves = new List<Move>()
+            var jump_moves = new List<Move>()
             {
                 new Move(Position, Position + new V2(1, 1)),
                 new Move(Position, Position + new V2(-1, 1)),
@@ -47,9 +45,9 @@ namespace Gamemodes.Checkers
             // Remove all unoccupied or friendly occupied
             jump_moves = GUtil.RemoveFriendlies(GUtil.RemoveEmpty(GUtil.RemoveBlocked(jump_moves, Board), Board), Board);
 
-            for (int i = 0; i < jump_moves.Count; i++)
+            for (var i = 0; i < jump_moves.Count; i++)
             {
-                V2 to = jump_moves[i].To;
+                var to = jump_moves[i].To;
                 to -= Position; // Make irrelevant of position
                 to *= 2; // Double distance
                 to += Position; // Make relative to position
@@ -69,9 +67,9 @@ namespace Gamemodes.Checkers
                 // Jump
                 if (move.To.X - move.From.X != 1 && move.To.X - move.From.X != -1)
                 {
-                    V2 pos = move.From + ((move.To - move.From) / 2);
+                    var pos = move.From + ((move.To - move.From) / 2);
                     Board.PieceBoard[pos.X, pos.Y] = null;
-                    (Board.GameManager as GameManager).PieceTaken = true;
+                    ((GameManager) Board.GameManager).PieceTaken = true;
                 }
 
                 // Become queen
@@ -87,7 +85,7 @@ namespace Gamemodes.Checkers
 
         public override PieceSerialisationData GetData()
         {
-            PieceSerialisationData data = new PieceSerialisationData();
+            var data = new PieceSerialisationData();
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();
@@ -106,15 +104,14 @@ namespace Gamemodes.Checkers
 
         public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            CheckersPiece piece = new CheckersPiece(Position, Team, newBoard);
+            var piece = new CheckersPiece(Position, Team, newBoard);
             piece.Queen = Queen;
             return piece;
         }
 
         public override float GetValue()
         {
-            if (Queen) return 3f;
-            return 1f;
+            return Queen ? 3f : 1f;
         }
     }
 }

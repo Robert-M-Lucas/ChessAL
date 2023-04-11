@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System;
 using UnityEngine.Events;
 
 namespace MainMenu
@@ -15,7 +13,7 @@ namespace MainMenu
     {
         public List<string> Options;
         public TMP_Text OptionText;
-        public string CurrentlyShowing { get { return Options[CurrentlyShowingPos]; } }
+        public string CurrentlyShowing => Options[CurrentlyShowingPos];
         public int CurrentlyShowingPos { get; private set; } = 0;
         public UnityEvent OnGamemodeChange;
 

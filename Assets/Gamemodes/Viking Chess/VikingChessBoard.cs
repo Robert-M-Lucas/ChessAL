@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Gamemodes.VikingChess
 {
     public class Board : AbstractBoard
     {
-        public static V2 CENTRE { get; private set; } = new V2(5, 5);
+        public static readonly V2 CENTRE = new V2(5, 5);
 
         public Board(AbstractGameManager gameManager, bool initialise = true) : base(gameManager)
         {
@@ -17,25 +15,25 @@ namespace Gamemodes.VikingChess
         {
             PieceBoard = new AbstractPiece[11, 11];
 
-            for (int y = 0; y < 11; y += 10)
+            for (var y = 0; y < 11; y += 10)
             {
-                for (int x = 3; x < 8; x++)
+                for (var x = 3; x < 8; x++)
                 {
                     PieceBoard[x, y] = new VikingPiece(new V2(x, y), 0, this);
                 }
             }
 
-            for (int x = 0; x < 11; x += 10)
+            for (var x = 0; x < 11; x += 10)
             {
-                for (int y = 3; y < 8; y++)
+                for (var y = 3; y < 8; y++)
                 {
                     PieceBoard[x, y] = new VikingPiece(new V2(x, y), 0, this);
                 }
             }
 
-            for (int x = 4; x < 7; x++)
+            for (var x = 4; x < 7; x++)
             {
-                for (int y = 4; y < 7; y++)
+                for (var y = 4; y < 7; y++)
                 {
                     if (x == 5 && y == 5) PieceBoard[x, y] = new VikingKing(new V2(x, y), 1, this);
                     else PieceBoard[x, y] = new VikingPiece(new V2(x, y), 1, this);
@@ -58,17 +56,17 @@ namespace Gamemodes.VikingChess
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
-            Board board = new Board(newGameManager, false);
-            AbstractPiece[,] pieceBoard = new AbstractPiece[11, 11];
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            var board = new Board(newGameManager, false);
+            var piece_board = new AbstractPiece[11, 11];
+            for (var x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < PieceBoard.GetLength(0); y++)
+                for (var y = 0; y < PieceBoard.GetLength(0); y++)
                 {
-                    if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                    if (PieceBoard[x, y] is not null) piece_board[x, y] = PieceBoard[x, y].Clone(board);
                 }
             }
 
-            board.PieceBoard = pieceBoard;
+            board.PieceBoard = piece_board;
 
             return board;
         }

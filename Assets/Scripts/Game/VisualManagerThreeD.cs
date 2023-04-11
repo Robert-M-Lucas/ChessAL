@@ -1,13 +1,6 @@
-using Game;
 using Gamemodes;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Game.ThreeD
 {
@@ -16,10 +9,10 @@ namespace Game.ThreeD
     /// </summary>
     public class RippleData
     {
-        public V2 position;
-        public float time = 0;
+        public V2 Position;
+        public float Time = 0;
 
-        public RippleData(V2 position) { this.position = position; }
+        public RippleData(V2 position) { this.Position = position; }
     }
 
     public class VisualManagerThreeD : MonoBehaviour
@@ -67,20 +60,20 @@ namespace Game.ThreeD
         /// Renders everything on the 3D board
         /// </summary>
         /// <param name="boardRenderInfo"></param>
+        // ReSharper disable once ParameterHidesMember
         public void RenderBoard(BoardRenderInfo boardRenderInfo)
         {
             this.boardRenderInfo = boardRenderInfo;
 
             squares = new MeshRenderer[boardRenderInfo.BoardSize, boardRenderInfo.BoardSize];
 
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     // Create new square
-                    GameObject new_square = Instantiate(squarePrefab);
+                    var new_square = Instantiate(squarePrefab, transform, true);
                     squares[x, y] = new_square.GetComponent<MeshRenderer>();
-                    new_square.transform.SetParent(transform);
 
                     // Set square colour
                     ResetSquareColor(new V2(x, y));
@@ -94,9 +87,10 @@ namespace Game.ThreeD
             }
 
             // Set camera position variables based on board size
-            cameraManager.cameraPosition.localPosition = new Vector3(0, 0, -boardRenderInfo.BoardSize * 1.5f);
-            cameraManager.minDist = Mathf.Sqrt(2 * Mathf.Pow((boardRenderInfo.BoardSize + 2) / 2, 2));
-            cameraManager.maxDist = cameraManager.minDist * 2;
+            cameraManager.CameraPosition.localPosition = new Vector3(0, 0, -boardRenderInfo.BoardSize * 1.5f);
+            // ReSharper disable once PossibleLossOfFraction
+            cameraManager.MinDist = Mathf.Sqrt(2 * Mathf.Pow((boardRenderInfo.BoardSize + 2) / 2, 2));
+            cameraManager.MaxDist = cameraManager.MinDist * 2;
         }
 
         /// <summary>
@@ -157,10 +151,9 @@ namespace Game.ThreeD
         /// <param name="piece"></param>
         public void Create(AbstractPiece piece)
         {
-            GameObject new_piece = Instantiate(visualManager.InternalAppearanceMap[piece.AppearanceID].Prefab3D);
+            var new_piece = Instantiate(visualManager.InternalAppearanceMap[piece.AppearanceID].Prefab3D, squares[piece.Position.X, piece.Position.Y].transform, true);
             new_piece.AddComponent<PieceControllerThreeD>();
             pieces.Add(piece.Position, new_piece);
-            new_piece.transform.SetParent(squares[piece.Position.X, piece.Position.Y].transform);
             new_piece.transform.localPosition = new Vector3(0, 0.25f, 0);
         }
 
@@ -171,25 +164,24 @@ namespace Game.ThreeD
         /// <param name="to"></param>
         public void Move(V2 from, V2 to)
         {
-            bool jump = false;
-            Vector2 delta = (to - from).Vector2();
-            int count = (int)delta.magnitude;
+            var jump = false;
+            var delta = (to - from).Vector2();
+            var count = (int)delta.magnitude;
 
 
             // Iterate through squares between start and end. If piece found between, jump
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                Vector2 current_pos = from.Vector2() + (delta * (i / (float)count));
-                V2 min_pos = new V2((int)Mathf.Floor(current_pos.x), (int)Mathf.Floor(current_pos.y));
-                V2 max_pos = new V2((int)Mathf.RoundToInt(current_pos.x), (int)Mathf.RoundToInt(current_pos.y));
+                var current_pos = from.Vector2() + (delta * (i / (float)count));
+                var min_pos = new V2((int)Mathf.Floor(current_pos.x), (int)Mathf.Floor(current_pos.y));
+                var max_pos = new V2(Mathf.RoundToInt(current_pos.x), Mathf.RoundToInt(current_pos.y));
                 if (min_pos != from && min_pos != to && pieces.ContainsKey(min_pos))
                 {
                     jump = true; break;
                 }
-                if (max_pos != from && max_pos != to && pieces.ContainsKey(max_pos))
-                {
-                    jump = true; break;
-                }
+
+                if (max_pos == from || max_pos == to || !pieces.ContainsKey(max_pos)) continue;
+                jump = true; break;
             }
 
             // Set piece as child of destination square
@@ -199,7 +191,7 @@ namespace Game.ThreeD
             pieces[from].GetComponent<PieceControllerThreeD>().Move(
                 pieces[from].transform.localPosition,
                 new Vector3(0, 0.25f, 0),
-                jump, visualManager.pieceTravelTime, 2f);
+                jump, visualManager.PieceTravelTime, 2f);
 
             // Update piece dictionary
             pieces[to] = pieces[from];
@@ -238,13 +230,14 @@ namespace Game.ThreeD
         /// </summary>
         /// <param name="position"></param>
         /// <param name="visualManager"></param>
+        // ReSharper disable once ParameterHidesMember
         private void SelectSquare(V2 position, VisualManager visualManager)
         {
             if (position == selected) selected = new V2(-1); // If already selected unselect
             else
             {
                 // If clicking on a destination square make move
-                if (visualManager.possibleMoves.FindIndex((m) => m.From == selected && m.To == position) != -1)
+                if (visualManager.PossibleMoves.FindIndex((m) => m.From == selected && m.To == position) != -1)
                 {
                     visualManager.ChessManager.DoLocalMove(selected, position);
                     selected = new V2(-1);
@@ -264,13 +257,11 @@ namespace Game.ThreeD
 
             if (VisualManager.IsWhite(square))
             {
-                if (pieces.ContainsKey(square)) squares[square.X, square.Y].material = white3DTakeHighlightMaterial;
-                else squares[square.X, square.Y].material = white3DHighlightMaterial;
+                squares[square.X, square.Y].material = pieces.ContainsKey(square) ? white3DTakeHighlightMaterial : white3DHighlightMaterial;
             }
             else
             {
-                if (pieces.ContainsKey(square)) squares[square.X, square.Y].material = black3DTakeHighlightMaterial;
-                else squares[square.X, square.Y].material = black3DHighlightMaterial;
+                squares[square.X, square.Y].material = pieces.ContainsKey(square) ? black3DTakeHighlightMaterial : black3DHighlightMaterial;
             }
         }
 
@@ -279,7 +270,7 @@ namespace Game.ThreeD
         /// </summary>
         private void ClearHighlighted()
         {
-            foreach (V2 square in highlightedSquares)
+            foreach (var square in highlightedSquares)
             {
                 ResetSquareColor(square);
             }
@@ -294,7 +285,7 @@ namespace Game.ThreeD
         public void ShowLastMove(V2 from, V2 to)
         {
             // Clear moveFromSquare and moveToSquare before resetting to avoid rehighlighting
-            V2 temp_place = moveFromSquare;
+            var temp_place = moveFromSquare;
             moveFromSquare = new V2(-1);
             if (temp_place != new V2(-1)) ResetSquareColor(temp_place);
             temp_place = moveToSquare;
@@ -302,10 +293,8 @@ namespace Game.ThreeD
             if (temp_place != new V2(-1)) ResetSquareColor(temp_place);
 
             // Set colour
-            if (VisualManager.IsWhite(from)) squares[from.X, from.Y].material = whiteMoveMaterial;
-            else squares[from.X, from.Y].material = blackMoveMaterial;
-            if (VisualManager.IsWhite(to)) squares[to.X, to.Y].material = whiteMoveMaterial;
-            else squares[to.X, to.Y].material = blackMoveMaterial;
+            squares[from.X, from.Y].material = VisualManager.IsWhite(from) ? whiteMoveMaterial : blackMoveMaterial;
+            squares[to.X, to.Y].material = VisualManager.IsWhite(to) ? whiteMoveMaterial : blackMoveMaterial;
 
             // Update moves
             moveFromSquare = from;
@@ -317,12 +306,12 @@ namespace Game.ThreeD
         /// </summary>
         public void ExternalUpdate()
         {
-            V2? currentPosition = cameraManager.ExternalUpdate(boardRenderInfo.BoardSize);
-            if (visualManager.GameMenuManager.ShowingEscapeMenu) currentPosition = null;
-            if (currentPosition is not null && !I.GetMouseButton(K.SecondaryClick))
+            var current_position = cameraManager.ExternalUpdate(boardRenderInfo.BoardSize);
+            if (visualManager.GameMenuManager.ShowingEscapeMenu) current_position = null;
+            if (current_position is not null && !I.GetMouseButton(K.SecondaryClick))
             {
-                if (I.GetMouseButtonDown(K.PrimaryClick)) SelectSquare((V2)currentPosition, visualManager);
-                hoveringOver = (V2)currentPosition;
+                if (I.GetMouseButtonDown(K.PrimaryClick)) SelectSquare((V2)current_position, visualManager);
+                hoveringOver = (V2)current_position;
             }
             else
             {
@@ -339,11 +328,11 @@ namespace Game.ThreeD
         private void UpdateDisplacementsAndHighlight()
         {
             // Set new ripple progress
-            for (int i = 0; i < ripples.Count; i++)
+            for (var i = 0; i < ripples.Count; i++)
             {
-                ripples[i].time += Time.deltaTime / 2.5f;
+                ripples[i].Time += Time.deltaTime / 2.5f;
 
-                if (ripples[i].time >= 1f)
+                if (ripples[i].Time >= 1f)
                 {
                     ripples.RemoveAt(i);
                     i--;
@@ -365,9 +354,9 @@ namespace Game.ThreeD
                 targetDisplacement[selected.X, selected.Y] += 0.3f;
                 // highlighted[selected.X, selected.Y] = true;
 
-                if (visualManager.possibleMoves.FindIndex((m) => m.From == selected) != -1)
+                if (visualManager.PossibleMoves.FindIndex((m) => m.From == selected) != -1)
                 {
-                    foreach (Move m in visualManager.possibleMoves.FindAll((m) => m.From == selected))
+                    foreach (var m in visualManager.PossibleMoves.FindAll((m) => m.From == selected))
                     {
                         highlighted[m.To.X, m.To.Y] = true;
                         targetDisplacement[m.To.X, m.To.Y] += 0.2f;
@@ -376,32 +365,32 @@ namespace Game.ThreeD
             }
 
             // Apply ripple height
-            float max_distance = new Vector2(boardRenderInfo.BoardSize / 2f, boardRenderInfo.BoardSize / 2f).magnitude * 2f;
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            var max_distance = new Vector2(boardRenderInfo.BoardSize / 2f, boardRenderInfo.BoardSize / 2f).magnitude * 2f;
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
-                    foreach (RippleData ripple in ripples)
+                    foreach (var ripple in ripples)
                     {
-                        float distance = (ripple.position - new V2(x, y)).Vector2().magnitude;
-                        targetDisplacement[x, y] += MathP.Ripple(ripple.time, 1.5f, distance, max_distance, 6) * 0.4f;
+                        var distance = (ripple.Position - new V2(x, y)).Vector2().magnitude;
+                        targetDisplacement[x, y] += MathP.Ripple(ripple.Time, 1.5f, distance, max_distance, 6) * 0.4f;
                     }
                 }
             }
 
             // Applies highlights and displacement
             ClearHighlighted();
-            for (int x = 0; x < boardRenderInfo.BoardSize; x++)
+            for (var x = 0; x < boardRenderInfo.BoardSize; x++)
             {
-                for (int y = 0; y < boardRenderInfo.BoardSize; y++)
+                for (var y = 0; y < boardRenderInfo.BoardSize; y++)
                 {
                     // Smoothly move to target position using log function
                     if (squares[x, y].transform.position.y is float.NaN || squares[x, y].transform.position.y < -10 || squares[x, y].transform.position.y > 10)
                         squares[x, y].transform.position = new Vector3(squares[x, y].transform.position.x, 0, squares[x, y].transform.position.z);
 
-                    float target_delta = targetDisplacement[x, y] + 1 - squares[x, y].transform.position.y;
+                    var target_delta = targetDisplacement[x, y] + 1 - squares[x, y].transform.position.y;
                     if (target_delta == 0) { return; }
-                    squares[x, y].transform.position += Vector3.up * Mathf.Log(target_delta, 2) * Time.deltaTime * 10;
+                    squares[x, y].transform.position += Vector3.up * (Mathf.Log(target_delta, 2) * Time.deltaTime * 10);
                     squares[x, y].transform.position = new Vector3(squares[x, y].transform.position.x, Mathf.Clamp(squares[x, y].transform.position.y, -10, 10), squares[x, y].transform.position.z);
                     
                     // Highlight squares

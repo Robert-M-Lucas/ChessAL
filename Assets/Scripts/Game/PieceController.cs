@@ -1,6 +1,3 @@
-using Game;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -18,7 +15,8 @@ namespace Game
         {
             visualManager ??= FindObjectOfType<VisualManager>();
         }
-
+        
+        // ReSharper disable twice ParameterHidesMember
         public void MoveTo(V2 target, V2 origin, float time)
         {
             this.origin = origin.Vector2();
@@ -37,6 +35,7 @@ namespace Game
 
                 visualManager.SizeGameObject(gameObject, origin + ((target - origin) * MathP.CosSmooth(progress)));
 
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (progress == 1f) progress = float.NaN;
             }
         }

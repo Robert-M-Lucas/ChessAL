@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -34,16 +32,16 @@ public static class MathP
     /// <param name="time">How much time (0 - 1) has passed relative to the max time</param>
     /// <param name="cycles">How many ripples should be created</param>
     /// <param name="distance">How far the point is from the origin</param>
-    /// <param name="max_distance">The furthest point the ripples can reach</param>
-    /// <param name="ripple_length">How long each ripple should be</param>
+    /// <param name="maxDistance">The furthest point the ripples can reach</param>
+    /// <param name="rippleLength">How long each ripple should be</param>
     /// <returns>Height at given distance</returns>
-    public static float Ripple(float time, float cycles, float distance, float max_distance, float ripple_length)
+    public static float Ripple(float time, float cycles, float distance, float maxDistance, float rippleLength)
     {
         // y = -(1 / max_distance)x + 1
-        float amplitude_falloff = -(1 / max_distance) * distance + 1;
+        var amplitude_falloff = -(1 / maxDistance) * distance + 1;
 
         // y = sin(2pi * (1/ripple_length) * x - 2pi * (t * c))
-        float ripple = Mathf.Sin(2 * Mathf.PI * (1 / ripple_length) * distance - 2 * Mathf.PI * (time * cycles));
+        var ripple = Mathf.Sin(2 * Mathf.PI * (1 / rippleLength) * distance - 2 * Mathf.PI * (time * cycles));
 
         float overall_amplitude;
         if (time < 0.2f)

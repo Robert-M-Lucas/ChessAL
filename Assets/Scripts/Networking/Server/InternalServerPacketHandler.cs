@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Networking.Packets;
 using Networking.Packets.Generated;
 
@@ -56,13 +55,13 @@ namespace Networking.Server
         // Send data about current gamemode
         public void SendGamemodeData(Packet packet)
         {
-            server.SendMessage(packet.From, GamemodeDataPacket.Build(server.gameData.GameModeID, server.gameData.SaveData));
+            server.SendMessage(packet.From, GamemodeDataPacket.Build(server.GameData.GameModeID, server.GameData.SaveData));
         }
         
         // Broadcasts a move sent in by a player to all players
         public void OnMoveUpdate(Packet packet)
         {
-            MoveUpdatePacket p = new MoveUpdatePacket(packet);
+            var p = new MoveUpdatePacket(packet);
 
             server.SendToAll(MoveUpdatePacket.Build(p.NextPlayer, p.FromX, p.FromY, p.ToX, p.ToY));
         }

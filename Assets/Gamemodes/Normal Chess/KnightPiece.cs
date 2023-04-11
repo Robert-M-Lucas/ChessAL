@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
@@ -15,16 +12,16 @@ namespace Gamemodes.NormalChess
 
         public override List<Move> GetMoves()
         {
-            List<Move> moves = new List<Move>()
+            var moves = new List<Move>()
             {
-                new Move(Position, Position + new V2(1, 2)),
-                new Move(Position, Position + new V2(1, -2)),
-                new Move(Position, Position + new V2(-1, 2)),
-                new Move(Position, Position + new V2(-1, -2)),
-                new Move(Position, Position + new V2(2, 1)),
-                new Move(Position, Position + new V2(2, -1)),
-                new Move(Position, Position + new V2(-2, 1)),
-                new Move(Position, Position + new V2(-2, -1)),
+                new (Position, Position + new V2(1, 2)),
+                new (Position, Position + new V2(1, -2)),
+                new (Position, Position + new V2(-1, 2)),
+                new (Position, Position + new V2(-1, -2)),
+                new (Position, Position + new V2(2, 1)),
+                new (Position, Position + new V2(2, -1)),
+                new (Position, Position + new V2(-2, 1)),
+                new (Position, Position + new V2(-2, -1)),
             };
            
             return GUtil.RemoveFriendlies(GUtil.RemoveBlocked(moves, Board), Board);

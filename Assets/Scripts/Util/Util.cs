@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using Gamemodes;
 
 /// <summary>
@@ -17,10 +15,10 @@ public static class Util
     /// <returns></returns>
     public static List<AbstractGameManagerData> GetAllGameManagers()
     {
-        List<AbstractGameManagerData> game_managers_data = new List<AbstractGameManagerData>();
+        var game_managers_data = new List<AbstractGameManagerData>();
 
         // Get types from reflection
-        foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+        foreach (var type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractGameManagerData))))
         {
             game_managers_data.Add((AbstractGameManagerData)Activator.CreateInstance(type)); // Create instance
@@ -36,10 +34,10 @@ public static class Util
     /// <returns></returns>
     public static List<Type> GetAllPieceTypes()
     {
-        List<Type> pieces = new List<Type>();
+        var pieces = new List<Type>();
 
         // Get types from reflection
-        foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+        foreach (var type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
         {
             pieces.Add(type);
@@ -54,10 +52,10 @@ public static class Util
     /// <returns></returns>
     public static List<AbstractPiece> GetAllPieces()
     {
-        List<AbstractPiece> pieces = new List<AbstractPiece>();
+        var pieces = new List<AbstractPiece>();
 
         // Get types from reflection
-        foreach (Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
+        foreach (var type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes()
                  .Where(mytype => mytype.IsSubclassOf(typeof(AbstractPiece)) && !mytype.IsAbstract))
         {
             pieces.Add((AbstractPiece)Activator.CreateInstance(type, new object[] { new V2(0, 0), 0, null })); // Create instance

@@ -1,15 +1,12 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using System.Collections.Generic;
 using System;
-using System.Reflection;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using Networking.Packets;
 using Networking.Packets.Generated;
 using Gamemodes;
 using System.IO;
-using Networking.Client;
 
 #nullable enable
 
@@ -24,7 +21,7 @@ public class Tests
 {
     private static List<Func<bool>> tests = new List<Func<bool>> { TestPacketEncoding, TestGameManagers, TestPieces, TestValidators, TestV2 };
 
-    private static string output_string = "Test log: [...]\n";
+    private static string outputString = "Test log: [...]\n";
 
     static Tests()
     {
@@ -38,20 +35,20 @@ public class Tests
     private static void OnAfterAssemblyReload()
     {
         Debug.Log("Starting tests");
-        Stopwatch s = new Stopwatch();
+        var s = new Stopwatch();
         s.Start();
 
         foreach (var test in tests)
         {
             if (!test())
             {
-                Debug.Log(output_string);
+                Debug.Log(outputString);
                 Debug.LogError("Tests failed");
                 return;
             }
         }
 
-        Debug.Log(output_string);
+        Debug.Log(outputString);
 
         Debug.Log($"Tests successful! ({s.ElapsedMilliseconds}ms)");
     }
@@ -62,16 +59,17 @@ public class Tests
     /// <returns></returns>
     private static bool TestPacketEncoding()
     {
-        output_string += "Testing packet encoding\n";
+        outputString += "Testing packet encoding\n";
         try
         {
-            int arg_one = 2;
-            double arg_two = 3.8;
-            string arg_three = "ldksjfhalkahsdflkbvb";
-            string arg_four = "hjsdagfgyurbfv";
+            var arg_one = 2;
+            var arg_two = 3.8;
+            var arg_three = "ldksjfhalkahsdflkbvb";
+            var arg_four = "hjsdagfgyurbfv";
 
-            SampleTestPacket test_packet = new SampleTestPacket(PacketBuilder.Decode(SampleTestPacket.Build(arg_one, arg_two, arg_three, arg_four)));
+            var test_packet = new SampleTestPacket(PacketBuilder.Decode(SampleTestPacket.Build(arg_one, arg_two, arg_three, arg_four)));
 
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (arg_one != test_packet.ArgOne || arg_two != test_packet.ArgTwo || arg_three != test_packet.ArgThree || arg_four != test_packet.ArgFour)
             {
                 Debug.LogError("Packet data corrupted in conversion");
@@ -92,14 +90,14 @@ public class Tests
     /// <returns></returns>
     private static bool TestGameManagers()
     {
-        output_string += "Running Game Manager Tests\n";
+        outputString += "Running Game Manager Tests\n";
 
         // Get all AbstractGameManagerData
         List<AbstractGameManagerData> abstract_game_managers_data = Util.GetAllGameManagers();
 
         // Ensure no duplicate UIDs
-        HashSet<int> used_uids = new HashSet<int>();
-        foreach (AbstractGameManagerData data in abstract_game_managers_data)
+        var used_uids = new HashSet<int>();
+        foreach (var data in abstract_game_managers_data)
         {
             if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Gamemode UID ({data.GetUID()}) used twice"); return false; }
             used_uids.Add(data.GetUID());
@@ -121,14 +119,14 @@ public class Tests
     /// <returns></returns>
     private static bool TestPieces()
     {
-        output_string += "Running Piece Tests\n";
+        outputString += "Running Piece Tests\n";
 
         // Get all AbstractGameManagerData
         List<AbstractPiece> pieces = Util.GetAllPieces();
 
         // Ensure no duplicate UIDs
-        HashSet<int> used_uids = new HashSet<int>();
-        foreach (AbstractPiece data in pieces)
+        var used_uids = new HashSet<int>();
+        foreach (var data in pieces)
         {
             if (used_uids.Contains(data.GetUID())) { Debug.LogError($"Piece UID ({data.GetUID()}) used twice"); return false; }
             used_uids.Add(data.GetUID());
@@ -143,10 +141,10 @@ public class Tests
     /// <returns></returns>
     private static bool TestValidators()
     {
-        output_string += "Running validator tests\n";
+        outputString += "Running validator tests\n";
 
         Func<string, string?> validator = Validators.ValidatePlayerName;
-        Tuple<string, bool>[] tests = new Tuple<string, bool>[] {
+        Tuple<string, bool>[] validation_tests = new Tuple<string, bool>[] {
             new Tuple<string, bool>("PlayerName", true), 
             new Tuple<string, bool>("Player Name", false), // Illegal char
             new Tuple<string, bool>("1234", true),
@@ -156,7 +154,7 @@ public class Tests
             new Tuple<string, bool>("rjfnsmekfntismess", false), // Too long
         };
 
-        foreach (Tuple<string, bool> test in tests)
+        foreach (Tuple<string, bool> test in validation_tests)
         {
             if ((validator(test.Item1) is null) != test.Item2)
             {
@@ -167,7 +165,7 @@ public class Tests
         }
 
         validator = Validators.ValidatePassword;
-        tests = new Tuple<string, bool>[] {
+        validation_tests = new Tuple<string, bool>[] {
             new Tuple<string, bool>("Password", true),
             new Tuple<string, bool>("", true), // No password
             new Tuple<string, bool>("My Password", false), // Illegal char
@@ -178,7 +176,7 @@ public class Tests
             new Tuple<string, bool>("ad!\\", false), // Illegal char
         };
 
-        foreach (Tuple<string, bool> test in tests)
+        foreach (Tuple<string, bool> test in validation_tests)
         {
             if ((validator(test.Item1) is null) != test.Item2)
             {
@@ -230,8 +228,9 @@ public class Tests
     /// <returns></returns>
     private static bool TestV2()
     {
-        output_string += "Testing V2 functions\n";
+        outputString += "Testing V2 functions\n";
 
+        // ReSharper disable once EqualExpressionComparison
         if (new V2(1, 3) != new V2(1,3) || new V2(1, 5) == new V2(3, 4))
         {
             Debug.LogError("V2 equality testing failed");

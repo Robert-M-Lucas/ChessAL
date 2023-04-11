@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.IO;
@@ -33,8 +31,8 @@ namespace MainMenu
         /// </summary>
         public void UpdateItemScale()
         {
-            float height = RectTransformUtility.PixelAdjustRect(SelectButton.GetComponent<RectTransform>(), Canvas).height;
-            RectTransform rect = SaveSelectorItemPrefab.GetComponent<RectTransform>();
+            var height = RectTransformUtility.PixelAdjustRect(SelectButton.GetComponent<RectTransform>(), Canvas).height;
+            var rect = SaveSelectorItemPrefab.GetComponent<RectTransform>();
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
         }
 
@@ -57,7 +55,7 @@ namespace MainMenu
         {
             if (file != "")
             {
-                string shortened_filename = Path.GetFileNameWithoutExtension(file);
+                var shortened_filename = Path.GetFileNameWithoutExtension(file);
                 if (shortened_filename.Length > MAX_FILENAME_LENGTH)
                 {
                     shortened_filename = shortened_filename[..(MAX_FILENAME_LENGTH - 3)] + "...";
@@ -75,10 +73,10 @@ namespace MainMenu
         /// </summary>
         public void UpdateSavesList()
         {
-            string[] save_files = SaveSystem.ListAllSaveFiles();
-            string[] save_file_names = new string[save_files.Length];
+            var save_files = SaveSystem.ListAllSaveFiles();
+            var save_file_names = new string[save_files.Length];
             
-            for (int i = 0; i < save_files.Length; i++)
+            for (var i = 0; i < save_files.Length; i++)
             {
                 // Shorten file names
                 save_file_names[i] = Path.GetFileNameWithoutExtension(save_files[i]);
@@ -95,7 +93,7 @@ namespace MainMenu
             }
 
             // Destroy all active children
-            for (int i = 0; i < SelectorListParent.transform.childCount; i++)
+            for (var i = 0; i < SelectorListParent.transform.childCount; i++)
             {
                 if (SelectorListParent.transform.GetChild(i).gameObject.activeSelf) Destroy(SelectorListParent.transform.GetChild(i).gameObject);
             }
@@ -104,12 +102,11 @@ namespace MainMenu
             UpdateItemScale();
 
             // Redisplay saves
-            for (int i = 0; i < save_file_names.Length; i++)
+            for (var i = 0; i < save_file_names.Length; i++)
             {
                 SaveSelectorItemPrefab.Text.text = save_file_names[i];
                 SaveSelectorItemPrefab.Filename = save_files[i];
-                GameObject new_item = Instantiate(SaveSelectorItemPrefab.gameObject);
-                new_item.transform.SetParent(SelectorListParent.transform);
+                var new_item = Instantiate(SaveSelectorItemPrefab.gameObject, SelectorListParent.transform, true);
                 new_item.SetActive(true);
             }
         }

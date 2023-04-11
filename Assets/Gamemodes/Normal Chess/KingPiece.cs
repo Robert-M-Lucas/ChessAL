@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using UnityEditor;
-using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
@@ -20,16 +15,16 @@ namespace Gamemodes.NormalChess
 
         public override List<Move> GetMoves()
         {
-            List<Move> moves = new List<Move>()
+            var moves = new List<Move>()
             {
-                new Move(Position, Position + new V2(1, 1)),
-                new Move(Position, Position + new V2(1, -1)),
-                new Move(Position, Position + new V2(-1, 1)),
-                new Move(Position, Position + new V2(-1, -1)),
-                new Move(Position, Position + new V2(1, 0)),
-                new Move(Position, Position + new V2(0, 1)),
-                new Move(Position, Position + new V2(-1, 0)),
-                new Move(Position, Position + new V2(0, -1)),
+                new(Position, Position + new V2(1, 1)),
+                new(Position, Position + new V2(1, -1)),
+                new(Position, Position + new V2(-1, 1)),
+                new(Position, Position + new V2(-1, -1)),
+                new(Position, Position + new V2(1, 0)),
+                new(Position, Position + new V2(0, 1)),
+                new(Position, Position + new V2(-1, 0)),
+                new(Position, Position + new V2(0, -1)),
             };
 
             // Castle logic
@@ -40,29 +35,26 @@ namespace Gamemodes.NormalChess
                     && !((RookPiece)Board.GetPiece(Position + new V2(-4, 0))).HasMoved) // If rook is there and hasn't moved
                 {
                     // Is there clear path to rook?
-                    bool clear = true;
-                    for (int x = 1; x <= 3; x++)
+                    var clear = true;
+                    for (var x = 1; x <= 3; x++)
                     {
-                        if (Board.GetPiece(new V2(x, Position.Y)) is not null)
-                        {
-                            clear = false; break;
-                        }
+                        if (Board.GetPiece(new V2(x, Position.Y)) is null) continue;
+                        clear = false; break;
                     }
                     if (clear) moves.Add(new Move(Position, Position + new V2(-2, 0))); // Add castle move
                 }
 
                 // Same for castling on other side
-                if (Board.GetPiece(Position + new V2(3, 0)) is not null
-                    && typeof(RookPiece) == Board.GetPiece(Position + new V2(3, 0)).GetType()
-                    && !((RookPiece)Board.GetPiece(Position + new V2(3, 0))).HasMoved) 
+                if (Board.GetPiece(Position + new V2(3, 0)) is null
+                    || typeof(RookPiece) != Board.GetPiece(Position + new V2(3, 0)).GetType()
+                    || ((RookPiece) Board.GetPiece(Position + new V2(3, 0))).HasMoved)
+                    return GUtil.RemoveFriendlies(GUtil.RemoveBlocked(moves, Board), Board);
                 {
-                    bool clear = true;
-                    for (int x = 5; x <= 6; x++)
+                    var clear = true;
+                    for (var x = 5; x <= 6; x++)
                     {
-                        if (Board.GetPiece(new V2(x, Position.Y)) is not null)
-                        {
-                            clear = false; break;
-                        }
+                        if (Board.GetPiece(new V2(x, Position.Y)) is null) continue;
+                        clear = false; break;
                     }
                     if (clear) moves.Add(new Move(Position, Position + new V2(2, 0)));
                 }
@@ -78,38 +70,41 @@ namespace Gamemodes.NormalChess
 
             HasMoved = true;
 
-            // Castle (king can only move two placen in a castle
-            if (move.To.X - move.From.X == 2)
+            switch (move.To.X - move.From.X)
             {
-                // Move rook
-                Board.PieceBoard[move.To.X - 1, move.To.Y] = Board.PieceBoard[move.To.X + 1, move.To.Y];
-                Board.PieceBoard[move.To.X - 1, move.To.Y].Position = new V2(move.To.X - 1, move.To.Y);
-                Board.PieceBoard[move.To.X - 1, move.To.Y].OnMove(move, false);
+                // Castle (king can only move two placen in a castle
+                case 2:
+                    // Move rook
+                    Board.PieceBoard[move.To.X - 1, move.To.Y] = Board.PieceBoard[move.To.X + 1, move.To.Y];
+                    Board.PieceBoard[move.To.X - 1, move.To.Y].Position = new V2(move.To.X - 1, move.To.Y);
+                    Board.PieceBoard[move.To.X - 1, move.To.Y].OnMove(move, false);
 
-                // Set has moved
-                (Board.PieceBoard[move.To.X - 1, move.To.Y] as RookPiece).HasMoved = true;  
+                    // Set has moved
+                    ((RookPiece) Board.PieceBoard[move.To.X - 1, move.To.Y]).HasMoved = true;  
 
-                // Remove old rook position
-                Board.PieceBoard[move.To.X + 1, move.To.Y] = null;
-            }
-            // Castle on other side
-            else if (move.To.X - move.From.X == -2)
-            {
-                Board.PieceBoard[move.To.X + 1, move.To.Y] = Board.PieceBoard[move.To.X - 2, move.To.Y];
-                Board.PieceBoard[move.To.X + 1, move.To.Y].Position = new V2(move.To.X + 1, move.To.Y);
-                Board.PieceBoard[move.To.X + 1, move.To.Y].OnMove(move, false);
-                (Board.PieceBoard[move.To.X + 1, move.To.Y] as RookPiece).HasMoved = true;
-                Board.PieceBoard[move.To.X - 2, move.To.Y] = null;
+                    // Remove old rook position
+                    Board.PieceBoard[move.To.X + 1, move.To.Y] = null;
+                    break;
+                // Castle on other side
+                case -2:
+                    Board.PieceBoard[move.To.X + 1, move.To.Y] = Board.PieceBoard[move.To.X - 2, move.To.Y];
+                    Board.PieceBoard[move.To.X + 1, move.To.Y].Position = new V2(move.To.X + 1, move.To.Y);
+                    Board.PieceBoard[move.To.X + 1, move.To.Y].OnMove(move, false);
+                    ((RookPiece) Board.PieceBoard[move.To.X + 1, move.To.Y]).HasMoved = true;
+                    Board.PieceBoard[move.To.X - 2, move.To.Y] = null;
+                    break;
             }
         }
 
         public override PieceSerialisationData GetData()
         {
-            PieceSerialisationData data = new PieceSerialisationData();
-            data.Team = Team;
-            data.Position = Position;
-            data.UID = GetUID();
-            data.Data = BitConverter.GetBytes(HasMoved); // Add custom data
+            var data = new PieceSerialisationData
+            {
+                Team = Team,
+                Position = Position,
+                UID = GetUID(),
+                Data = BitConverter.GetBytes(HasMoved) // Add custom data
+            };
             return data;
         }
 
@@ -122,7 +117,7 @@ namespace Gamemodes.NormalChess
 
         public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            KingPiece k = new KingPiece(Position, Team, newBoard);
+            var k = new KingPiece(Position, Team, newBoard);
             k.HasMoved = HasMoved;
             return k;
         }

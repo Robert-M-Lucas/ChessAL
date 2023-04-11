@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine;
 using Game;
 
 namespace Gamemodes.NormalChess
@@ -76,7 +73,7 @@ namespace Gamemodes.NormalChess
 
         public override SerialisationData GetData()
         {
-            SerialisationData data = base.GetData();
+            var data = base.GetData();
             data.BoardData = BitConverter.GetBytes(MoveCounter); // Save custom data
             return data;
         }
@@ -95,9 +92,9 @@ namespace Gamemodes.NormalChess
         public override List<Move> GetMoves(LiveGameData gameData)
         {
             IEnumerable<Move> moves = new List<Move>();
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            for (var x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                for (var y = 0; y < PieceBoard.GetLength(1); y++)
                 {
                     if (PieceBoard[x, y] is not null && PieceBoard[x, y].Team == VirtualTeam) moves = moves.Concat(PieceBoard[x, y].GetMoves());
                 }
@@ -108,15 +105,15 @@ namespace Gamemodes.NormalChess
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
-            Board new_board = new Board(newGameManager, false);
+            var new_board = new Board(newGameManager, false);
             
             new_board.MoveCounter = MoveCounter;
             new_board.VirtualTeam = VirtualTeam;
             new_board.PieceBoard = new AbstractPiece[PieceBoard.GetLength(0), PieceBoard.GetLength(1)];
 
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            for (var x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < PieceBoard.GetLength(1); y++)
+                for (var y = 0; y < PieceBoard.GetLength(1); y++)
                 {
                     if (PieceBoard[x, y] is not null)
                     {

@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
 namespace MainMenu
 {
@@ -15,42 +14,42 @@ namespace MainMenu
         public ChessManager ChessManager;
         public MenuUIManager MenuUIManager;
 
-        [SerializeField] private TMP_Text PlayerIDText;
-        [SerializeField] private TMP_Text PlayerNameText;
-        [SerializeField] private TMP_Text TeamText;
-        [SerializeField] private TMP_Text PlayerOnTeamText;
+        [FormerlySerializedAs("PlayerIDText")] [SerializeField] private TMP_Text playerIDText;
+        [FormerlySerializedAs("PlayerNameText")] [SerializeField] private TMP_Text playerNameText;
+        [FormerlySerializedAs("TeamText")] [SerializeField] private TMP_Text teamText;
+        [FormerlySerializedAs("PlayerOnTeamText")] [SerializeField] private TMP_Text playerOnTeamText;
 
         /// <summary>
         /// Updates the text on player cards
         /// </summary>
         public void UpdateFields()
         {
-            PlayerIDText.text = PlayerID.ToString();
-            PlayerNameText.text = PlayerName;
+            playerIDText.text = PlayerID.ToString();
+            playerNameText.text = PlayerName;
 
             if (Team != -1)
             {
                 if (ChessManager.CurrentGameManager.TeamAliases().Length > 0)
                 {
-                    TeamText.text = ChessManager.CurrentGameManager.TeamAliases()[Team];
+                    teamText.text = ChessManager.CurrentGameManager.TeamAliases()[Team];
                 }
-                else TeamText.text = $"Team: {(Team + 1)}";
+                else teamText.text = $"Team: {(Team + 1)}";
             }
             else
             {
                 if (ChessManager.IsHost() || ChessManager.LocalPlay)
-                    TeamText.text = "[Click to set team]";
+                    teamText.text = "[Click to set team]";
                 else
-                    TeamText.text = "[Unset]";
+                    teamText.text = "[Unset]";
             }
 
-            if (PlayerOnTeam != -1) PlayerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
+            if (PlayerOnTeam != -1) playerOnTeamText.text = $"Player: {(PlayerOnTeam + 1)}";
             else
             {
                 if (ChessManager.IsHost() || ChessManager.LocalPlay)
-                    PlayerOnTeamText.text = "[Unset]";
+                    playerOnTeamText.text = "[Unset]";
                 else
-                    PlayerOnTeamText.text = "[Unset]";
+                    playerOnTeamText.text = "[Unset]";
             }
         }
 
@@ -58,7 +57,7 @@ namespace MainMenu
         {
             if (!ChessManager.IsHost() && !ChessManager.LocalPlay) return; // Player is not host
 
-            TeamSize[] team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
+            var team_sizes = ChessManager.CurrentGameManager.GetTeamSizes();
 
             Team = ChessManager.FindNextNonFullTeam(Team, team_sizes);
 
@@ -74,7 +73,7 @@ namespace MainMenu
             if (!ChessManager.IsHost() && !ChessManager.LocalPlay) return; // Player is not host
             if (Team == -1) return; // Player is spectator
 
-            TeamSize team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
+            var team_size = ChessManager.CurrentGameManager.GetTeamSizes()[Team];
 
             PlayerOnTeam++;
             if (PlayerOnTeam >= team_size.Max) PlayerOnTeam = 0;
