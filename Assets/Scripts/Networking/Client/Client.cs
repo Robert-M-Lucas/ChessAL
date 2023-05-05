@@ -40,7 +40,9 @@ namespace Networking.Client
 
         #endregion
 
-        private ConcurrentQueue<byte[]> ContentQueue = new ConcurrentQueue<byte[]>();
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
+        private ConcurrentQueue<byte[]> contentQueue = new ConcurrentQueue<byte[]>();
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private ConcurrentQueue<byte[]> sendQueue = new ConcurrentQueue<byte[]>();
 
         #region Cooldowns
@@ -58,11 +60,13 @@ namespace Networking.Client
         /// <summary>
         /// Time between trying to add a client again
         /// </summary>
+        // ReSharper disable once UnusedMember.Local
         private const int CLIENT_ADD_COOLDOWN = 5;
 
         /// <summary>
         /// Time between trying to remove a client again
         /// </summary>
+        // ReSharper disable once UnusedMember.Local
         private const int CLIENT_REMOVE_COOLDOWN = 5;
 
         #endregion Cooldowns
@@ -73,34 +77,35 @@ namespace Networking.Client
         private InternalClientPacketHandler internalPacketHandler;
 
         #region Ping
-        public Action<int>? pingResponseAction = null;
+        public Action<int>? PingResponseAction = null;
         public Stopwatch PingTimer = new Stopwatch();
         #endregion
 
-        public NetworkManager networkManager { private set; get; }
+        public NetworkManager NetworkManager { get; }
 
         private Action<string?> onConnection;
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
-        /// <param name="IP">IP String</param>
+        /// <param name="ip">IP String</param>
         /// <param name="password">Server password (can be left empty)</param>
         /// <param name="playerName">Client name</param>
-        /// <param name="connectionStatusCallback">Action called when connection succeeds or fails.
-        /// String will be null when successful or give a reason for failure.</param>
-        public Client(string IP, string password, string playerName, NetworkManager networkManager, Action<string?> onConnection)
+        /// <param name="networkManager"></param>
+        /// <param name="onConnection"></param>
+        public Client(string ip, string password, string playerName, NetworkManager networkManager,
+            Action<string?> onConnection)
         {
             // Remove invisible character
-            IP = Util.RemoveInvisibleChars(IP);
+            ip = Util.RemoveInvisibleChars(ip);
             password = Util.RemoveInvisibleChars(password);
             playerName = Util.RemoveInvisibleChars(playerName);
 
-            this.IP = IP;
+            this.IP = ip;
             Password = password;
             PlayerName = playerName;
 
-            this.networkManager = networkManager;
+            this.NetworkManager = networkManager;
 
             internalPacketHandler = new InternalClientPacketHandler(this);
             this.onConnection = onConnection;
@@ -123,14 +128,14 @@ namespace Networking.Client
         {
             try
             {
-                IPAddress HostIpA;
-                try { HostIpA = IPAddress.Parse(IP); } 
+                IPAddress host_ip_a;
+                try { host_ip_a = IPAddress.Parse(IP); } 
                 catch (FormatException) { onConnection("IP formatted incorrectly - (should be 4 '.' separated numbers from 0-255 e.g. 82.423.423.12)"); return; }
 
-                IPEndPoint RemoteEP = new IPEndPoint(HostIpA, NetworkSettings.PORT);
-                handler = new Socket(HostIpA.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // Create socket
+                var remote_ep = new IPEndPoint(host_ip_a, NetworkSettings.PORT);
+                handler = new Socket(host_ip_a.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // Create socket
 
-                try { handler.Connect(RemoteEP); }
+                try { handler.Connect(remote_ep); }
                 catch (SocketException se) {
                     Debug.LogError(se);
                     onConnection("Server refused connection - (They may not be hosting, have not setup port forwarding, or you may have the wrong IP.\nOpen Help and navigate to Starting a Game -> Hosting for more information)");  
@@ -139,7 +144,7 @@ namespace Networking.Client
 
                 handler.Send(ClientConnectRequestPacket.Build(PlayerName, NetworkSettings.VERSION, Password)); // Send connection request
 
-                handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null); // Start recieving data
+                handler.BeginReceive(serverBuffer, 0, 1024, 0, ReadCallback, null); // Start recieving data
 
                 // Successful connection
                 onConnection(null);
@@ -169,15 +174,14 @@ namespace Networking.Client
         /// <param name="pingCallback">Called when ping is calculated</param>
         public void GetPing(Action<int> pingCallback)
         {
-            if (pingResponseAction is not null) return; // Already fetching ping
-            pingResponseAction = pingCallback;
+            if (PingResponseAction is not null) return; // Already fetching ping
+            PingResponseAction = pingCallback;
             SendMessage(ClientPingPacket.Build());
         }
 
         /// <summary>
         /// Updates the server of a local move that has been made
         /// </summary>
-        /// <param name="moveData"></param>
         public void OnLocalMove(int nextPlayer, V2 from, V2 to)
         {
             SendMessage(MoveUpdatePacket.Build(nextPlayer, from.X, from.Y, to.X, to.Y));
@@ -193,7 +197,7 @@ namespace Networking.Client
         /// <returns></returns>
         public bool AddOrUpdatePlayer(int playerID, string name, int team = -1, int playerInTeam = -1)
         {
-            ClientPlayerData player_data = new ClientPlayerData(playerID, name, team, playerInTeam);
+            var player_data = new ClientPlayerData(playerID, name, team, playerInTeam);
             bool player_added;
 
             // Add if not exists
@@ -201,7 +205,7 @@ namespace Networking.Client
             else
             {
                 ClientPlayerData current_data;
-                bool success = PlayerData.TryGetValue(playerID, out current_data);
+                var success = PlayerData.TryGetValue(playerID, out current_data);
                 if (!success) return false;
 
                 player_added = PlayerData.TryUpdate(playerID, player_data, current_data);
@@ -210,7 +214,7 @@ namespace Networking.Client
             if (!player_added) return false;
 
             // Inform of player change
-            networkManager.OnPlayersChange();
+            NetworkManager.OnPlayersChange();
 
             return true;
         }
@@ -219,16 +223,17 @@ namespace Networking.Client
         /// Adds a client to the player list
         /// </summary>
         /// <param name="player">Player ID</param>
+        /// <param name="reason"></param>
         public bool TryRemovePlayer(int player, string? reason = null)
         {
             if (PlayerData.ContainsKey(player))
             {
-                bool removed = PlayerData.TryRemove(player, out _);
+                var removed = PlayerData.TryRemove(player, out _);
 
                 if (!removed) return false;
 
                 // Inform of player change
-                networkManager.OnPlayersChange();
+                NetworkManager.OnPlayersChange();
 
                 return true;
             }
@@ -243,19 +248,19 @@ namespace Networking.Client
         {
             if (handler is null) throw new NullReferenceException();
 
-            int bytesRead = handler.EndReceive(ar);
+            var bytes_read = handler.EndReceive(ar);
 
-            if (bytesRead > 0)
+            if (bytes_read > 0)
             {
                 // Add new bytes to existing bytes
                 ArrayExtensions.Merge(serverLongBuffer, serverBuffer, serverLongBufferSize);
-                serverLongBufferSize += bytesRead;
+                serverLongBufferSize += bytes_read;
 
             ReprocessBuffer:
 
                 // Get packet len
                 if (serverCurrentPacketLength == -1
-                    && serverLongBufferSize >= PacketBuilder.PacketLenLen)
+                    && serverLongBufferSize >= PacketBuilder.PACKET_LEN_LEN)
                 {
                     serverCurrentPacketLength = PacketBuilder.GetPacketLength(serverLongBuffer);
                 }
@@ -264,9 +269,9 @@ namespace Networking.Client
                 if (serverCurrentPacketLength != -1
                     && serverLongBufferSize >= serverCurrentPacketLength)
                 {
-                    ContentQueue.Enqueue(ArrayExtensions.Slice(serverLongBuffer, 0, serverCurrentPacketLength)); // Handle message
+                    contentQueue.Enqueue(ArrayExtensions.Slice(serverLongBuffer, 0, serverCurrentPacketLength)); // Handle message
 
-                    byte[] new_buffer = new byte[1024];
+                    var new_buffer = new byte[1024];
 
                     // Cut out handled message
                     ArrayExtensions.Merge(new_buffer,
@@ -285,7 +290,7 @@ namespace Networking.Client
                 }
             }
 
-            handler.BeginReceive(serverBuffer, 0, 1024, 0, new AsyncCallback(ReadCallback), null); // Listen again
+            handler.BeginReceive(serverBuffer, 0, 1024, 0, ReadCallback, null); // Listen again
         }
 
         /// <summary>
@@ -298,7 +303,7 @@ namespace Networking.Client
                 while (true)
                 {
                     // Nothing recieved
-                    if (ContentQueue.IsEmpty)
+                    if (contentQueue.IsEmpty)
                     {
                         Thread.Sleep(RECEIVE_COOLDOWN);
                         continue;
@@ -306,15 +311,15 @@ namespace Networking.Client
 
                     byte[] content;
                     // Dequeue failed
-                    if (!ContentQueue.TryDequeue(out content))
+                    if (!contentQueue.TryDequeue(out content))
                     {
                         continue;
                     }
 
                     try
                     {
-                        Packet packet = PacketBuilder.Decode(content);
-                        bool handled = internalPacketHandler.TryHandlePacket(packet);
+                        var packet = PacketBuilder.Decode(content);
+                        var handled = internalPacketHandler.TryHandlePacket(packet);
 
                         if (!handled)
                         {
@@ -360,7 +365,7 @@ namespace Networking.Client
                     Thread.Sleep(SEND_COOLDOWN);
                 }
             }
-            catch (ThreadAbortException) { return; }
+            catch (ThreadAbortException) { }
             catch (Exception e)
             {
                 Debug.LogError(e);
@@ -403,7 +408,7 @@ namespace Networking.Client
         /// <param name="reason"></param>
         public void Disconnect(string reason)
         {
-            networkManager.OnClientKick(reason);
+            NetworkManager.OnClientKick(reason);
             Shutdown();
         }
 

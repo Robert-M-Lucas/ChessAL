@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
@@ -21,15 +19,12 @@ namespace Gamemodes.NormalChess
         
         public override List<Move> GetMoves()
         {
-            List<Move> moves = new List<Move>();
+            var moves = new List<Move>();
 
-            V2[] directions = new V2[] { new V2(1, 0), new V2(-1, 0), new V2(0, -1), new V2(0, 1) };
-            foreach (V2 direction in directions)
-            {
-                moves = moves.Concat(GUtil.RaycastMoves(this, direction, Board)).ToList();
-            }
-           
-            return moves;
+            var directions = new V2[] { new V2(1, 0), new V2(-1, 0), new V2(0, -1), new V2(0, 1) };
+
+            return directions.Aggregate(moves, (current, direction) 
+                => current.Concat(GUtil.RaycastMoves(this, direction, Board)).ToList());
         }
 
         
@@ -41,14 +36,14 @@ namespace Gamemodes.NormalChess
 
         public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            RookPiece r = new RookPiece(Position, Team, newBoard);
+            var r = new RookPiece(Position, Team, newBoard);
             r.HasMoved = HasMoved;
             return r;
         }
 
         public override PieceSerialisationData GetData()
         {
-            PieceSerialisationData data = new PieceSerialisationData();
+            var data = new PieceSerialisationData();
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();

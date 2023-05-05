@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Game
 {
@@ -29,6 +28,7 @@ namespace Game
         /// Updates the list of moves the player can make
         /// </summary>
         /// <param name="possibleMoves"></param>
+        // ReSharper disable once ParameterHidesMember
         public void SetPossibleMoves(List<Move> possibleMoves)
         {
             this.possibleMoves = possibleMoves;
@@ -44,16 +44,15 @@ namespace Game
 
             if (showingMoves)
             {
-                foreach (Move m in possibleMoves)
+                foreach (var m in possibleMoves)
                 {
-                    if ((V2)selectedPiece == m.From && position == m.To)
-                    {
-                        // Make move
-                        chessManager.DoLocalMove(m.From, m.To);
-                        visualManager.ToggleShowMoves(m.From);
-                        visualManager.SelectSquare(m.From);
-                        return;
-                    }
+                    Debug.Assert(selectedPiece != null, nameof(selectedPiece) + " != null");
+                    if ((V2) selectedPiece != m.From || position != m.To) continue;
+                    // Make move
+                    chessManager.DoLocalMove(m.From, m.To);
+                    visualManager.ToggleShowMoves(m.From);
+                    visualManager.SelectSquare(m.From);
+                    return;
                 }
             }
 

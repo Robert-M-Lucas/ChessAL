@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Game;
 
 namespace Gamemodes.ConnectFour
@@ -38,20 +37,21 @@ Requires 2 teams";
 
         private int CheckForWin(LiveGameData gameData)
         {
-            bool full = true;
-            for (int x = 0; x < 7; x++)
+            var full = true;
+            for (var x = 0; x < 7; x++)
             {
-                if (Board.GetPiece(new V2(x, 8)) is null) { full = false; break; }
+                if (Board.GetPiece(new V2(x, 8)) is not null) continue;
+                full = false; break;
             }
             if (full) return GUtil.TurnEncodeTeam(GUtil.SwitchTeam(gameData));
 
             // Horizontal
-            for (int y = 0; y < 9; y++)
+            for (var y = 0; y < 9; y++)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int x = 0; x < 7; x++)
+                for (var x = 0; x < 7; x++)
                 {
                     if (Board.PieceBoard[x, y] is null)
                     {
@@ -73,12 +73,12 @@ Requires 2 teams";
             }
 
             // Vertical
-            for (int x = 0; x < 7; x++)
+            for (var x = 0; x < 7; x++)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int y = 0;y < 9; y++)
+                for (var y = 0;y < 9; y++)
                 {
                     if (Board.PieceBoard[x, y] is null)
                     {
@@ -100,12 +100,12 @@ Requires 2 teams";
             }
 
             // Diagonal / pt.1
-            for (int y = 0; y < 9; y++)
+            for (var y = 0; y < 9; y++)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int x = 0; x < 7 && x < (9 - y); x++)
+                for (var x = 0; x < 7 && x < (9 - y); x++)
                 {
                     if (Board.PieceBoard[x, y + x] is null)
                     {
@@ -127,12 +127,12 @@ Requires 2 teams";
             }
 
             // Diagonal / pt.2
-            for (int x = 1; x < 7; x++)
+            for (var x = 1; x < 7; x++)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int y = 0; y < 9 && y < (7 - x); y++)
+                for (var y = 0; y < 9 && y < (7 - x); y++)
                 {
                     if (Board.PieceBoard[x + y, y] is null)
                     {
@@ -154,12 +154,12 @@ Requires 2 teams";
             }
 
             // Diagonal \ pt.1
-            for (int y = 0; y < 9; y++)
+            for (var y = 0; y < 9; y++)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int x = 6; x >= 0 && y + (6 - x) < 9; x--)
+                for (var x = 6; x >= 0 && y + (6 - x) < 9; x--)
                 {
                     if (Board.PieceBoard[x, y + (6 - x)] is null)
                     {
@@ -181,12 +181,12 @@ Requires 2 teams";
             }
 
             // Diagonal \ pt.2
-            for (int x = 6; x >= 0; x--)
+            for (var x = 6; x >= 0; x--)
             {
-                int team = -1;
-                int count = 0;
+                var team = -1;
+                var count = 0;
 
-                for (int y = 0; y < 9 && x - y >= 0; y++)
+                for (var y = 0; y < 9 && x - y >= 0; y++)
                 {
                     if (Board.PieceBoard[x - y, y] is null)
                     {
@@ -214,15 +214,15 @@ Requires 2 teams";
         {
             Board.OnMove(move);
 
-            int winner = CheckForWin(gameData);
+            var winner = CheckForWin(gameData);
             if (winner >= 0) return GUtil.SwitchPlayerTeam(gameData);
             else return winner;
         }
 
         public override AbstractGameManager Clone()
         {
-            GameManager new_game_manager = new GameManager(GameManagerData);
-            new_game_manager.Board = (Board as Board).Clone(new_game_manager);
+            var new_game_manager = new GameManager(GameManagerData);
+            new_game_manager.Board = ((Board) Board).Clone(new_game_manager);
 
             return new_game_manager;
         }

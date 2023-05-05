@@ -45,7 +45,7 @@ namespace Gamemodes
 
         public AbstractGameManager(AbstractGameManagerData gameManagerData)
         {
-            this.GameManagerData = gameManagerData;
+            GameManagerData = gameManagerData;
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace Gamemodes
         /// <returns></returns>
         public virtual SerialisationData GetData()
         {
-            SerialisationData serialisationData = Board.GetData();
-            serialisationData.GamemodeUID = GameManagerData.GetUID();
-            return serialisationData;
+            var serialisation_data = Board.GetData();
+            serialisation_data.GamemodeUID = GameManagerData.GetUID();
+            return serialisation_data;
         }
 
         /// <summary>
@@ -83,14 +83,14 @@ namespace Gamemodes
         /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
         public virtual int OnNoMoves(LiveGameData gameData)
         {
-            return GUtil.TurnEncodeTeam(GUtil.SwitchTeam(gameData)); ;
+            return GUtil.TurnEncodeTeam(GUtil.SwitchTeam(gameData));
         }
 
         /// <summary>
         /// Handles an incoming move (local or foreign)
         /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
+        /// <param name="move"></param>
+        /// <param name="gameData"></param>
         /// <returns>Next player's turn / Winning team (negative TeamID - 1)</returns>
         public virtual int OnMove(Move move, LiveGameData gameData)
         {

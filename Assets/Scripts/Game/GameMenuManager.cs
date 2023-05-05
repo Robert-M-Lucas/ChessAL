@@ -1,15 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.UI
 {
     public class GameMenuManager : MonoBehaviour
     {
-        [SerializeField] private GameObject EscapeMenu;
-        [SerializeField] private TMP_InputField FileNameInput;
-        [SerializeField] private TMP_Text SaveStatusText;
+        [FormerlySerializedAs("EscapeMenu")] [SerializeField] private GameObject escapeMenu;
+        [FormerlySerializedAs("FileNameInput")] [SerializeField] private TMP_InputField fileNameInput;
+        [FormerlySerializedAs("SaveStatusText")] [SerializeField] private TMP_Text saveStatusText;
 
         public bool ShowingEscapeMenu = false;
         private ChessManager chessManager;
@@ -22,7 +21,7 @@ namespace Game.UI
         public void Resume()
         {
             ShowingEscapeMenu = false;
-            EscapeMenu.SetActive(false);
+            escapeMenu.SetActive(false);
         }
 
         public void ExitToMenu()
@@ -32,25 +31,25 @@ namespace Game.UI
 
         public void Save()
         {
-            string fileName = FileNameInput.text;
+            var file_name = fileNameInput.text;
 
             // Check file name
-            string status = Validators.ValidateFileName(fileName);
+            var status = Validators.ValidateFileName(file_name);
             if (status is not null)
             {
-                SaveStatusText.text = status;
+                saveStatusText.text = status;
                 return;
             }
 
             // fileName += " - " + chessManager.GameManager.GameManagerData.GetName();
 
-            status = chessManager.Save(fileName);
+            status = chessManager.Save(file_name);
             if (status is not null)
             {
-                SaveStatusText.text = status;
+                saveStatusText.text = status;
                 return;
             }
-            SaveStatusText.text = "Save successful";
+            saveStatusText.text = "Save successful";
         }
 
         public void OpenSaveLocation() => SaveSystem.OpenSavesFolder();
@@ -64,7 +63,7 @@ namespace Game.UI
             if (I.GetKeyDown(K.EscapeKey))
             {
                 ShowingEscapeMenu = !ShowingEscapeMenu;
-                EscapeMenu.SetActive(ShowingEscapeMenu);
+                escapeMenu.SetActive(ShowingEscapeMenu);
             }
         }
     }

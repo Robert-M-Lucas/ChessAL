@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Gamemodes;
 
 #nullable enable
@@ -28,13 +25,13 @@ public class HostSettings
 /// </summary>
 public class JoinSettings
 {
-    public string IP;
-    public string Password;
-    public string PlayerName;
+    public readonly string IP;
+    public readonly string Password;
+    public readonly string PlayerName;
 
-    public JoinSettings(string IP, string password, string playerName)
+    public JoinSettings(string ip, string password, string playerName)
     {
-        this.IP = IP;
+        IP = ip;
         Password = password;
         PlayerName = playerName;
     }

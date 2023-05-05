@@ -52,7 +52,7 @@ for j in all_packets:
     filename = f"{uid}_{packet_name}Packet.cs"
 
     # Add common start of file
-    data = f"""using System;
+    data = f"""// ReSharper disable All\nusing System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;

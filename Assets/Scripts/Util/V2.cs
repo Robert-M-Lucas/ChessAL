@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,10 +10,10 @@ public struct V2: IEquatable<V2>
     public int X;
     public int Y;
 
-    public static V2 UP { get { return new V2(0, 1); } }
-    public static V2 DOWN { get { return new V2(0, -1); } }
-    public static V2 LEFT { get { return new V2(-1, 0); } }
-    public static V2 RIGHT { get { return new V2(1, 0); } }
+    public static V2 Up { get { return new V2(0, 1); } }
+    public static V2 Down { get { return new V2(0, -1); } }
+    public static V2 Left { get { return new V2(-1, 0); } }
+    public static V2 Right { get { return new V2(1, 0); } }
 
     public V2(int x, int y)
     {
@@ -35,7 +33,7 @@ public struct V2: IEquatable<V2>
     {
         if (nb is null) return false;
 
-        V2 b = (V2)nb;
+        var b = (V2)nb;
 
         if (this.X == b.X && this.Y == b.Y)
             return true;
@@ -80,8 +78,8 @@ public struct V2: IEquatable<V2>
 
     public override int GetHashCode()
     {
-        int hCode = X ^ Y; // Make hash code combination of X and Y
-        return hCode.GetHashCode();
+        var h_code = X ^ Y; // Make hash code combination of X and Y
+        return h_code.GetHashCode();
     }
 
     public override string ToString()

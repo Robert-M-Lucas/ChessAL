@@ -1,7 +1,4 @@
-using Gamemodes;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Game;
 
 namespace Gamemodes
@@ -19,13 +16,11 @@ namespace Gamemodes
         /// <returns></returns>
         public static List<Move> RemoveBlocked(List<Move> moves, AbstractBoard board)
         {
-            for (int i = 0; i < moves.Count; i++)
+            for (var i = 0; i < moves.Count; i++)
             {
-                if (!IsOnBoard(moves[i].To, board))
-                {
-                    moves.RemoveAt(i);
-                    i--;
-                }
+                if (IsOnBoard(moves[i].To, board)) continue;
+                moves.RemoveAt(i);
+                i--;
             }
 
             return moves;
@@ -39,10 +34,10 @@ namespace Gamemodes
         /// <returns></returns>
         public static bool IsOnBoard(V2 position, AbstractBoard board)
         {
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+            var board_render_info = board.GetBoardRenderInfo();
 
-            return !(boardRenderInfo.RemovedSquares.Contains(position) || position.X < 0 || position.Y < 0
-                    || position.X >= boardRenderInfo.BoardSize || position.Y >= boardRenderInfo.BoardSize);
+            return !(board_render_info.RemovedSquares.Contains(position) || position.X < 0 || position.Y < 0
+                    || position.X >= board_render_info.BoardSize || position.Y >= board_render_info.BoardSize);
         }
 
         /// <summary>
@@ -55,13 +50,13 @@ namespace Gamemodes
         {
             // BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
 
-            for (int i = 0; i < moves.Count; i++)
+            for (var i = 0; i < moves.Count; i++)
             {
-                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is not null && board.PieceBoard[moves[i].To.X, moves[i].To.Y].Team == board.PieceBoard[moves[i].From.X, moves[i].From.Y].Team)
-                {
-                    moves.RemoveAt(i);
-                    i--;
-                }
+                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is null ||
+                    board.PieceBoard[moves[i].To.X, moves[i].To.Y].Team !=
+                    board.PieceBoard[moves[i].From.X, moves[i].From.Y].Team) continue;
+                moves.RemoveAt(i);
+                i--;
             }
 
             return moves;
@@ -75,15 +70,15 @@ namespace Gamemodes
         /// <returns></returns>
         public static List<Move> RemoveNonEnemy(List<Move> moves, AbstractBoard board)
         {
-            BoardRenderInfo boardRenderInfo = board.GetBoardRenderInfo();
+            // var boardRenderInfo = board.GetBoardRenderInfo();
 
-            for (int i = 0; i < moves.Count; i++)
+            for (var i = 0; i < moves.Count; i++)
             {
-                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is null || board.PieceBoard[moves[i].To.X, moves[i].To.Y].Team == board.PieceBoard[moves[i].From.X, moves[i].From.Y].Team)
-                {
-                    moves.RemoveAt(i);
-                    i--;
-                }
+                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is not null &&
+                    board.PieceBoard[moves[i].To.X, moves[i].To.Y].Team !=
+                    board.PieceBoard[moves[i].From.X, moves[i].From.Y].Team) continue;
+                moves.RemoveAt(i);
+                i--;
             }
 
             return moves;
@@ -97,13 +92,11 @@ namespace Gamemodes
         /// <returns></returns>
         public static List<Move> RemoveNonEmpty(List<Move> moves, AbstractBoard board)
         {
-            for (int i = 0; i < moves.Count; i++)
+            for (var i = 0; i < moves.Count; i++)
             {
-                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is not null)
-                {
-                    moves.RemoveAt(i);
-                    i--;
-                }
+                if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is null) continue;
+                moves.RemoveAt(i);
+                i--;
             }
 
             return moves;
@@ -117,7 +110,7 @@ namespace Gamemodes
         /// <returns></returns>
         public static List<Move> RemoveEmpty(List<Move> moves, AbstractBoard board)
         {
-            for (int i = 0; i < moves.Count; i++)
+            for (var i = 0; i < moves.Count; i++)
             {
                 if (board.PieceBoard[moves[i].To.X, moves[i].To.Y] is null)
                 {
@@ -140,10 +133,10 @@ namespace Gamemodes
         /// <returns></returns>
         public static List<Move> RaycastMoves(AbstractPiece piece, V2 direction, AbstractBoard board, int maxMoves = -1)
         {
-            List<Move> moves = new List<Move>();
+            var moves = new List<Move>();
 
-            V2 current_pos = piece.Position + direction;
-            int move = 0;
+            var current_pos = piece.Position + direction;
+            var move = 0;
             while (true)
             {
                 if (move == maxMoves) break;
@@ -171,11 +164,11 @@ namespace Gamemodes
         /// <returns></returns>
         public static int SwitchPlayerTeam(LiveGameData gameData)
         {
-            int team = gameData.CurrentTeam;
+            var team = gameData.CurrentTeam;
             
-            if (team == 0) team = 1;
-            else team = 0;
-
+            team = team == 0 ? 1 : 0;
+            
+            // !TODO
             return (int)gameData.GetPlayerByTeam(team, 0);
         }
 
@@ -186,10 +179,9 @@ namespace Gamemodes
         /// <returns></returns>
         public static int SwitchTeam(LiveGameData gameData)
         {
-            int team = gameData.CurrentTeam;
+            var team = gameData.CurrentTeam;
 
-            if (team == 0) team = 1;
-            else team = 0;
+            team = team == 0 ? 1 : 0;
 
             return team;
         }

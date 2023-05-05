@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -14,6 +12,7 @@ namespace MainMenu
 
         private int ping = -1;
 
+        // ReSharper disable once ParameterHidesMember
         public void PingUpdate(int ping)
         {
             this.ping = ping;

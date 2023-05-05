@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 namespace EditorAddons
 {
@@ -20,10 +18,10 @@ namespace EditorAddons
         }
 
         [MenuItem("Edit/Play-Unplay, But From Prelaunch Scene %q")]
-        public static void PlayFromPrelaunchScene()
+        public static void PlayFromPreLaunchScene()
         {
             // Stop if playing
-            if (EditorApplication.isPlaying == true)
+            if (EditorApplication.isPlaying)
             {
                 EditorApplication.isPlaying = false;
                 return;
@@ -33,7 +31,7 @@ namespace EditorAddons
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
             // Get current scene
-            string current_scene = EditorSceneManager.GetActiveScene().path;
+            string current_scene = SceneManager.GetActiveScene().path;
 
             // Save current scene path
             File.WriteAllText("Assets/Editor/active_scene.txt", current_scene);
@@ -46,22 +44,20 @@ namespace EditorAddons
             EditorApplication.isPlaying = true;
         }
 
-        static void ModeChanged(PlayModeStateChange stateChange)
+        private static void ModeChanged(PlayModeStateChange stateChange)
         {
-            if (stateChange == PlayModeStateChange.EnteredEditMode) // Exited play mode
-            {
-                // Save scene
-                EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+            if (stateChange != PlayModeStateChange.EnteredEditMode) return; // Exited play mode
+            // Save scene
+            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
-                // Get saved scene path
-                string current_scene = File.ReadAllText("Assets/Editor/active_scene.txt");
+            // Get saved scene path
+            var current_scene = File.ReadAllText("Assets/Editor/active_scene.txt");
 
-                // Open saved scene path
-                if (current_scene != string.Empty && current_scene != EditorSceneManager.GetActiveScene().path) EditorSceneManager.OpenScene(current_scene);
+            // Open saved scene path
+            if (current_scene != string.Empty && current_scene != SceneManager.GetActiveScene().path) EditorSceneManager.OpenScene(current_scene);
 
-                // Clear saved scene
-                File.WriteAllText("Assets/Editor/active_scene.txt", string.Empty);
-            }
+            // Clear saved scene
+            File.WriteAllText("Assets/Editor/active_scene.txt", string.Empty);
         }
     }
 }

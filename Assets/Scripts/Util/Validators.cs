@@ -1,11 +1,7 @@
 using Networking.Server;
 using Networking.Client;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
-using UnityEngine;
-using UnityEngine.Playables;
 
 #nullable enable
 public static class Validators
@@ -17,7 +13,7 @@ public static class Validators
     /// <returns>Null if successful or a string error</returns>
     public static string? ValidatePlayerName(string name)
     {
-        const string allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
+        const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
 
         // if (Util.RemoveInvisibleChars(name) != name) return "Contains invisible characters"; // Invisible characters
 
@@ -25,9 +21,9 @@ public static class Validators
 
         if (name.Length < 4) return "Name must be longer than 3 characters"; // Too short
 
-        foreach (char c in name)
+        foreach (var c in name)
         {
-            if (!allowed_chars.Contains(c))
+            if (!allowedChars.Contains(c))
             {
                 if (c == ' ') return $"Character '{c}' (space) not allowed";
                 return $"Character '{c}' not allowed";
@@ -46,7 +42,7 @@ public static class Validators
     {
         if (password == string.Empty) return null;
 
-        const string allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_!@#$*&;:[]{}?.,<>~-=+|";
+        const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_!@#$*&;:[]{}?.,<>~-=+|";
 
         // if (Util.RemoveInvisibleChars(name) != name) return "Contains invisible characters"; // Invisible characters
 
@@ -54,9 +50,9 @@ public static class Validators
 
         if (password.Length < 4) return "Password must be longer than 3 characters"; // Too short
 
-        foreach (char c in password)
+        foreach (var c in password)
         {
-            if (!allowed_chars.Contains(c))
+            if (!allowedChars.Contains(c))
             {
                 if (c == ' ') return $"Character '{c}' (space) not allowed";
                 return $"Character '{c}' not allowed";
@@ -91,10 +87,10 @@ public static class Validators
     public static string? ValidateTeams(List<ServerPlayerData> playerData, ServerGameData gameData)
     {
 
-        int max_team = 0;
-        Dictionary<int, int> team_dict = new Dictionary<int, int>();
+        var max_team = 0;
+        var team_dict = new Dictionary<int, int>();
         Dictionary<int, List<int>> players_in_teams = new Dictionary<int, List<int>>();
-        foreach (ServerPlayerData player in playerData)
+        foreach (var player in playerData)
         {
             if (player.Team > max_team) max_team = player.Team;
 
@@ -113,7 +109,7 @@ public static class Validators
 
         if (max_team != gameData.TeamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
 
-        for (int i = 0; i < max_team; i++)
+        for (var i = 0; i < max_team; i++)
         {
             if (!team_dict.ContainsKey(i) && gameData.TeamSizes[i].Min > 0) return "Team missing"; // Team missing
 
@@ -130,11 +126,11 @@ public static class Validators
     /// <returns>Null if successful or a string error</returns>
     public static string? ValidateTeams(List<ClientPlayerData> playerData, HostSettings gameData)
     {
-        int max_team = 0;
+        var max_team = 0;
 
-        Dictionary<int, int> team_dict = new Dictionary<int, int>();
+        var team_dict = new Dictionary<int, int>();
         Dictionary<int, List<int>> players_in_teams = new Dictionary<int, List<int>>();
-        foreach (ClientPlayerData player in playerData)
+        foreach (var player in playerData)
         {
             if (player.Team > max_team) max_team = player.Team;
 
@@ -151,21 +147,21 @@ public static class Validators
             }
         }
 
-        TeamSize[] teamSizes = gameData.GameMode.GetTeamSizes();
+        var team_sizes = gameData.GameMode.GetTeamSizes();
 
         // if (max_team != teamSizes.Length - 1) return "Wrong number of teams"; // Wrong number of teams
 
-        for (int i = 0; i < max_team; i++)
+        for (var i = 0; i < max_team; i++)
         {
-            if (!team_dict.ContainsKey(i) && teamSizes[i].Min > 0) return "Team missing"; // Team missing
-            if (!team_dict.ContainsKey(i) && teamSizes[i].Min == 0) continue;
+            if (!team_dict.ContainsKey(i) && team_sizes[i].Min > 0) return "Team missing"; // Team missing
+            if (!team_dict.ContainsKey(i) && team_sizes[i].Min == 0) continue;
 
-            if (team_dict[i] < teamSizes[i].Min)
+            if (team_dict[i] < team_sizes[i].Min)
             {
-                if (teamSizes[i].Min == 0) return "Wrong number of teams";
+                if (team_sizes[i].Min == 0) return "Wrong number of teams";
                 return "Team too small"; // Team too small
             }
-            if (team_dict[i] > teamSizes[i].Max) return "Team too big"; // Team too big
+            if (team_dict[i] > team_sizes[i].Max) return "Team too big"; // Team too big
         }
 
         return null;

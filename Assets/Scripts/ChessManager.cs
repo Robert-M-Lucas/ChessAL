@@ -8,9 +8,9 @@ using Game;
 using MainMenu;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using Debug = UnityEngine.Debug;
 using System.Linq;
 using AI;
+using UnityEngine.Serialization;
 
 #nullable enable
 
@@ -24,10 +24,10 @@ public class ChessManager : MonoBehaviour
     // Managers
     private NetworkManager networkManager = default!;
 
-    public MenuUIManager menuUIManager = default!;
+    [SerializeField] private MenuUIManager menuUIManager = default!;
 
-    public InputManager InputManager = default!;
-    public VisualManager VisualManager = default!;
+    [FormerlySerializedAs("InputManager")] [SerializeField] private InputManager inputManager = default!;
+    [FormerlySerializedAs("VisualManager")] [SerializeField] private VisualManager visualManager = default!;
 
     // GameManager
     public List<AbstractGameManagerData> GameManagersData = new List<AbstractGameManagerData>();
@@ -43,17 +43,17 @@ public class ChessManager : MonoBehaviour
     private int prevPlayer = -1;
 
     // Keeps track of ellapsed game time
-    public long TimerOffset = 0;
+    [FormerlySerializedAs("timerOffset")] [SerializeField] public long TimerOffset = 0;
     public Stopwatch Timer = new Stopwatch();
 
     // Local play
-    public bool LocalPlay = false;
+    [FormerlySerializedAs("localPlay")] [SerializeField] public bool LocalPlay = false;
     private ConcurrentDictionary<int, ClientPlayerData> localPlayerList = new ConcurrentDictionary<int, ClientPlayerData>();
-    public List<int> LocalAIPlayers = new List<int>();
+    [FormerlySerializedAs("localAIPlayers")] [SerializeField] public List<int> LocalAIPlayers = new List<int>();
     private HostSettings localSettings = default!;
+    
+    // ReSharper disable once InconsistentNaming
     private int IDCounter = 0;
-
-    public bool WaitingForAI = false;
 
     /// <summary>
     /// A queue of actions to be excecuted on the main thread on the next frame
@@ -90,7 +90,7 @@ public class ChessManager : MonoBehaviour
          * on the main thread during the next frame 
          */
 
-        Queue<Action> temp_main_thread_actions = mainThreadActions;
+        var temp_main_thread_actions = mainThreadActions;
         mainThreadActions = new Queue<Action>();
 
         while (temp_main_thread_actions.Count > 0)
@@ -108,21 +108,21 @@ public class ChessManager : MonoBehaviour
     /// <param name="mode"></param>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.buildIndex == BuildIndex.MainMenu)
+        if (scene.buildIndex == BuildIndex.MAIN_MENU)
         {
             menuUIManager = FindObjectOfType<MenuUIManager>();
         }
         else // Game Scene
         {
-            InputManager = FindObjectOfType<InputManager>();
-            VisualManager = FindObjectOfType<VisualManager>();
-            VisualManager.ChessManager = this;
+            inputManager = FindObjectOfType<InputManager>();
+            visualManager = FindObjectOfType<VisualManager>();
+            visualManager.ChessManager = this;
 
             InGame = true;
 
             // Initial updates
             if (MyTurn) MOnTurn();
-            VisualManager.OnTurn(GetPlayerList()[CurrentPlayer].Team, GetPlayerList()[CurrentPlayer].PlayerInTeam, MyTurn, LocalAIPlayers.Contains(CurrentPlayer));
+            visualManager.OnTurn(GetPlayerList()[CurrentPlayer].Team, GetPlayerList()[CurrentPlayer].PlayerInTeam, MyTurn, LocalAIPlayers.Contains(CurrentPlayer));
         }
 
     }
@@ -136,7 +136,7 @@ public class ChessManager : MonoBehaviour
     public bool Host(HostSettings hostSettings)
     {
         CurrentGameManager = hostSettings.GameMode;
-        bool half_success = networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
+        var half_success = networkManager.Host(hostSettings, PlayerListUpdate, OnGameStart);
         return half_success;
     }
 
@@ -153,12 +153,12 @@ public class ChessManager : MonoBehaviour
     /// Handles incoming game data
     /// </summary>
     /// <param name="gameMode"></param>
-    /// <param name="saveData"></param>
-    public void GameDataRecived(int gameMode, byte[] saveData)
+    /// <param name="incomingSaveData"></param>
+    public void GameDataReceived(int gameMode, byte[] incomingSaveData)
     {
         // Set game manager and save data
         CurrentGameManager = GameManagersData.Find(o => o.GetUID() == gameMode);
-        this.saveData = saveData;
+        saveData = incomingSaveData;
 
         mainThreadActions.Enqueue(menuUIManager.OnGamemodeDataRecieve);
     }
@@ -169,15 +169,13 @@ public class ChessManager : MonoBehaviour
         {
             return networkManager.FindNextNonFullTeam(currentTeam, teamSizes);
         }
-        else
-        {
-            while (true)
-            {
-                currentTeam++;
-                if (currentTeam >= teamSizes.Length) return -1;
 
-                if (teamSizes[currentTeam].Max > localPlayerList.Where((o) => o.Value.Team == currentTeam).Count()) return currentTeam;
-            }
+        while (true)
+        {
+            currentTeam++;
+            if (currentTeam >= teamSizes.Length) return -1;
+
+            if (teamSizes[currentTeam].Max > localPlayerList.Count(o => o.Value.Team == currentTeam)) return currentTeam;
         }
     }
 
@@ -207,7 +205,7 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void HostStartGame()
     {
-        string? result = networkManager.HostStartGame();
+        var result = networkManager.HostStartGame();
         if (result is not null) HostStartGameFail(result); // Failed
     }
 
@@ -231,7 +229,7 @@ public class ChessManager : MonoBehaviour
     public void RestartNetworking()
     {
         StopNetworking();
-        GameObject new_network_manager = Instantiate(networkManager.gameObject);
+        var new_network_manager = Instantiate(networkManager.gameObject);
         DestroyImmediate(networkManager.gameObject);
         networkManager = new_network_manager.GetComponent<NetworkManager>();
     }
@@ -245,10 +243,11 @@ public class ChessManager : MonoBehaviour
     /// <summary>
     /// Starts a local game
     /// </summary>
-    public string? StartLocalGame(int AI_turn_time)
+    // ReSharper disable once InconsistentNaming
+    public string? StartLocalGame(int AITurnTime)
     {
         // Check team composition
-        string? team_validation_result = Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings);
+        var team_validation_result = Validators.ValidateTeams(localPlayerList.Values.ToList(), localSettings);
         if (team_validation_result is not null) return team_validation_result;
 
         // AIManager.MAX_SEARCH_TIME = AI_turn_time;
@@ -260,9 +259,8 @@ public class ChessManager : MonoBehaviour
 
     public void AddLocalPlayer() 
     {
-        TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
-        int max_players = 0;
-        foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
+        var team_sizes = CurrentGameManager.GetTeamSizes();
+        var max_players = team_sizes.Sum(teamSize => teamSize.Max);
         if (localPlayerList.Count >= max_players) return;
 
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "Local Player", -1, -1);
@@ -272,9 +270,8 @@ public class ChessManager : MonoBehaviour
 
     public void AddLocalAI() 
     {
-        TeamSize[] teamSizes = CurrentGameManager.GetTeamSizes();
-        int max_players = 0;
-        foreach (TeamSize team_size in teamSizes) { max_players += team_size.Max; }
+        var team_sizes = CurrentGameManager.GetTeamSizes();
+        var max_players = team_sizes.Sum(teamSize => teamSize.Max);
         if (localPlayerList.Count >= max_players) return;
 
         localPlayerList[IDCounter] = new ClientPlayerData(IDCounter, "AI Player", -1, -1);
@@ -285,16 +282,14 @@ public class ChessManager : MonoBehaviour
 
     public void RemoveLocalPlayer()
     {
-        List<ClientPlayerData> client_list = localPlayerList.Values.ToList();
+        var client_list = localPlayerList.Values.ToList();
 
-        for (int i = 0; i < client_list.Count(); i++)
+        for (var i = 0; i < client_list.Count(); i++)
         {
-            if (!LocalAIPlayers.Contains(client_list[i].PlayerID))
-            {
-                localPlayerList.Remove(client_list[i].PlayerID, out _);
-                menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
-                return;
-            }
+            if (LocalAIPlayers.Contains(client_list[i].PlayerID)) continue;
+            localPlayerList.Remove(client_list[i].PlayerID, out _);
+            menuUIManager.UpdateLobbyPlayerCardDisplay(localPlayerList);
+            return;
         }
     }
 
@@ -302,7 +297,7 @@ public class ChessManager : MonoBehaviour
     {
         List<ClientPlayerData> client_list = localPlayerList.Values.ToList();
 
-        for (int i = 0; i < client_list.Count(); i++)
+        for (var i = 0; i < client_list.Count(); i++)
         {
             if (LocalAIPlayers.Contains(client_list[i].PlayerID))
             {
@@ -366,7 +361,7 @@ public class ChessManager : MonoBehaviour
         SceneManager.LoadScene(1); // Load main scene
         if (saveData.Length > 0)
         {
-            SerialisationData data = SerialisationUtil.Deconstruct(saveData); // Load save data
+            var data = SerialisationUtil.Deconstruct(saveData); // Load save data
 
             if (!LocalPlay)
             {
@@ -375,25 +370,25 @@ public class ChessManager : MonoBehaviour
             }
             else MyTurn = true;
    
-            CurrentPlayer = (int)GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn);
-            TimerOffset = data.EllapsedTime; // Initialise timer to savegame's timer
+            CurrentPlayer = (int)GetPlayerByTeam(data.TeamTurn, data.PlayerOnTeamTurn)!;
+            TimerOffset = data.ElapsedTime; // Initialise timer to savegame's timer
 
             GameManager = CurrentGameManager.Instantiate(GetLiveGameData()); // Instantiate GameManager
             GameManager.LoadData(data);
         }
         else
         {
-            int team_start = 0;
-            int player_in_team_start = 0;
+            var team_start = 0;
+            var player_in_team_start = 0;
             if (!LocalPlay)
             {
-                ClientPlayerData local_player = GetPlayerList()[GetLocalPlayerID()];
+                var local_player = GetPlayerList()[GetLocalPlayerID()];
                 if (local_player.Team == team_start && local_player.PlayerInTeam == player_in_team_start) MyTurn = true;
                 else MyTurn = false;
             }
             else MyTurn = true;
 
-            CurrentPlayer = (int)GetPlayerByTeam(team_start, player_in_team_start);
+            CurrentPlayer = (int)GetPlayerByTeam(team_start, player_in_team_start)!;
             GameManager = CurrentGameManager.Instantiate(GetLiveGameData()); // Instantiate GameManager
         }
         Timer.Start();
@@ -433,9 +428,9 @@ public class ChessManager : MonoBehaviour
     }
     public int? GetPlayerByTeam(int team, int playerInTeam)
     {
-        var playerList = GetPlayerList();
+        var player_list = GetPlayerList();
 
-        foreach (ClientPlayerData player_data in playerList.Values)
+        foreach (var player_data in player_list.Values)
         {
             if (player_data.Team == team && player_data.PlayerInTeam == playerInTeam) return player_data.PlayerID;
         }
@@ -461,12 +456,14 @@ public class ChessManager : MonoBehaviour
 
     public LiveGameData GetLiveGameData()
     {
-        LiveGameData gameData = new LiveGameData(this);
-        gameData.LocalPlayerID = GetLocalPlayerID();
-        gameData.LocalPlayerTeam = GetLocalPlayerTeam();
-        gameData.CurrentPlayer = CurrentPlayer;
+        var game_data = new LiveGameData(this)
+        {
+            LocalPlayerID = GetLocalPlayerID(),
+            LocalPlayerTeam = GetLocalPlayerTeam(),
+            CurrentPlayer = CurrentPlayer
+        };
 
-        return gameData;
+        return game_data;
     }
     
     /// <summary>
@@ -478,13 +475,13 @@ public class ChessManager : MonoBehaviour
 
         MyTurn = true;
 
-        LiveGameData gameData = GetLiveGameData();
+        var game_data = GetLiveGameData();
 
-        var possible_moves = GameManager.GetMoves(gameData, fastMode: false);
+        var possible_moves = GameManager.GetMoves(game_data, fastMode: false);
         if (possible_moves.Count == 0)
         {
             // Runs on no moves event
-            MOnLocalMove(GameManager.OnNoMoves(gameData), new V2(0, 0), new V2(0, 0), false);
+            MOnLocalMove(GameManager.OnNoMoves(game_data), new V2(0, 0), new V2(0, 0), false);
             return;
         }
 
@@ -492,23 +489,19 @@ public class ChessManager : MonoBehaviour
         if (LocalAIPlayers.Contains(CurrentPlayer))
         {
             // Clear possible moves
-            VisualManager.SetPossibleMoves(new List<Move>());
-            InputManager.SetPossibleMoves(new List<Move>());
+            visualManager.SetPossibleMoves(new List<Move>());
+            inputManager.SetPossibleMoves(new List<Move>());
 
             // Start AI
-            AIManager.SearchMove(possible_moves, gameData, GameManager);
+            AIManager.SearchMove(possible_moves, game_data, GameManager);
 
             // Start checking AI progress
             mainThreadActions.Enqueue(() => MCheckAIDone());
-
-            WaitingForAI = true;
-            
-            return;
         }
         else
         {
-            VisualManager.SetPossibleMoves(possible_moves);
-            InputManager.SetPossibleMoves(possible_moves);
+            visualManager.SetPossibleMoves(possible_moves);
+            inputManager.SetPossibleMoves(possible_moves);
         }
 
     }
@@ -518,24 +511,23 @@ public class ChessManager : MonoBehaviour
     /// </summary>
     public void MCheckAIDone()
     {
-        Move? move = AIManager.GetMove();
+        var move = AIManager.GetMove();
         if (move is null)
         {
             // Update progress
-            VisualManager.ShowAIInfo(true, AIManager.Progress);
+            visualManager.ShowAIInfo(true, AIManager.Progress);
 
             // Check again
             mainThreadActions.Enqueue(() => MCheckAIDone());
         }
         else // Found move
         {
-            WaitingForAI = false;
 
             // Hide AI progress
-            VisualManager.ShowAIInfo(false, 0);
+            visualManager.ShowAIInfo(false, 0);
 
             // Apply move
-            int next_player = GameManager.OnMove((Move)move, GetLiveGameData());
+            var next_player = GameManager.OnMove((Move)move, GetLiveGameData());
             mainThreadActions.Enqueue(() => MOnLocalMove(next_player, ((Move)move).From, ((Move)move).To, true));
         }
     }
@@ -562,16 +554,16 @@ public class ChessManager : MonoBehaviour
         if (applyMove)
         {
             // Show and make move sound
-            VisualManager.OnMove(from, to);
-            VisualManager.UpdateAllPieces(new Move(from, to));
-            SoundMananger.GetInstance().PlayPieceMoveSound();
+            visualManager.OnMove(from, to);
+            visualManager.UpdateAllPieces(new Move(from, to));
+            SoundManager.GetInstance().PlayPieceMoveSound();
         }
 
         // If game is over
         if (nextPlayer < 0)
         {
             // Decode winning team and show win
-            VisualManager.OnTeamWin(Gamemodes.GUtil.TurnDecodeTeam(nextPlayer));
+            visualManager.OnTeamWin(Gamemodes.GUtil.TurnDecodeTeam(nextPlayer));
             return;
         }
 
@@ -579,13 +571,13 @@ public class ChessManager : MonoBehaviour
 
         if (nextPlayer == GetLocalPlayerID() || LocalPlay) // My Turn next
         {
-            VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, true, LocalAIPlayers.Contains(CurrentPlayer));
+            visualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, true, LocalAIPlayers.Contains(CurrentPlayer));
 
             MOnTurn();
         }
         else
         {
-            VisualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, false, LocalAIPlayers.Contains(CurrentPlayer));
+            visualManager.OnTurn(GetPlayerList()[nextPlayer].Team, GetPlayerList()[nextPlayer].PlayerInTeam, false, LocalAIPlayers.Contains(CurrentPlayer));
             prevPlayer = nextPlayer;
         }
     }
@@ -597,7 +589,7 @@ public class ChessManager : MonoBehaviour
     /// <param name="to"></param>
     public void DoLocalMove(V2 from, V2 to)
     {
-        int next_player = GameManager.OnMove(new Move(from, to), GetLiveGameData());
+        var next_player = GameManager.OnMove(new Move(from, to), GetLiveGameData());
         MOnLocalMove(next_player, from, to, true);
     }
 
@@ -631,11 +623,11 @@ public class ChessManager : MonoBehaviour
     /// <returns>Null if successful or a string error</returns>
     public string? Save(string fileName)
     {
-        SerialisationData data = GameManager.GetData();
-        ClientPlayerData current_player = GetPlayerList()[CurrentPlayer];
+        var data = GameManager.GetData();
+        var current_player = GetPlayerList()[CurrentPlayer];
         data.TeamTurn = current_player.Team;
         data.PlayerOnTeamTurn = current_player.PlayerInTeam;
-        data.EllapsedTime = Timer.ElapsedMilliseconds + TimerOffset;
+        data.ElapsedTime = Timer.ElapsedMilliseconds + TimerOffset;
         return SaveSystem.Save(SerialisationUtil.Construct(data), fileName);
     }
 

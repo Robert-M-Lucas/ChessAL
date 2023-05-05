@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using Game;
 
@@ -22,7 +20,7 @@ namespace Gamemodes.NormalChess
             float total = 0;
 
             // Float arrays represent value of piece in given position. Top is current player.
-            Dictionary<Type, float[,]> heatmaps = new Dictionary<Type, float[,]>
+            var heatmaps = new Dictionary<Type, float[,]>
             {
                 {
                     typeof(PawnPiece),
@@ -110,28 +108,26 @@ namespace Gamemodes.NormalChess
                 },
             };
 
-            for (int x = 0; x < 8; x++)
+            for (var x = 0; x < 8; x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (var y = 0; y < 8; y++)
                 {
                     if (board.PieceBoard[x, y] is null) continue;
 
-                    if (heatmaps.ContainsKey(board.PieceBoard[x, y].GetType()))
-                    {
-                        int true_y = y;
+                    if (!heatmaps.ContainsKey(board.PieceBoard[x, y].GetType())) continue;
+                    var true_y = y;
 
-                        // Uses multiplier to add or subtract points based on whose side the pieces belong to
-                        int multiplier = 1;
-                        if (board.PieceBoard[x, y].Team != gameData.LocalPlayerTeam)
-                            multiplier = -1;
+                    // Uses multiplier to add or subtract points based on whose side the pieces belong to
+                    var multiplier = 1;
+                    if (board.PieceBoard[x, y].Team != gameData.LocalPlayerTeam)
+                        multiplier = -1;
 
-                        // Flip board if on other team
-                        if (board.PieceBoard[x, y].Team != 0)
-                            true_y = 7 - y;
+                    // Flip board if on other team
+                    if (board.PieceBoard[x, y].Team != 0)
+                        true_y = 7 - y;
 
-                        // Add heatmap score
-                        total += heatmaps[board.PieceBoard[x, y].GetType()][true_y, x] * multiplier;
-                    }
+                    // Add heatmap score
+                    total += heatmaps[board.PieceBoard[x, y].GetType()][true_y, x] * multiplier;
                 }
             }
 

@@ -1,10 +1,5 @@
 using Game;
-using Gamemodes.Checkers;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 
 namespace Gamemodes.Othello
 {
@@ -13,7 +8,7 @@ namespace Gamemodes.Othello
     /// </summary>
     public class Board : AbstractBoard
     {
-        bool smallBoard = false;
+        private bool smallBoard = false;
 
         public Board(AbstractGameManager gameManager, LiveGameData initialData, bool initialise = true) : base(gameManager)
         {
@@ -81,24 +76,24 @@ namespace Gamemodes.Othello
         {
             if (smallBoard)
             {
-                return new BoardRenderInfo(7, new List<V2>(), null, false);
+                return new BoardRenderInfo(7, new List<V2>());
             }
-            return new BoardRenderInfo(8, new List<V2>(), null, false);
+            return new BoardRenderInfo(8, new List<V2>());
         }
 
         public override AbstractBoard Clone(AbstractGameManager newGameManager)
         {
-            Board board = new Board(newGameManager, null, false);
-            AbstractPiece[,] pieceBoard = new AbstractPiece[PieceBoard.Length, PieceBoard.Length];
-            for (int x = 0; x < PieceBoard.GetLength(0); x++)
+            var board = new Board(newGameManager, null, false);
+            var piece_board = new AbstractPiece[PieceBoard.Length, PieceBoard.Length];
+            for (var x = 0; x < PieceBoard.GetLength(0); x++)
             {
-                for (int y = 0; y < PieceBoard.GetLength(0); y++)
+                for (var y = 0; y < PieceBoard.GetLength(0); y++)
                 {
-                    if (PieceBoard[x, y] is not null) pieceBoard[x, y] = PieceBoard[x, y].Clone(board);
+                    if (PieceBoard[x, y] is not null) piece_board[x, y] = PieceBoard[x, y].Clone(board);
                 }
             }
 
-            board.PieceBoard = pieceBoard;
+            board.PieceBoard = piece_board;
 
             return board;
         }

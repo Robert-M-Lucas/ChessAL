@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using UnityEngine;
 using Networking.Server;
 using Networking.Client;
-using System.Net.NetworkInformation;
-using System.Net;
 using Networking;
 
 #nullable enable
@@ -52,10 +49,10 @@ public class NetworkManager : MonoBehaviour
     {
         if (NetworkingUtils.PortInUse(NetworkSettings.PORT)) return false; // Check if port is in use
 
-        ServerGameData gameData = new ServerGameData(settings.GameMode, settings.SaveData);
+        var game_data = new ServerGameData(settings.GameMode, settings.SaveData);
 
         // Start server
-        server = new Server(gameData, settings.Password);
+        server = new Server(game_data, settings.Password);
         server.Start();
 
         // Start local client
@@ -132,7 +129,7 @@ public class NetworkManager : MonoBehaviour
     }
     public void OnClientKick(string reason) => chessManager.JoinFailed(reason);
     public void OnPlayersChange() => chessManager.PlayerListUpdate();
-    public void OnGamemodeRecieve(int gameMode, byte[] saveData) => chessManager.GameDataRecived(gameMode, saveData);
+    public void OnGamemodeRecieve(int gameMode, byte[] saveData) => chessManager.GameDataReceived(gameMode, saveData);
     public void OnGameStart() => chessManager.OnGameStart();
     public void OnForeignMove(int nextPlayer, V2 from, V2 to) => chessManager.OnForeignMoveUpdate(nextPlayer, from, to);
     public void HostSetTeam(int playerID, int team, int playerInTeam) => server?.SetTeam(playerID, team, playerInTeam);

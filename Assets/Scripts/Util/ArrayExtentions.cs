@@ -11,12 +11,13 @@ public static class ArrayExtensions
     /// <param name="bigArr"></param>
     /// <param name="smallArr"></param>
     /// <param name="index">Overwrite start</param>
+    /// <param name="smallArrLength"></param>
     /// <returns></returns>
     public static byte[] Merge(byte[] bigArr, byte[] smallArr, int index, out int smallArrLength)
     {
         smallArrLength = smallArr.Length;
 
-        foreach (byte item in smallArr)
+        foreach (var item in smallArr)
         {
             bigArr[index] = item;
             index++;
@@ -26,7 +27,7 @@ public static class ArrayExtensions
     }
     public static byte[] Merge(byte[] bigArr, byte[] smallArr, int index = 0)
     {
-        return Merge(bigArr, smallArr, index, out int _);
+        return Merge(bigArr, smallArr, index, out var _);
     }
 
     /// <summary>
@@ -38,9 +39,9 @@ public static class ArrayExtensions
     /// <returns></returns>
     public static byte[] Slice(byte[] arr, int start, int end)
     {
-        byte[] to_return = new byte[end - start];
+        var to_return = new byte[end - start];
         var index = 0;
-        for (int i = start; i < end; i++)
+        for (var i = start; i < end; i++)
         {
             to_return[index] = arr[i];
             index++;
@@ -50,8 +51,8 @@ public static class ArrayExtensions
 
     public static Tuple<byte[], int> ClearEmpty(byte[] arr)
     {
-        int index = 0;
-        for (int i = 0; i < arr.Length; i++)
+        var index = 0;
+        for (var i = 0; i < arr.Length; i++)
         {
             if (arr[i] != 0)
             {

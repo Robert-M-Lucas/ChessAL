@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.Othello
 {
@@ -31,17 +27,17 @@ namespace Gamemodes.Othello
 
         public override List<Move> GetMoves()
         {
-            List<Move> all_moves = new List<Move>();
+            var all_moves = new List<Move>();
 
-            V2[] directions = new V2[] { 
-                V2.UP, V2.DOWN, V2.LEFT, V2.RIGHT, 
-                V2.UP + V2.LEFT,
-                V2.DOWN + V2.LEFT, 
-                V2.UP + V2.RIGHT, 
-                V2.DOWN + V2.RIGHT, 
+            var directions = new V2[] { 
+                V2.Up, V2.Down, V2.Left, V2.Right, 
+                V2.Up + V2.Left,
+                V2.Down + V2.Left, 
+                V2.Up + V2.Right, 
+                V2.Down + V2.Right, 
             };
 
-            foreach (V2 d in directions) {
+            foreach (var d in directions) {
                 var curent_pos = Position + d;
 
                 if (!GUtil.IsOnBoard(curent_pos, Board)) continue;
@@ -65,32 +61,32 @@ namespace Gamemodes.Othello
         {
             if (!thisPiece) return;
 
-            V2[] directions = new V2[] {
-                V2.UP, V2.DOWN, V2.LEFT, V2.RIGHT,
-                V2.UP + V2.LEFT,
-                V2.DOWN + V2.LEFT,
-                V2.UP + V2.RIGHT,
-                V2.DOWN + V2.RIGHT,
+            var directions = new V2[] {
+                V2.Up, V2.Down, V2.Left, V2.Right,
+                V2.Up + V2.Left,
+                V2.Down + V2.Left,
+                V2.Up + V2.Right,
+                V2.Down + V2.Right,
             };
 
             Board.PieceBoard[move.To.X, move.To.Y] = new OthelloPiece(move.To, Team, Board);
 
             void OverwriteLine(V2 start, V2 delta, int count)
             {
-                V2 current = start;
-                for (int _ = 0; _ < count; _++)
+                var current = start;
+                for (var _ = 0; _ < count; _++)
                 {
                     Board.PieceBoard[current.X, current.Y] = new OthelloPiece(current, Team, Board);
                     current += delta;
                 }
             }
 
-            foreach (V2 d in directions)
+            foreach (var d in directions)
             {
                 var curent_pos = move.To;
 
-                bool found = false;
-                int count = 0;
+                var found = false;
+                var count = 0;
 
                 while (true)
                 {
@@ -99,7 +95,8 @@ namespace Gamemodes.Othello
                     if (!GUtil.IsOnBoard(curent_pos, Board)) break;
                     var current_piece = Board.GetPiece(curent_pos);
                     if (current_piece is null) break;
-                    if (current_piece.Team == Team) { found = true; break; }
+                    if (current_piece.Team != Team) continue;
+                    found = true; break;
                 }
 
                 if (found) OverwriteLine(move.To + d, d, count);

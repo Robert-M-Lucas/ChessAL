@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 38fe38ddcc4f7b14dad099d499d7bd32, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5b3909757eef64ca6745611ec6b4b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InheritFrom: {fileID: 1270532358}
+  inheritFrom: {fileID: 1270532358}
 --- !u!1 &619800207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,7 +1381,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
+  m_fontSize: 16.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1830,7 +1830,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 25.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2089,6 +2089,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -2131,7 +2132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VisualManager3D: {fileID: 1438867882}
-  pieceTravelTime: 0.3
+  PieceTravelTime: 0.3
   themes:
   - Name: Chess com
     WhiteColor: {r: 0.93333334, g: 0.93333334, b: 0.8235294, a: 1}
@@ -2165,15 +2166,15 @@ MonoBehaviour:
     Black3DTakeHighlightColor: {r: 0.5943396, g: 0, b: 0, a: 1}
   currentTheme: 0
   renderBox: {fileID: 910990398}
-  Hide3DImage: {fileID: 790045625}
-  SquarePrefab: {fileID: 1935436147}
-  PiecePrefab: {fileID: 1886491039}
-  MoveOptionPrefab: {fileID: 1001956582}
-  TurnText: {fileID: 1559311670}
-  TeamWinText: {fileID: 1736224341}
-  TimerText: {fileID: 2005917926}
-  AIText: {fileID: 1891475658}
-  AppearanceTables:
+  hide3DImage: {fileID: 790045625}
+  squarePrefab: {fileID: 1935436147}
+  piecePrefab: {fileID: 1886491039}
+  moveOptionPrefab: {fileID: 1001956582}
+  turnText: {fileID: 1559311670}
+  teamWinText: {fileID: 1736224341}
+  timerText: {fileID: 2005917926}
+  aiText: {fileID: 1891475658}
+  appearanceTables:
   - {fileID: 11400000, guid: d1a836d4518d2b34db25a726483a0bb0, type: 2}
   - {fileID: 11400000, guid: 91c28d2dd02f07b4eae661207da225f0, type: 2}
   - {fileID: 11400000, guid: 335c77a76c4ae9943891b8a494af5ba7, type: 2}
@@ -2192,9 +2193,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a108f6a0d23d5b4dbd96be16a08f2d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EscapeMenu: {fileID: 803725730}
-  FileNameInput: {fileID: 1232196527}
-  SaveStatusText: {fileID: 2031169065}
+  escapeMenu: {fileID: 803725730}
+  fileNameInput: {fileID: 1232196527}
+  saveStatusText: {fileID: 2031169065}
   ShowingEscapeMenu: 0
 --- !u!1001 &1232196525
 PrefabInstance:
@@ -2849,7 +2850,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.75
+  m_fontSize: 45.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3426,7 +3427,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.8
+  m_fontSize: 17.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3819,8 +3820,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   perspectiveSwitchTime: 1
-  maxDist: 15
-  minDist: 10
+  MaxDist: 15
+  MinDist: 10
   scrollSensitivity: 1
   normalFov: 60
   fov2D: 2
@@ -3831,8 +3832,8 @@ MonoBehaviour:
     m_Bits: 8
   rotationalPivot: {fileID: 1303691176}
   upDownPivot: {fileID: 850501251}
-  cameraPosition: {fileID: 619800208}
-  _camera: {fileID: 1914843238}
+  CameraPosition: {fileID: 619800208}
+  cam: {fileID: 1914843238}
 --- !u!1 &1935436147
 GameObject:
   m_ObjectHideFlags: 0
@@ -3926,7 +3927,7 @@ MonoBehaviour:
   Position:
     X: 0
     Y: 0
-  inputManager: {fileID: 880657996}
+  InputManager: {fileID: 880657996}
 --- !u!114 &1935436152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4041,7 +4042,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.75
+  m_fontSize: 45.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4349,7 +4350,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.7
+  m_fontSize: 19.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

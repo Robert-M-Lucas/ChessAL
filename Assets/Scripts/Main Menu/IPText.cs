@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Threading;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Networking;
@@ -17,16 +15,16 @@ namespace MainMenu
     {
         public TMP_Text Text;
 
-        string ipText = "";
-        bool set = false;
+        private string ipText = "";
+        private bool set = false;
 
-        void Start()
+        private void Start()
         {
             // Start looking for IP on thread
             new Thread(GetIP).Start();
         }
 
-        void GetIP()
+        private void GetIP()
         {
             string public_ip;
             try
@@ -40,7 +38,7 @@ namespace MainMenu
                 public_ip = "Not found";
             }
 
-            string private_ip = "Not found";
+            var private_ip = "Not found";
 
             // Get local IP
             var host = Dns.GetHostEntry(Dns.GetHostName());

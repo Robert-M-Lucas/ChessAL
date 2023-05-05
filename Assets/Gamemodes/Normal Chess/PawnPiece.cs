@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
@@ -26,10 +24,10 @@ namespace Gamemodes.NormalChess
 
         public override List<Move> GetMoves()
         {
-            List<Move> forward_moves = new List<Move>();
-            List<Move> attacking_moves = new List<Move>();
-            List<Move> en_passant = new List<Move>();
-            int m = 1;
+            var forward_moves = new List<Move>();
+            var attacking_moves = new List<Move>();
+            var en_passant = new List<Move>();
+            var m = 1;
             if (Team == 1) m = -1;
 
             forward_moves.Add(new Move(Position, Position + new V2(0, 1 * m)));
@@ -41,10 +39,10 @@ namespace Gamemodes.NormalChess
             {
                 if (GUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(1, 0)) is not null) // Is there a piece beside me
                 {
-                    AbstractPiece piece = Board.GetPiece(Position + new V2(1, 0));
+                    var piece = Board.GetPiece(Position + new V2(1, 0));
                     if (piece.GetUID() == GetUID() && 
-                            (piece as PawnPiece).DashMove == (Board as Board).MoveCounter - 1 &&
-                            (piece as PawnPiece).Team != Team) // Is this a pawn, dashed last turn and not on my team
+                            ((PawnPiece) piece).DashMove == ((Board) Board).MoveCounter - 1 &&
+                            ((PawnPiece) piece).Team != Team) // Is this a pawn, dashed last turn and not on my team
                         en_passant.Add(new Move(Position, Position + new V2(1, 1 * m))); // Add en passant move
                 }
             }
@@ -60,10 +58,10 @@ namespace Gamemodes.NormalChess
             {
                 if (GUtil.IsOnBoard(Position + new V2(-1, 0), Board) && Board.GetPiece(Position + new V2(-1, 0)) is not null)
                 {
-                    AbstractPiece piece = Board.GetPiece(Position + new V2(-1, 0));
+                    var piece = Board.GetPiece(Position + new V2(-1, 0));
                     if (piece.GetUID() == GetUID() && 
-                            (piece as PawnPiece).DashMove == (Board as Board).MoveCounter - 1 &&
-                            (piece as PawnPiece).Team != Team) 
+                            ((PawnPiece) piece).DashMove == ((Board) Board).MoveCounter - 1 &&
+                            ((PawnPiece) piece).Team != Team) 
                         en_passant.Add(new Move(Position, Position + new V2(-1, 1 * m)));
                 }
             }
@@ -94,7 +92,7 @@ namespace Gamemodes.NormalChess
                 HasMoved = true;
                 if (move.To - move.From == new V2(0, 2) || move.To - move.From == new V2(0, -2))
                 {
-                    DashMove = (Board as Board).MoveCounter; // Track when piece dashed
+                    DashMove = ((Board) Board).MoveCounter; // Track when piece dashed
                 }
                 else if ((move.To - move.From).X != 0 && Board.GetPiece(move.To) is null) // En passant
                 {
@@ -112,7 +110,7 @@ namespace Gamemodes.NormalChess
                 // Piece promotion
                 if ((move.To.Y == Board.PieceBoard.GetLength(1) - 1 && Team == 0) || (move.To.Y == 0 && Team == 1))
                 {
-                    (Board.GameManager as GameManager).CancelDefaultMove = true; // Cancel normal movement
+                    ((GameManager) Board.GameManager).CancelDefaultMove = true; // Cancel normal movement
                     Board.PieceBoard[move.To.X, move.To.Y] = new QueenPiece(move.To, Team, Board);
                     Board.PieceBoard[move.From.X, move.From.Y] = null;
                 }
@@ -123,7 +121,7 @@ namespace Gamemodes.NormalChess
 
         public override AbstractPiece Clone(AbstractBoard newBoard)
         {
-            PawnPiece new_piece = new PawnPiece(Position, Team, newBoard);
+            var new_piece = new PawnPiece(Position, Team, newBoard);
             new_piece.DashMove = DashMove;
             new_piece.HasMoved = HasMoved;
             return new_piece;
@@ -131,15 +129,15 @@ namespace Gamemodes.NormalChess
 
         public override PieceSerialisationData GetData()
         {
-            PieceSerialisationData data = new PieceSerialisationData();
+            var data = new PieceSerialisationData();
             data.Team = Team;
             data.Position = Position;
             data.UID = GetUID();
 
             // Add custom save data
             data.Data = new byte[5];
-            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(HasMoved), 0);
-            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(DashMove), 1);
+            data.Data = ArrayExtensions.Merge(bigArr: data.Data, smallArr: BitConverter.GetBytes(HasMoved), index: 0);
+            data.Data = ArrayExtensions.Merge(data.Data, BitConverter.GetBytes(DashMove), index: 1);
 
             return data;
         }

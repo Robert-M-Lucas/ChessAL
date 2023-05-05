@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Game;
 using System.Linq;
 
@@ -27,7 +26,7 @@ Classic Othello";
 
     public class GameManager : AbstractGameManager
     {
-        int noMoves = 0;
+        private int noMoves = 0;
 
         public GameManager(AbstractGameManagerData d, LiveGameData initialData) : base(d)
         {
@@ -38,25 +37,25 @@ Classic Othello";
         {
             noMoves = 0;
             base.OnMove(move, gameData);
-            int team = gameData.CurrentTeam;
+            var team = gameData.CurrentTeam;
             while (true)
             {
                 team++;
                 if (team > 5) { team = 0; }
-                int? player = gameData.GetPlayerByTeam(team, 0);
+                var player = gameData.GetPlayerByTeam(team, 0);
                 if (player != null) return (int)player;
             }
         }
 
-        private int CountSquares(LiveGameData gameData)
+        private int CountSquares()
         {
-            List<int> counts = new List<int>();
+            var counts = new List<int>();
 
-            for (int _ = 0; _ < 4; _++) { counts.Add(0); }
+            for (var _ = 0; _ < 4; _++) { counts.Add(0); }
 
-            for (int x = 0; x < 8; x++)
+            for (var x = 0; x < 8; x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (var y = 0; y < 8; y++)
                 {
                     if (Board.PieceBoard[x, y] is null) continue;
                     counts[Board.PieceBoard[x, y].Team]++;
@@ -68,23 +67,23 @@ Classic Othello";
 
         public override int OnNoMoves(LiveGameData gameData)
         {
-            if (noMoves == gameData.GetPlayerList().Count) return CountSquares(gameData);
+            if (noMoves == gameData.GetPlayerList().Count) return CountSquares();
 
             noMoves += 1;
-            int team = gameData.CurrentTeam;
+            var team = gameData.CurrentTeam;
             while (true)
             {
                 team++;
                 if (team > 5) { team = 0; }
-                int? player = gameData.GetPlayerByTeam(team, 0);
+                var player = gameData.GetPlayerByTeam(team, 0);
                 if (player != null) return (int)player;
             }
         }
 
         public override AbstractGameManager Clone()
         {
-            GameManager new_game_manager = new GameManager(GameManagerData, null);
-            new_game_manager.Board = (Board as Board).Clone(new_game_manager);
+            var new_game_manager = new GameManager(GameManagerData, null);
+            new_game_manager.Board = ((Board) Board).Clone(new_game_manager);
 
             return new_game_manager;
         }

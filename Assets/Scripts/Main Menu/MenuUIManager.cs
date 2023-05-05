@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Collections.Concurrent;
 using UnityEngine.UI;
-using System;
 using Networking.Client;
 using Gamemodes;
-using System.Linq;
+using UnityEngine.Serialization;
 
 #nullable enable
 
@@ -19,49 +17,54 @@ namespace MainMenu
     public class MenuUIManager : MonoBehaviour
     {
         #region GameObject References
+        [FormerlySerializedAs("HostConfigScreen")]
         [Header("Host")]
-        [SerializeField] private GameObject HostConfigScreen = default!;
+        [SerializeField] private GameObject hostConfigScreen = default!;
         private bool showingHostSettings = false;
-        [SerializeField] private TMP_InputField HostNameInput = default!;
-        [SerializeField] private TMP_Text HostNameDisallowedReason = default!;
-        [SerializeField] private TMP_InputField HostPasswordInput = default!;
-        [SerializeField] private GamemodeSelector HostGamemodeSelector = default!;
-        [SerializeField] private TMP_Text HostConfigHelpText = default!;
-        [SerializeField] private TMP_Text HostStatusText = default!;
-        [SerializeField] private TMP_Text HostScreenDescriptionText = default!;
-        [SerializeField] private SaveSelector HostSaveInput = default!;
-        [SerializeField] private Button HostStartButton = default!;
-        [SerializeField] private GameObject HostScreen = default!;
-        [SerializeField] private TMP_Text HostStartFailText = default!;
+        [FormerlySerializedAs("HostNameInput")] [SerializeField] private TMP_InputField hostNameInput = default!;
+        [FormerlySerializedAs("HostNameDisallowedReason")] [SerializeField] private TMP_Text hostNameDisallowedReason = default!;
+        [FormerlySerializedAs("HostPasswordInput")] [SerializeField] private TMP_InputField hostPasswordInput = default!;
+        [FormerlySerializedAs("HostGamemodeSelector")] [SerializeField] private GamemodeSelector hostGamemodeSelector = default!;
+        [FormerlySerializedAs("HostConfigHelpText")] [SerializeField] private TMP_Text hostConfigHelpText = default!;
+        [FormerlySerializedAs("HostStatusText")] [SerializeField] private TMP_Text hostStatusText = default!;
+        [FormerlySerializedAs("HostScreenDescriptionText")] [SerializeField] private TMP_Text hostScreenDescriptionText = default!;
+        [FormerlySerializedAs("HostSaveInput")] [SerializeField] private SaveSelector hostSaveInput = default!;
+        [FormerlySerializedAs("HostStartButton")] [SerializeField] private Button hostStartButton = default!;
+        [FormerlySerializedAs("HostScreen")] [SerializeField] private GameObject hostScreen = default!;
+        [FormerlySerializedAs("HostStartFailText")] [SerializeField] private TMP_Text hostStartFailText = default!;
         private bool showingHostScreen = false;
 
+        [FormerlySerializedAs("JoinConfigScreen")]
         [Header("Join")]
-        [SerializeField] private GameObject JoinConfigScreen = default!;
+        [SerializeField] private GameObject joinConfigScreen = default!;
         private bool showingJoinSettings = false;
-        [SerializeField] private TMP_InputField JoinIpInput = default!;
-        [SerializeField] private TMP_InputField JoinNameInput = default!;
-        [SerializeField] private TMP_Text JoinNameDisallowedReason = default!;
-        [SerializeField] private TMP_InputField JoinPasswordInput = default!;
-        [SerializeField] private GameObject JoinScreen = default!;
+        [FormerlySerializedAs("JoinIpInput")] [SerializeField] private TMP_InputField joinIpInput = default!;
+        [FormerlySerializedAs("JoinNameInput")] [SerializeField] private TMP_InputField joinNameInput = default!;
+        [FormerlySerializedAs("JoinNameDisallowedReason")] [SerializeField] private TMP_Text joinNameDisallowedReason = default!;
+        [FormerlySerializedAs("JoinPasswordInput")] [SerializeField] private TMP_InputField joinPasswordInput = default!;
+        [FormerlySerializedAs("JoinScreen")] [SerializeField] private GameObject joinScreen = default!;
         private bool showingJoinScreen = false;
-        [SerializeField] private TMP_Text JoinStatusText = default!;
-        [SerializeField] private TMP_Text JoinScreenDescriptionText = default!;
+        [FormerlySerializedAs("JoinStatusText")] [SerializeField] private TMP_Text joinStatusText = default!;
+        [FormerlySerializedAs("JoinScreenDescriptionText")] [SerializeField] private TMP_Text joinScreenDescriptionText = default!;
 
+        [FormerlySerializedAs("LocalConfigScreen")]
         [Header("Local")]
-        [SerializeField] private GameObject LocalConfigScreen = default!;
+        [SerializeField] private GameObject localConfigScreen = default!;
         private bool showingLocalSettings = false;
-        [SerializeField] private GamemodeSelector LocalGamemodeSelector = default!;
-        [SerializeField] private TMP_Text LocalConfigHelpText = default!;
-        [SerializeField] private TMP_Text LocalScreenDescriptionText = default!;
-        [SerializeField] private SaveSelector LocalSaveInput = default!;
-        [SerializeField] private GameObject LocalScreen = default!;
-        [SerializeField] private TMP_Text LocalStartFailText = default!;
+        [FormerlySerializedAs("LocalGamemodeSelector")] [SerializeField] private GamemodeSelector localGamemodeSelector = default!;
+        [FormerlySerializedAs("LocalConfigHelpText")] [SerializeField] private TMP_Text localConfigHelpText = default!;
+        [FormerlySerializedAs("LocalScreenDescriptionText")] [SerializeField] private TMP_Text localScreenDescriptionText = default!;
+        [FormerlySerializedAs("LocalSaveInput")] [SerializeField] private SaveSelector localSaveInput = default!;
+        [FormerlySerializedAs("LocalScreen")] [SerializeField] private GameObject localScreen = default!;
+        [FormerlySerializedAs("LocalStartFailText")] [SerializeField] private TMP_Text localStartFailText = default!;
         private bool showingLocalScreen = false;
-        [SerializeField] private TMP_InputField AITurnTime = default!;
+        // ReSharper disable once NotAccessedField.Local
+        [FormerlySerializedAs("AITurnTime")] [SerializeField] private TMP_InputField aiTurnTime = default!;
 
+        [FormerlySerializedAs("LobbyDisplay")]
         [Header("Other")]
-        [SerializeField] private GameObject LobbyDisplay = default!;
-        [SerializeField] private PlayerCardController PlayerCardPrefab = default!;
+        [SerializeField] private GameObject lobbyDisplay = default!;
+        [FormerlySerializedAs("PlayerCardPrefab")] [SerializeField] private PlayerCardController playerCardPrefab = default!;
         // [SerializeField] private GameObject ShuttingDownServerScreen = default!;
 
         #endregion
@@ -77,11 +80,11 @@ namespace MainMenu
 
             // Populate dropdowns with gamemode options
             List<AbstractGameManagerData> gamemode_data = Util.GetAllGameManagers();
-            foreach (AbstractGameManagerData game in gamemode_data)
+            foreach (var game in gamemode_data)
             {
                 gamemodes.Add(game.GetName(), game);
-                HostGamemodeSelector.Options.Add(game.GetName());
-                LocalGamemodeSelector.Options.Add(game.GetName());
+                hostGamemodeSelector.Options.Add(game.GetName());
+                localGamemodeSelector.Options.Add(game.GetName());
             }
 
             HideAllScreens();
@@ -99,17 +102,17 @@ namespace MainMenu
             showingLocalScreen = false;
             showingLocalSettings = false;
 
-            LobbyDisplay.SetActive(false);
-            HostConfigScreen.SetActive(false);
-            JoinConfigScreen.SetActive(false);
-            LocalConfigScreen.SetActive(false);
-            HostScreen.SetActive(false);
-            JoinScreen.SetActive(false);
-            LocalScreen.SetActive(false);
-            HostStartFailText.text = string.Empty;
-            LocalStartFailText.text = string.Empty;
-            HostNameDisallowedReason.text = string.Empty;
-            JoinNameDisallowedReason.text = string.Empty;
+            lobbyDisplay.SetActive(false);
+            hostConfigScreen.SetActive(false);
+            joinConfigScreen.SetActive(false);
+            localConfigScreen.SetActive(false);
+            hostScreen.SetActive(false);
+            joinScreen.SetActive(false);
+            localScreen.SetActive(false);
+            hostStartFailText.text = string.Empty;
+            localStartFailText.text = string.Empty;
+            hostNameDisallowedReason.text = string.Empty;
+            joinNameDisallowedReason.text = string.Empty;
         }
 
         public void OpenSavesFolder() => SaveSystem.OpenSavesFolder();
@@ -153,29 +156,29 @@ namespace MainMenu
 
             HideAllScreens();
             showingHostSettings = true;
-            HostConfigScreen.SetActive(true);
+            hostConfigScreen.SetActive(true);
         }
 
         public void OnHostGamemodeSwitch()
         {
-            if (HostGamemodeSelector.CurrentlyShowingPos == 0) HostConfigHelpText.text = "";
-            HostConfigHelpText.text = gamemodes[HostGamemodeSelector.CurrentlyShowing].GetDescription();
+            if (hostGamemodeSelector.CurrentlyShowingPos == 0) hostConfigHelpText.text = "";
+            hostConfigHelpText.text = gamemodes[hostGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void HostShowGamemodeHelp()
         {
-            if (HostGamemodeSelector.CurrentlyShowingPos == 0) return;
+            if (hostGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-            HelpSystem.OpenHelp(gamemodes[HostGamemodeSelector.CurrentlyShowing].GetUID());
-            HostConfigHelpText.text = gamemodes[HostGamemodeSelector.CurrentlyShowing].GetDescription();
+            HelpSystem.OpenHelp(gamemodes[hostGamemodeSelector.CurrentlyShowing].GetUID());
+            hostConfigHelpText.text = gamemodes[hostGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LoadSaveAndFullHost()
         {
-            if (HostSaveInput.SelectedFile == string.Empty) return;
+            if (hostSaveInput.SelectedFile == string.Empty) return;
 
-            byte[] save_data = chessManager.LoadSave(HostSaveInput.SelectedFile);
-            int gamemode = SerialisationUtil.GetGamemodeUID(save_data);
+            var save_data = chessManager.LoadSave(hostSaveInput.SelectedFile);
+            var gamemode = SerialisationUtil.GetGamemodeUID(save_data);
             FullHost(save_data, gamemode);
         }
 
@@ -183,74 +186,74 @@ namespace MainMenu
 
         public void FullHost(byte[]? saveData, int? gameMode)
         {
-            string? validation_result = Validators.ValidatePlayerName(HostNameInput.text);
+            var validation_result = Validators.ValidatePlayerName(hostNameInput.text);
             if (validation_result is not null)
             {
-                HostNameDisallowedReason.text = "[Name] " + validation_result;
+                hostNameDisallowedReason.text = "[Name] " + validation_result;
                 return;
             }
 
-            validation_result = Validators.ValidatePassword(HostPasswordInput.text);
+            validation_result = Validators.ValidatePassword(hostPasswordInput.text);
             if (validation_result is not null)
             {
-                HostNameDisallowedReason.text = "[Password] " + validation_result;
+                hostNameDisallowedReason.text = "[Password] " + validation_result;
                 return;
             }
 
             HostSettings host_settings;
             if (saveData is null)
             {
-                if (HostGamemodeSelector.CurrentlyShowingPos == 0) return;
+                if (hostGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-                host_settings = new HostSettings(gamemodes[HostGamemodeSelector.CurrentlyShowing], HostPasswordInput.text, HostNameInput.text, null);
+                host_settings = new HostSettings(gamemodes[hostGamemodeSelector.CurrentlyShowing], hostPasswordInput.text, hostNameInput.text, null);
             }
             else
             {
                 AbstractGameManagerData? game_data_selected = null;
 
-                foreach (AbstractGameManagerData game_data in chessManager.GameManagersData)
+                foreach (var game_data in chessManager.GameManagersData)
                 {
                     if (game_data.GetUID() == gameMode) game_data_selected = game_data;
                 }
 
                 if (game_data_selected is null)
                 {
-                    HostNameDisallowedReason.text = "Gamemode in save file no longer exists";
+                    hostNameDisallowedReason.text = "Gamemode in save file no longer exists";
                     return;
                 }
 
-                host_settings = new HostSettings(game_data_selected, HostPasswordInput.text, HostNameInput.text, saveData);
+                host_settings = new HostSettings(game_data_selected, hostPasswordInput.text, hostNameInput.text, saveData);
             }
 
             
 
-            bool half_success = chessManager.Host(host_settings);
+            var half_success = chessManager.Host(host_settings);
             if (!half_success)
             {
-                HostNameDisallowedReason.text = "Host failed. This can be caused by trying to restart a host too quickly - try waiting a couple of minutes";
+                hostNameDisallowedReason.text = "Host failed. This can be caused by trying to restart a host too quickly - try waiting a couple of minutes";
                 return;
             }
 
             HideAllScreens();
 
-            HostStatusText.text = "Connecting to internal server...";
-            HostScreen.SetActive(true);
+            hostStatusText.text = "Connecting to internal server...";
+            hostScreen.SetActive(true);
             showingHostScreen = true;
-            LobbyDisplay.gameObject.SetActive(true);
-            HostStatusText.gameObject.SetActive(true);
-            HostScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
+            lobbyDisplay.gameObject.SetActive(true);
+            hostStatusText.gameObject.SetActive(true);
+            hostScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
         }
 
         public void HostConnectionSuccessful()
         {
-            HostStatusText.text += " SUCCESS";
-            HostStatusText.gameObject.SetActive(false);
-            HostStartButton.gameObject.SetActive(true);
+            hostStatusText.text += " SUCCESS";
+            hostStatusText.gameObject.SetActive(false);
+            hostStartButton.gameObject.SetActive(true);
         }
 
         public void HostFailed(string reason)
         {
-            HostStatusText.text += " FAILED\n" + reason;
+            hostStatusText.text += " FAILED\n" + reason;
         }
 
         public void CancelHost()
@@ -279,7 +282,7 @@ namespace MainMenu
 
         public void HostStartGameFailed(string reason)
         {
-            HostStartFailText.text = reason;
+            hostStartFailText.text = reason;
             Debug.Log(reason);
         }
         #endregion
@@ -291,20 +294,20 @@ namespace MainMenu
 
             HideAllScreens();
             showingJoinSettings = true;
-            JoinConfigScreen.SetActive(true);
+            joinConfigScreen.SetActive(true);
         }
 
         public void FullJoin()
         {
             // Check for invalid player name
-            string? validation_result = Validators.ValidatePlayerName(JoinNameInput.text);
+            var validation_result = Validators.ValidatePlayerName(joinNameInput.text);
             if (validation_result is not null)
             {
-                JoinNameDisallowedReason.text = "Name: " + validation_result;
+                joinNameDisallowedReason.text = "Name: " + validation_result;
                 return;
             }
 
-            JoinSettings join_settings = new JoinSettings(JoinIpInput.text, JoinPasswordInput.text, JoinNameInput.text);
+            var join_settings = new JoinSettings(joinIpInput.text, joinPasswordInput.text, joinNameInput.text);
 
             // Join
             chessManager.Join(join_settings);
@@ -312,34 +315,34 @@ namespace MainMenu
             HideAllScreens();
 
             // Configure screens
-            JoinStatusText.text = "Connecting to server...";
+            joinStatusText.text = "Connecting to server...";
             showingJoinSettings = false;
-            JoinScreen.SetActive(true);
+            joinScreen.SetActive(true);
             showingJoinScreen = true;
-            LobbyDisplay.gameObject.SetActive(true);
-            JoinStatusText.gameObject.SetActive(true);
+            lobbyDisplay.gameObject.SetActive(true);
+            joinStatusText.gameObject.SetActive(true);
         }
 
         public void JoinConnectionSuccessful()
         {
-            JoinStatusText.text += " SUCCESS\n" + "Recieving gamemode and savedata...";
+            joinStatusText.text += " SUCCESS\n" + "Recieving gamemode and savedata...";
         }
 
         public void OnGamemodeDataRecieve()
         {
-            JoinStatusText.text += " SUCCESS";
-            JoinStatusText.gameObject.SetActive(false);
-            JoinScreenDescriptionText.text = "Gamemode description:\n" + chessManager.CurrentGameManager.GetDescription();
+            joinStatusText.text += " SUCCESS";
+            joinStatusText.gameObject.SetActive(false);
+            joinScreenDescriptionText.text = "Gamemode description:\n" + chessManager.CurrentGameManager.GetDescription();
         }
 
         public void JoinFailed(string reason)
         {
-            JoinStatusText.text += " FAILED\n" + reason;
+            joinStatusText.text += " FAILED\n" + reason;
         }
 
         public void ClientKicked(string reason)
         {
-            JoinStatusText.text += "\nClient Kicked: " + reason;
+            joinStatusText.text += "\nClient Kicked: " + reason;
         }
 
         public void CancelJoin()
@@ -357,29 +360,29 @@ namespace MainMenu
 
             HideAllScreens();
             showingLocalSettings = true;
-            LocalConfigScreen.SetActive(true);
+            localConfigScreen.SetActive(true);
         }
 
         public void OnLocalGamemodeSwitch()
         {
-            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) LocalConfigHelpText.text = "";
-            else LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription();
+            if (localGamemodeSelector.CurrentlyShowingPos == 0) localConfigHelpText.text = "";
+            else localConfigHelpText.text = gamemodes[localGamemodeSelector.CurrentlyShowing].GetDescription();
         }
 
         public void LocalPlayShowGamemodeHelp()
         {
-            if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return; // No gamemode selected
+            if (localGamemodeSelector.CurrentlyShowingPos == 0) return; // No gamemode selected
 
-            HelpSystem.OpenHelp(gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetUID()); // Show help for current gamemode
-            LocalConfigHelpText.text = gamemodes[LocalGamemodeSelector.CurrentlyShowing].GetDescription(); // Show backup description
+            HelpSystem.OpenHelp(gamemodes[localGamemodeSelector.CurrentlyShowing].GetUID()); // Show help for current gamemode
+            localConfigHelpText.text = gamemodes[localGamemodeSelector.CurrentlyShowing].GetDescription(); // Show backup description
         }
 
         public void LoadSaveAndFullLocalPlay()
         {
-            if (LocalSaveInput.SelectedFile == string.Empty) return; // No save selected
+            if (localSaveInput.SelectedFile == string.Empty) return; // No save selected
 
-            byte[] save_data = chessManager.LoadSave(LocalSaveInput.SelectedFile);
-            int gamemode = SerialisationUtil.GetGamemodeUID(save_data); // Extract gamemode
+            var save_data = chessManager.LoadSave(localSaveInput.SelectedFile);
+            var gamemode = SerialisationUtil.GetGamemodeUID(save_data); // Extract gamemode
             FullLocalPlay(save_data, gamemode);
         }
 
@@ -390,15 +393,15 @@ namespace MainMenu
             HostSettings host_settings;
             if (saveData is null)
             {
-                if (LocalGamemodeSelector.CurrentlyShowingPos == 0) return;
+                if (localGamemodeSelector.CurrentlyShowingPos == 0) return;
 
-                host_settings = new HostSettings(gamemodes[LocalGamemodeSelector.CurrentlyShowing], "", "", null);
+                host_settings = new HostSettings(gamemodes[localGamemodeSelector.CurrentlyShowing], "", "", null);
             }
             else
             {
                 AbstractGameManagerData? game_data_selected = null;
 
-                foreach (AbstractGameManagerData game_data in chessManager.GameManagersData)
+                foreach (var game_data in chessManager.GameManagersData)
                 {
                     if (game_data.GetUID() == gameMode) game_data_selected = game_data;
                 }
@@ -416,9 +419,9 @@ namespace MainMenu
             HideAllScreens();
 
             showingLocalScreen = true;
-            LobbyDisplay.gameObject.SetActive(true);
-            LocalScreen.SetActive(true);
-            LocalScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
+            lobbyDisplay.gameObject.SetActive(true);
+            localScreen.SetActive(true);
+            localScreenDescriptionText.text = "Gamemode description:\n" + host_settings.GameMode.GetDescription();
         }
 
         public void AddLocalPlayer() =>  chessManager.AddLocalPlayer();
@@ -427,10 +430,10 @@ namespace MainMenu
         public void RemoveLocalAI() => chessManager.RemoveLocalAI();
         public void StartLocalGame()
         {
-            int AI_turn_time = 20;
+            var ai_turn_time = 20;
             // int.TryParse(AITurnTime.text, out AI_turn_time);
-            string? output = chessManager.StartLocalGame(AI_turn_time);
-            if (output is not null) LocalStartFailText.text = output; // Start failed
+            var output = chessManager.StartLocalGame(ai_turn_time);
+            if (output is not null) localStartFailText.text = output; // Start failed
         }
 
         public void CancelLocalPlay()
@@ -451,6 +454,7 @@ namespace MainMenu
         public void UpdateLobbyPlayerCardDisplay(ConcurrentDictionary<int, ClientPlayerData> playerData)
         {
             // Prevents errors caused by player data being sent too quickly
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (chessManager.CurrentGameManager is null && playerData.Count != 0)
             {
                 Invoke("ForceUpdateLobby", 1f); // Run again in 1s
@@ -459,7 +463,7 @@ namespace MainMenu
 
             List<PlayerCardController> to_remove = new List<PlayerCardController>();
 
-            foreach (PlayerCardController player_card in playerCardControllers)
+            foreach (var player_card in playerCardControllers)
             {
                 if (!playerData.ContainsKey(player_card.PlayerID))
                 {
@@ -468,7 +472,7 @@ namespace MainMenu
                 }
                 else // Update card
                 {
-                    ClientPlayerData player_data = playerData[player_card.PlayerID];
+                    var player_data = playerData[player_card.PlayerID];
                     player_card.PlayerName = player_data.Name;
                     player_card.Team = player_data.Team;
                     player_card.PlayerOnTeam = player_data.PlayerInTeam;
@@ -477,13 +481,13 @@ namespace MainMenu
             }
 
             // Remove
-            foreach (PlayerCardController player_card in to_remove) playerCardControllers.Remove(player_card);
+            foreach (var player_card in to_remove) playerCardControllers.Remove(player_card);
 
 
-            foreach (ClientPlayerData player_data in playerData.Values)
+            foreach (var player_data in playerData.Values)
             {
-                bool shown = false;
-                foreach (PlayerCardController player_card in playerCardControllers)
+                var shown = false;
+                foreach (var player_card in playerCardControllers)
                 {
                     if (player_card.PlayerID == player_data.PlayerID)
                     {
@@ -502,9 +506,9 @@ namespace MainMenu
         /// <param name="playerData"></param>
         private void CreatePlayerCard(ClientPlayerData playerData)
         {
-            GameObject new_card = Instantiate(PlayerCardPrefab.gameObject);
+            var new_card = Instantiate(playerCardPrefab.gameObject, playerCardPrefab.transform.parent, true);
             new_card.SetActive(true);
-            PlayerCardController card_controller = new_card.GetComponent<PlayerCardController>();
+            var card_controller = new_card.GetComponent<PlayerCardController>();
 
             card_controller.PlayerID = playerData.PlayerID;
             card_controller.PlayerName = playerData.Name;
@@ -513,9 +517,8 @@ namespace MainMenu
             card_controller.ChessManager = chessManager;
             card_controller.MenuUIManager = this;
 
-            new_card.transform.SetParent(PlayerCardPrefab.transform.parent);
-            RectTransform rectTransform = new_card.GetComponent<RectTransform>();
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Screen.height * 0.07f);
+            var rect_transform = new_card.GetComponent<RectTransform>();
+            rect_transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Screen.height * 0.07f);
 
             card_controller.UpdateFields();
 

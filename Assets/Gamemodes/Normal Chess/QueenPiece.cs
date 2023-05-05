@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Gamemodes.NormalChess
 {
@@ -15,15 +13,12 @@ namespace Gamemodes.NormalChess
         
         public override List<Move> GetMoves()
         {
-            List<Move> moves = new List<Move>();
+            var moves = new List<Move>();
 
-            V2[] directions = new V2[] { new V2(1, 0), new V2(-1, 0), new V2(0, -1), new V2(0, 1), new V2(1, 1), new V2(-1, 1), new V2(1, -1), new V2(-1, -1) };
-            foreach (V2 direction in directions)
-            {
-                moves = moves.Concat(GUtil.RaycastMoves(this, direction, Board)).ToList();
-            }
-           
-            return moves;
+            var directions = new V2[] { new V2(1, 0), new V2(-1, 0), new V2(0, -1), new V2(0, 1), new V2(1, 1), new V2(-1, 1), new V2(1, -1), new V2(-1, -1) };
+
+            return directions.Aggregate(moves, (current, direction) => 
+                current.Concat(GUtil.RaycastMoves(this, direction, Board)).ToList());
         }
 
         public override AbstractPiece Clone(AbstractBoard newBoard) => new QueenPiece(Position, Team, newBoard);
